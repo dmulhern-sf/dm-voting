@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Style Guide — Salesforce Narrative System 2026</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    body { padding-top: 60px; }
+
+    .sg-header {
+      background: var(--grad-evening);
+      padding: 40px 48px;
+      border-bottom: 3px solid var(--sf-blue-l);
+    }
+    .sg-header h1 { font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .sg-header p  { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+    .sg-section {
+      max-width: 1200px; margin: 0 auto;
+      padding: 48px 48px 0;
+    }
+    .sg-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sf-blue);
+      border-bottom: 1px solid var(--gray-200);
+      padding-bottom: 8px; margin-bottom: 24px;
+    }
+    .sg-spacer { height: 48px; }
+    .sg-note {
+      font-size: 12px; color: var(--muted);
+      margin-top: 12px; padding: 10px 14px;
+      background: var(--off-white); border-left: 3px solid var(--sf-blue-l);
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Swatches */
+    .swatch-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+    .swatch { display: flex; flex-direction: column; gap: 6px; width: 130px; }
+    .swatch-color { height: 56px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); }
+    .swatch-name { font-size: 11px; font-weight: 600; color: var(--text); font-family: monospace; }
+    .swatch-hex  { font-size: 10px; color: var(--muted); font-family: monospace; }
+    .swatch-tag  { font-size: 9px; color: var(--sf-blue); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* Gradient swatches */
+    .grad-swatch { height: 120px; border-radius: 8px; margin-bottom: 6px; }
+
+    /* Type */
+    .type-row { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--gray-100); }
+    .type-label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; font-family: monospace; }
+
+    /* Radius */
+    .radius-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .radius-box {
+      width: 80px; height: 80px;
+      background: rgba(2,42,192,0.10);
+      border: 2px solid var(--sf-blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--sf-navy); font-weight: 700;
+    }
+
+    .dark-strip { background: var(--sf-navy); padding: 48px; }
+    .dark-strip .sg-label { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.1); }
+
+    .font-specimen { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-100); }
+    .font-weight-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-family: monospace; }
+
+    /* Logo fix — explicit dimensions prevent blurry render */
+    .logo-horiz { height: 32px; width: auto; display: block; }
+    .logo-cloud { height: 32px; width: auto; display: block; }
+
+    /* Card icon — product image, no emoji */
+    .card-icon-img {
+      width: 36px; height: 36px; object-fit: contain;
+      margin-bottom: 14px; display: block;
+    }
+
+    /* Beachhead icon — product image */
+    .bc-icon-img {
+      width: 36px; height: 36px; object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-lockup">
+      <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-RGB.svg"
+           class="nav-logo-sf logo-horiz" alt="Salesforce"
+           width="160" height="28" />
+      <div class="nav-divider"></div>
+      <span class="nav-title">Narrative System 2026</span>
+    </div>
+    <span class="nav-tag">Brand Showcase — internal</span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="sg-header">
+  <h1>Salesforce Narrative Design System — 2026</h1>
+  <p>Every token, component, and brand rule in one place. Source: Salesforce Brand Guidelines &amp; Toolkits 2026.</p>
+</div>
+
+
+<!-- ─────────────────────────────────────────────
+     1. COLOR — PRIMARY PALETTE
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">1a — Primary Palette (Electric Blue Scale) — 80% of all color area</div>
+  <div class="swatch-row">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#001E5B;"></div>
+      <div class="swatch-name">--sf-navy</div>
+      <div class="swatch-hex">#001E5B</div>
+      <div class="swatch-tag">Electric Blue 15</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#022AC0;"></div>
+      <div class="swatch-name">--sf-blue</div>
+      <div class="swatch-hex">#022AC0</div>
+      <div class="swatch-tag">Electric Blue 30</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#066AFE;"></div>
+      <div class="swatch-name">--sf-blue-m</div>
+      <div class="swatch-hex">#066AFE</div>
+      <div class="swatch-tag">Electric Blue 50</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#00B3FF;"></div>
+      <div class="swatch-name">--sf-blue-l</div>
+      <div class="swatch-hex">#00B3FF</div>
+      <div class="swatch-tag">Cloud Blue 68</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#90D0FE;"></div>
+      <div class="swatch-name">--cloud-80</div>
+      <div class="swatch-hex">#90D0FE</div>
+      <div class="swatch-tag">Cloud Blue 80</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#EAF5FE;border-color:#C8E4F6;"></div>
+      <div class="swatch-name">--cloud-95</div>
+      <div class="swatch-hex">#EAF5FE</div>
+      <div class="swatch-tag">Cloud Blue 95</div>
+    </div>
+  </div>
+
+  <div class="sg-label" style="margin-top:32px;">1b — Secondary Palette — max 20% of color area</div>
+  <div class="swatch-row">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#06A59A;"></div>
+      <div class="swatch-name">--teal / --green</div>
+      <div class="swatch-hex">#06A59A</div>
+      <div class="swatch-tag">Teal 60</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#04E1CB;"></div>
+      <div class="swatch-name">--teal-l</div>
+      <div class="swatch-hex">#04E1CB</div>
+      <div class="swatch-tag">Teal 80</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#E4A201;"></div>
+      <div class="swatch-name">--yellow / --amber</div>
+      <div class="swatch-hex">#E4A201</div>
+      <div class="swatch-tag">Yellow 70</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FCC003;"></div>
+      <div class="swatch-name">--yellow-l</div>
+      <div class="swatch-hex">#FCC003</div>
+      <div class="swatch-tag">Yellow 80</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FF538A;"></div>
+      <div class="swatch-name">--pink</div>
+      <div class="swatch-hex">#FF538A</div>
+      <div class="swatch-tag">Pink 60</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#730394;"></div>
+      <div class="swatch-name">--violet / --indigo</div>
+      <div class="swatch-hex">#730394</div>
+      <div class="swatch-tag">Violet 30</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#D17DFE;"></div>
+      <div class="swatch-name">--violet-l</div>
+      <div class="swatch-hex">#D17DFE</div>
+      <div class="swatch-tag">Violet 65</div>
+    </div>
+  </div>
+
+  <div class="sg-label" style="margin-top:32px;">1c — Customer Accent (swap per deal)</div>
+  <div class="swatch-row">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#DA1710;"></div>
+      <div class="swatch-name">--accent</div>
+      <div class="swatch-hex">#DA1710</div>
+      <div class="swatch-tag">Default / Westpac</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#FF4A3D;"></div>
+      <div class="swatch-name">--accent-l</div>
+      <div class="swatch-hex">#FF4A3D</div>
+      <div class="swatch-tag">Light variant</div>
+    </div>
+  </div>
+  <p class="sg-note">80/20 rule: 80% of visible color must be primary blues. Secondary colors are single accent pops — never two on the same card. Customer accent replaces one secondary slot per page, not a primary blue.</p>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     2. GRADIENTS
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">2 — Atmosphere Gradients — official 2026 color stops</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+    <div>
+      <div class="grad-swatch" style="background:linear-gradient(180deg,#90D0FE 0%,#EAF5FE 100%);"></div>
+      <div class="swatch-name">--grad-morning</div>
+      <div class="swatch-hex" style="margin-top:4px;">Cloud Blue 80 → 95</div>
+      <div class="swatch-tag">Light sections</div>
+    </div>
+    <div>
+      <div class="grad-swatch" style="background:linear-gradient(180deg,#00B3FF 0%,#90D0FE 60%,#EAF5FE 100%);"></div>
+      <div class="swatch-name">--grad-midday</div>
+      <div class="swatch-hex" style="margin-top:4px;">Cloud Blue 68 → 80 → 95</div>
+      <div class="swatch-tag">Feature sections</div>
+    </div>
+    <div>
+      <div class="grad-swatch" style="background:linear-gradient(180deg,#066AFE 0%,#00B3FF 40%,#90D0FE 75%,#EAF5FE 100%);"></div>
+      <div class="swatch-name">--grad-dusk</div>
+      <div class="swatch-hex" style="margin-top:4px;">Electric Blue 50 → Cloud Blue 68 → 80 → 95</div>
+      <div class="swatch-tag">Vibrant moments</div>
+    </div>
+    <div>
+      <div class="grad-swatch" style="background:linear-gradient(180deg,#001E5B 0%,#022AC0 40%,#066AFE 75%,#00B3FF 100%);"></div>
+      <div class="swatch-name">--grad-evening</div>
+      <div class="swatch-hex" style="margin-top:4px;">Electric Blue 15 → 30 → 50 → Cloud Blue 68</div>
+      <div class="swatch-tag">Hero — full bleed only</div>
+    </div>
+  </div>
+  <p class="sg-note">Gradients are approved for full-bleed section backgrounds only. Never on card interiors, text, or buttons. Data-dense sections (compare table, stack) use solid colors for legibility.</p>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     3. TYPOGRAPHY
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">3 — Typography — Salesforce Sans</div>
+
+  <div class="font-specimen">
+    <div class="font-weight-label">300 Light — hero sub, large captions</div>
+    <p style="font-weight:300;font-size:20px;color:var(--body);">The decisions that used to require a human can now be made in milliseconds.</p>
+  </div>
+  <div class="font-specimen">
+    <div class="font-weight-label">400 Regular — body copy</div>
+    <p style="font-weight:400;font-size:16px;color:var(--body);">Every branch visit and app interaction is already a signal. The question is whether you act on it in time.</p>
+  </div>
+  <div class="font-specimen">
+    <div class="font-weight-label">400 Italic — quotes, citations</div>
+    <p style="font-weight:400;font-style:italic;font-size:16px;color:var(--muted);">"We want to be the bank that knows what you need before you do."</p>
+  </div>
+  <div class="font-specimen">
+    <div class="font-weight-label">600 Semibold — card titles, nav labels</div>
+    <p style="font-weight:600;font-size:15px;color:var(--text);">Real-Time Decisioning at Scale</p>
+  </div>
+  <div class="font-specimen" style="border-bottom:none;">
+    <div class="font-weight-label">700 Bold — headlines, eyebrows, KPI values, CTAs</div>
+    <h2 style="font-weight:700;font-size:38px;color:var(--text);letter-spacing:-0.025em;line-height:1.1;">Banking decisions<br/><em style="font-style:normal;color:var(--sf-blue);">made in milliseconds</em></h2>
+  </div>
+
+  <div class="sg-spacer"></div>
+  <div class="sg-label">3b — Type Scale</div>
+
+  <div class="type-row">
+    <div class="type-label">H1 Hero — clamp(32–48px) / 700 / -0.025em / white on evening gradient</div>
+    <h1 style="font-size:clamp(32px,3.5vw,48px);font-weight:700;color:var(--sf-navy);letter-spacing:-0.025em;line-height:1.1;">
+      Banking decisions<br/><em style="font-style:normal;color:var(--sf-blue);">made in milliseconds</em>
+    </h1>
+  </div>
+  <div class="type-row">
+    <div class="type-label">Section Title — clamp(26–38px) / 700 / -0.025em</div>
+    <div class="section-title">The Gap Between Today and Tomorrow</div>
+  </div>
+  <div class="type-row">
+    <div class="type-label">Section Sub — 16px / 400 / --muted</div>
+    <div class="section-sub" style="margin-bottom:0;">Every branch visit, every app interaction, every mortgage inquiry — already a signal waiting to be used.</div>
+  </div>
+  <div class="type-row">
+    <div class="type-label">Eyebrow — 11px / 700 / uppercase / letter-spacing 0.1em</div>
+    <div class="eyebrow">Why Now</div>
+  </div>
+  <div class="type-row">
+    <div class="type-label">Card Title — 15px / 700 / --text</div>
+    <div class="card-title">Real-Time Decisioning at Scale</div>
+  </div>
+  <div class="type-row" style="border-bottom:none;">
+    <div class="type-label">Card Body — 13px / 400 / --muted — bold the one punchline</div>
+    <div class="card-body">Trigger personalised offers the moment a customer opens the app — not 24 hours later. <strong>The window is measured in seconds.</strong></div>
+  </div>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     4. BORDER RADIUS
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">4 — Border Radius — tight, no large curves</div>
+  <div class="radius-row">
+    <div>
+      <div class="radius-box" style="border-radius:4px;">4px</div>
+      <div class="swatch-tag" style="margin-top:6px;">badges, KPI cards</div>
+    </div>
+    <div>
+      <div class="radius-box" style="border-radius:8px;">8px</div>
+      <div class="swatch-tag" style="margin-top:6px;">cards, buttons, modals</div>
+    </div>
+    <div>
+      <div class="radius-box" style="border-radius:16px;">16px</div>
+      <div class="swatch-tag" style="margin-top:6px;">hero panels only</div>
+    </div>
+  </div>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     5. BUTTONS
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">5 — Buttons</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+    <button class="btn btn-primary">Primary CTA</button>
+    <button class="btn btn-ghost">Ghost / Secondary</button>
+  </div>
+  <p class="sg-note">Flat Electric Blue 30 — no gradient. Hover darkens to Electric Blue 15 (navy). 8px radius. Font: Salesforce Sans 700.</p>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     6. LOGOS
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">6 — Official 2026 Logos (SVG — vector, always crisp)</div>
+  <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:center;margin-bottom:24px;">
+    <div>
+      <div class="swatch-tag" style="margin-bottom:10px;">Horizontal RGB — nav on white</div>
+      <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-RGB.svg"
+           class="logo-horiz" alt="Salesforce" width="200" height="36" />
+    </div>
+    <div style="background:var(--sf-navy);padding:16px 24px;border-radius:8px;">
+      <div class="swatch-tag" style="color:rgba(255,255,255,0.4);margin-bottom:10px;">Horizontal White — on dark</div>
+      <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg"
+           class="logo-horiz" alt="Salesforce" width="200" height="36" />
+    </div>
+    <div style="background:var(--grad-evening);padding:16px 24px;border-radius:8px;">
+      <div class="swatch-tag" style="color:rgba(255,255,255,0.4);margin-bottom:10px;">KO — on gradient hero</div>
+      <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-KO-RGB.svg"
+           class="logo-horiz" alt="Salesforce" width="200" height="36" />
+    </div>
+    <div>
+      <div class="swatch-tag" style="margin-bottom:10px;">Cloud mark — on white</div>
+      <img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg"
+           class="logo-cloud" alt="Salesforce" width="40" height="36" />
+    </div>
+    <div style="background:var(--sf-navy);padding:16px 24px;border-radius:8px;">
+      <div class="swatch-tag" style="color:rgba(255,255,255,0.4);margin-bottom:10px;">Cloud mark — on dark</div>
+      <img src="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg"
+           class="logo-cloud" alt="Salesforce" width="40" height="36" />
+    </div>
+  </div>
+  <p class="sg-note">Always SVG. Explicit width/height attributes prevent browser blurriness. Use Horizontal-RGB on white (nav). Use White or KO on dark/gradient backgrounds. Cloud mark for icon-only or favicon contexts.</p>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     7. HERO
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">7 — Hero Section — Evening gradient, official KO logo</div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Salesforce + Westpac</div>
+      <h1>Banking decisions<br/><em>made in milliseconds</em></h1>
+      <p class="hero-sub">Every branch visit and app interaction is already a signal. The question is whether you act on it in time.</p>
+      <div class="hero-quote">
+        <p>"We want to be the bank that knows what you need before you do."</p>
+        <cite>— Chief Digital Officer, Westpac</cite>
+      </div>
+    </div>
+    <div class="hero-kpi">
+      <div class="hero-kpi-card">
+        <div class="hkc-val"><span>$660</span>m</div>
+        <div class="hkc-label">incremental revenue opportunity</div>
+      </div>
+      <div class="hero-kpi-card">
+        <div class="hkc-val"><span>350</span></div>
+        <div class="hkc-label">bankers already using AI decisions</div>
+      </div>
+      <div class="hero-kpi-card">
+        <div class="hkc-val"><span>90</span>d</div>
+        <div class="hkc-label">to first live decisioning flow</div>
+      </div>
+      <div class="hero-kpi-card">
+        <div class="hkc-val"><span>3×</span></div>
+        <div class="hkc-label">uplift in offer acceptance rate</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="background:var(--white);padding:12px 48px;">
+  <p class="sg-note" style="max-width:1200px;margin:0 auto;">Evening gradient. KPI cards: 10% white fill, Cloud Blue 68 left border. Bottom line: customer --accent.</p>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     8. CARDS — WHY NOW
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">8a — Cards 2-col (Why Now) — product icons, no emoji</div>
+  <div class="card-grid-2">
+    <div class="card card-accent-accent">
+      <img src="assets/icons/icon-data360.png" class="card-icon-img" alt="Data Cloud" />
+      <div class="card-title">The data is already there</div>
+      <div class="card-body">Westpac processes 4.2 million transactions daily. <strong>Each one is an unanswered question about what this customer needs next.</strong></div>
+    </div>
+    <div class="card card-accent-blue">
+      <img src="assets/icons/icon-agentforce.png" class="card-icon-img" alt="Agentforce" />
+      <div class="card-title">The window is shrinking</div>
+      <div class="card-body">Customers expect relevance in-moment — not a follow-up email 48 hours later. <strong>The competitors who get this are already moving.</strong></div>
+    </div>
+    <div class="card card-accent-blue">
+      <img src="assets/icons/icon-platform.png" class="card-icon-img" alt="Platform" />
+      <div class="card-title">Regulation is enabling, not blocking</div>
+      <div class="card-body">Open banking changes have lowered the data-sharing barrier. <strong>First movers lock in the relationship.</strong></div>
+    </div>
+    <div class="card card-accent-accent">
+      <img src="assets/icons/icon-salesrevenue.png" class="card-icon-img" alt="Sales Revenue" />
+      <div class="card-title">AI is ready for production</div>
+      <div class="card-body">This is no longer a research project. <strong>Enterprise-grade, auditable, explainable AI is shipping today.</strong></div>
+    </div>
+  </div>
+
+  <div class="sg-spacer"></div>
+  <div class="sg-label">8b — Scale Cards 3-col</div>
+  <div class="card-grid-3">
+    <div class="scale-card">
+      <div class="sc-num">PHASE 02</div>
+      <div class="sc-title">Branch &amp; Contact Centre</div>
+      <div class="sc-body">Surface next-best-action directly in the banker's screen — same model, new channel.</div>
+    </div>
+    <div class="scale-card">
+      <div class="sc-num">PHASE 02</div>
+      <div class="sc-title">Cross-sell Automation</div>
+      <div class="sc-body">Trigger automated journeys from decisioning signals without manual campaign setup.</div>
+    </div>
+    <div class="scale-card">
+      <div class="sc-num">PHASE 03</div>
+      <div class="sc-title">Partner Ecosystem</div>
+      <div class="sc-body">Expose decisioning APIs to approved partners — BaaS-style personalisation at scale.</div>
+    </div>
+  </div>
+  <p class="sg-note">Card icons use 2D multicolor product icons — correct tier for sales outreach. No emoji. One bolded punchline per card body.</p>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     9. COMPARISON TABLE
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">9 — Comparison Table (Today vs Tomorrow) — solid colors, no gradient</div>
+  <div class="compare-wrap">
+    <div class="compare-head">
+      <div class="compare-head-col today">Today</div>
+      <div class="compare-head-col tomorrow">With Salesforce</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell today"><strong>Batch campaigns</strong> — segments built weekly, sent en masse</div>
+      <div class="compare-cell tomorrow"><strong>Real-time triggers</strong> — offer fires the moment the signal appears</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell today"><strong>Channel silos</strong> — app, branch, and email teams work independently</div>
+      <div class="compare-cell tomorrow"><strong>Unified decisioning</strong> — one model, consistent outcome across every touchpoint</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell today"><strong>Gut-feel prioritisation</strong> — which offer to show is a spreadsheet exercise</div>
+      <div class="compare-cell tomorrow"><strong>AI-ranked offers</strong> — Einstein scores every customer × product combination live</div>
+    </div>
+  </div>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     10. STACK DIAGRAM
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">10 — Connected Stack — Evening gradient header, 2026 secondary palette layers</div>
+  <div class="stack-wrap">
+    <div class="stack-header">
+      <div>
+        <div class="stack-header-label">Architecture</div>
+        <div class="stack-header-title">The Salesforce AI Platform — Westpac</div>
+      </div>
+    </div>
+    <div class="stack-layer sl-layer-01">
+      <div class="sl-left">
+        <div class="sl-num">01</div>
+        <div class="sl-product">Data Cloud</div>
+        <div class="sl-product-sub">Unified Profile</div>
+      </div>
+      <div class="sl-right">Real-time ingestion from core banking, mobile, branch, and third-party — single unified profile per customer. <strong>The source of truth everything else runs on.</strong></div>
+    </div>
+    <div class="stack-layer sl-layer-02">
+      <div class="sl-left">
+        <div class="sl-num">02</div>
+        <div class="sl-product">Einstein</div>
+        <div class="sl-product-sub">AI Decisioning</div>
+      </div>
+      <div class="sl-right">Next-best-action model trained on Westpac's own outcomes. Scores every customer × offer combination in milliseconds. <strong>Explainable, auditable, APRA-ready.</strong></div>
+    </div>
+    <div class="stack-layer sl-layer-03">
+      <div class="sl-left">
+        <div class="sl-num">03</div>
+        <div class="sl-product">Marketing Cloud</div>
+        <div class="sl-product-sub">Journey Execution</div>
+      </div>
+      <div class="sl-right">Triggers personalised journeys from decisioning signals — email, push, SMS. No manual campaign setup required.</div>
+    </div>
+    <div class="stack-layer sl-layer-04">
+      <div class="sl-left">
+        <div class="sl-num">04</div>
+        <div class="sl-product">Agentforce</div>
+        <div class="sl-product-sub">AI Agents</div>
+      </div>
+      <div class="sl-right">Autonomous agents handle tier-1 service queries and surface next-best-action to human bankers in real time.</div>
+    </div>
+    <div class="stack-layer sl-layer-05">
+      <div class="sl-left">
+        <div class="sl-num">05</div>
+        <div class="sl-product">Service Cloud</div>
+        <div class="sl-product-sub">Engagement Layer</div>
+      </div>
+      <div class="sl-right">Customer context flows from decisioning into every service interaction — no repeat explanations, no broken journeys.</div>
+    </div>
+  </div>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     11. BEACHHEAD CARDS
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">11 — Beachhead Cards — product icons, 2026 secondary palette badges</div>
+  <div class="card-grid-2">
+    <div class="beach-card">
+      <div class="bc-head">
+        <div class="bc-icon" style="background:rgba(0,179,255,0.10);">
+          <img src="assets/icons/icon-marketing.png" class="bc-icon-img" alt="Marketing Cloud" />
+        </div>
+        <div class="bc-meta">
+          <div class="bc-title">App Personalisation</div>
+          <div class="bc-sub">Mobile &amp; Digital</div>
+        </div>
+        <div class="bc-badge" style="background:rgba(6,165,154,0.12);color:var(--teal);">Active</div>
+      </div>
+      <div class="bc-body">
+        <div class="bc-use-case">
+          <div class="bc-dot" style="background:var(--sf-blue);"></div>
+          <div>
+            <div class="bc-uc-title">Home loan nudge</div>
+            <div class="bc-uc-desc">Customer browses rates 3× in a week — trigger a personalised refinance offer within 60 seconds.</div>
+          </div>
+        </div>
+        <div class="bc-use-case">
+          <div class="bc-dot" style="background:var(--accent);"></div>
+          <div>
+            <div class="bc-uc-title">Savings booster</div>
+            <div class="bc-uc-desc">Salary hits the account — real-time prompt to move surplus to a higher-yield product.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beach-card">
+      <div class="bc-head">
+        <div class="bc-icon" style="background:rgba(228,162,1,0.10);">
+          <img src="assets/icons/icon-agentforce.png" class="bc-icon-img" alt="Agentforce" />
+        </div>
+        <div class="bc-meta">
+          <div class="bc-title">Branch Intelligence</div>
+          <div class="bc-sub">In-branch &amp; Contact Centre</div>
+        </div>
+        <div class="bc-badge" style="background:rgba(228,162,1,0.12);color:var(--yellow);">Phase 2</div>
+      </div>
+      <div class="bc-body">
+        <div class="bc-use-case">
+          <div class="bc-dot" style="background:var(--violet);"></div>
+          <div>
+            <div class="bc-uc-title">Banker next-best-action</div>
+            <div class="bc-uc-desc">Customer walks in — banker sees a ranked list of relevant products before the conversation starts.</div>
+          </div>
+        </div>
+        <div class="bc-use-case">
+          <div class="bc-dot" style="background:var(--pink);"></div>
+          <div>
+            <div class="bc-uc-title">Inbound call deflection</div>
+            <div class="bc-uc-desc">AI agent resolves tier-1 queries autonomously — escalates to human with full context pre-loaded.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     12. PROOF SECTION
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">12 — Proof — solid navy, no gradient (data-dense)</div>
+  <div class="proof-wrap">
+    <div>
+      <div class="proof-eyebrow">Customer Proof</div>
+      <div class="proof-quote">"We went from campaign-thinking to customer-thinking — and the numbers moved immediately."</div>
+      <div class="proof-desc">A comparable Salesforce customer in retail banking saw <strong>3× uplift in offer acceptance</strong> within 90 days of going live with real-time decisioning.</div>
+      <div class="proof-source">Salesforce customer data, 2024. Results not guaranteed and may vary.</div>
+    </div>
+    <div class="proof-stats">
+      <div class="proof-stat">
+        <div class="proof-stat-val"><span>3×</span></div>
+        <div class="proof-stat-label">offer acceptance uplift</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat-val"><span>90</span>d</div>
+        <div class="proof-stat-label">time to first live decision</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat-val"><span>$660</span>m</div>
+        <div class="proof-stat-label">revenue opportunity identified</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat-val"><span>40</span>%</div>
+        <div class="proof-stat-label">reduction in manual campaign effort</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     13. PHASE CARDS
+───────────────────────────────────────────── -->
+<div class="sg-section">
+  <div class="sg-label">13 — Phase / Roadmap Cards</div>
+  <div class="card-grid-2">
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-badge" style="background:rgba(2,42,192,0.08);color:var(--sf-blue);">Phase 1</div>
+        <div>
+          <div class="phase-title">Foundation &amp; First Value</div>
+          <div class="phase-timeline">Weeks 1–12</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-item">
+          <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+          <div>
+            <div class="phase-item-title">Data Cloud onboarding</div>
+            <div class="phase-item-desc">Connect core banking, mobile, and CRM data into a unified profile.</div>
+          </div>
+        </div>
+        <div class="phase-item">
+          <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+          <div>
+            <div class="phase-item-title">First decisioning model</div>
+            <div class="phase-item-desc">Home loan next-best-action trained on 18 months of Westpac outcomes.</div>
+          </div>
+        </div>
+        <div class="phase-item">
+          <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+          <div>
+            <div class="phase-item-title">App channel live</div>
+            <div class="phase-item-desc">Real-time offers firing in the Westpac app. First measurement checkpoint.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-badge" style="background:rgba(218,23,16,0.08);color:var(--accent);">Phase 2</div>
+        <div>
+          <div class="phase-title">Scale &amp; Expand</div>
+          <div class="phase-timeline">Months 4–12</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-item">
+          <div class="phase-item-dot" style="background:var(--accent);"></div>
+          <div>
+            <div class="phase-item-title">Branch &amp; contact centre rollout</div>
+            <div class="phase-item-desc">Same model, new channels — banker screen and inbound IVR.</div>
+          </div>
+        </div>
+        <div class="phase-item">
+          <div class="phase-item-dot" style="background:var(--accent);"></div>
+          <div>
+            <div class="phase-item-title">Agentforce deployment</div>
+            <div class="phase-item-desc">AI agents handling tier-1 queries autonomously across digital channels.</div>
+          </div>
+        </div>
+        <div class="phase-item">
+          <div class="phase-item-dot" style="background:var(--accent);"></div>
+          <div>
+            <div class="phase-item-title">Partner API exposure</div>
+            <div class="phase-item-desc">Decisioning-as-a-service for approved fintech partners in the Westpac ecosystem.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sg-spacer"></div>
+<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+
+
+<!-- ─────────────────────────────────────────────
+     14. CLOSING CTA
+───────────────────────────────────────────── -->
+<div class="sg-section" style="padding-bottom:80px;">
+  <div class="sg-label">14 — Closing CTA — flat navy, accent top border</div>
+  <div class="closing-inner">
+    <h2>Ready to move from campaign-thinking<br/>to customer-thinking?</h2>
+    <p>Three conversations — one proof of value — ninety days to live decisioning.</p>
+    <div class="closing-steps">
+      <div class="c-step">① Discovery Workshop</div>
+      <div class="c-arrow">→</div>
+      <div class="c-step primary">② Proof of Value</div>
+      <div class="c-arrow">→</div>
+      <div class="c-step">③ Production Rollout</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─────────────────────────────────────────────
+     15. DARK ELEMENTS ON EVENING GRADIENT
+───────────────────────────────────────────── -->
+<div style="background:var(--grad-evening);padding:48px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="sg-label" style="color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.1);">15 — Dark section elements on Evening gradient</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+      <div class="hero-kpi-card">
+        <div class="hkc-val"><span>$660</span>m</div>
+        <div class="hkc-label">Cloud Blue 68 left border</div>
+      </div>
+      <div class="hero-kpi-card">
+        <div class="hkc-val"><span>90</span>d</div>
+        <div class="hkc-label">10% white fill, 18% white border</div>
+      </div>
+      <div class="proof-stat">
+        <div class="proof-stat-val"><span>3×</span></div>
+        <div class="proof-stat-label">Cloud Blue 68 bottom border</div>
+      </div>
+      <div class="c-step">Closing step pill</div>
+    </div>
+  </div>
+</div>
+
+<div style="height:80px;"></div>
+
+
+<!-- ─────────────────────────────────────────────
+     16. PRODUCT ICON LIBRARY
+───────────────────────────────────────────── -->
+<div style="background:var(--off-white);padding:0 0 80px;">
+<div class="sg-section" style="padding-top:48px;">
+  <div class="sg-label">16 — Product Icon Library — 2D Full Color (use for narrative pages, sales outreach, emails)</div>
+
+  <div class="type-label" style="margin-bottom:16px;">Core Platform</div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;margin-bottom:40px;">
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Data Cloud.png" style="width:56px;height:56px;object-fit:contain;" alt="Data Cloud" />
+      </div>
+      <div class="swatch-hex">Data Cloud</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Agentforce.svg" style="width:56px;height:56px;object-fit:contain;" alt="Agentforce" />
+      </div>
+      <div class="swatch-hex">Agentforce</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Marketing.png" style="width:56px;height:56px;object-fit:contain;" alt="Marketing Cloud" />
+      </div>
+      <div class="swatch-hex">Marketing</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Sales.png" style="width:56px;height:56px;object-fit:contain;" alt="Sales Cloud" />
+      </div>
+      <div class="swatch-hex">Sales</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Service.png" style="width:56px;height:56px;object-fit:contain;" alt="Service Cloud" />
+      </div>
+      <div class="swatch-hex">Service</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Commerce.png" style="width:56px;height:56px;object-fit:contain;" alt="Commerce Cloud" />
+      </div>
+      <div class="swatch-hex">Commerce</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Platform.png" style="width:56px;height:56px;object-fit:contain;" alt="Platform" />
+      </div>
+      <div class="swatch-hex">Platform</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Experience Cloud.png" style="width:56px;height:56px;object-fit:contain;" alt="Experience Cloud" />
+      </div>
+      <div class="swatch-hex">Experience</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Slack.png" style="width:56px;height:56px;object-fit:contain;" alt="Slack" />
+      </div>
+      <div class="swatch-hex">Slack</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Tableau.png" style="width:56px;height:56px;object-fit:contain;" alt="Tableau" />
+      </div>
+      <div class="swatch-hex">Tableau</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/MuleSoft.png" style="width:56px;height:56px;object-fit:contain;" alt="MuleSoft" />
+      </div>
+      <div class="swatch-hex">MuleSoft</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Heroku.png" style="width:56px;height:56px;object-fit:contain;" alt="Heroku" />
+      </div>
+      <div class="swatch-hex">Heroku</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Trailhead.png" style="width:56px;height:56px;object-fit:contain;" alt="Trailhead" />
+      </div>
+      <div class="swatch-hex">Trailhead</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/C360.svg" style="width:56px;height:56px;object-fit:contain;" alt="Customer 360" />
+      </div>
+      <div class="swatch-hex">C360</div>
+    </div>
+  </div>
+
+  <div class="type-label" style="margin-bottom:16px;">Sales &amp; Revenue</div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;margin-bottom:40px;">
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Sales Revenue.png" style="width:56px;height:56px;object-fit:contain;" alt="Sales Revenue" />
+      </div>
+      <div class="swatch-hex">Sales Revenue</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Sales Enablement.png" style="width:56px;height:56px;object-fit:contain;" alt="Sales Enablement" />
+      </div>
+      <div class="swatch-hex">Enablement</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Sales Map.png" style="width:56px;height:56px;object-fit:contain;" alt="Sales Map" />
+      </div>
+      <div class="swatch-hex">Sales Map</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Partner.png" style="width:56px;height:56px;object-fit:contain;" alt="Partner" />
+      </div>
+      <div class="swatch-hex">Partner</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Referral Marketing.png" style="width:56px;height:56px;object-fit:contain;" alt="Referral Marketing" />
+      </div>
+      <div class="swatch-hex">Referral</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Segments.png" style="width:56px;height:56px;object-fit:contain;" alt="Segments" />
+      </div>
+      <div class="swatch-hex">Segments</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Channels.png" style="width:56px;height:56px;object-fit:contain;" alt="Channels" />
+      </div>
+      <div class="swatch-hex">Channels</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Bots.png" style="width:56px;height:56px;object-fit:contain;" alt="Bots" />
+      </div>
+      <div class="swatch-hex">Bots</div>
+    </div>
+  </div>
+
+  <div class="type-label" style="margin-bottom:16px;">Service &amp; Field</div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;margin-bottom:40px;">
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Field Service.png" style="width:56px;height:56px;object-fit:contain;" alt="Field Service" />
+      </div>
+      <div class="swatch-hex">Field Service</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Contact Center.png" style="width:56px;height:56px;object-fit:contain;" alt="Contact Center" />
+      </div>
+      <div class="swatch-hex">Contact Center</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Success Plans.png" style="width:56px;height:56px;object-fit:contain;" alt="Success Plans" />
+      </div>
+      <div class="swatch-hex">Success Plans</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Professional Services.png" style="width:56px;height:56px;object-fit:contain;" alt="Professional Services" />
+      </div>
+      <div class="swatch-hex">Pro Services</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Customer Success.png" style="width:56px;height:56px;object-fit:contain;" alt="Customer Success" />
+      </div>
+      <div class="swatch-hex">Customer Success</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Robotics Process Automation.png" style="width:56px;height:56px;object-fit:contain;" alt="RPA" />
+      </div>
+      <div class="swatch-hex">RPA</div>
+    </div>
+  </div>
+
+  <div class="type-label" style="margin-bottom:16px;">Industries</div>
+  <div style="display:flex;flex-wrap:wrap;gap:20px;margin-bottom:40px;">
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Financial Services.svg" style="width:56px;height:56px;object-fit:contain;" alt="Financial Services" />
+      </div>
+      <div class="swatch-hex">Financial Services</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Healthcare.svg" style="width:56px;height:56px;object-fit:contain;" alt="Healthcare" />
+      </div>
+      <div class="swatch-hex">Healthcare</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Nonprofit.png" style="width:56px;height:56px;object-fit:contain;" alt="Nonprofit" />
+      </div>
+      <div class="swatch-hex">Nonprofit</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Public Sector.png" style="width:56px;height:56px;object-fit:contain;" alt="Public Sector" />
+      </div>
+      <div class="swatch-hex">Public Sector</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Communications.png" style="width:56px;height:56px;object-fit:contain;" alt="Communications" />
+      </div>
+      <div class="swatch-hex">Communications</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Media.svg" style="width:56px;height:56px;object-fit:contain;" alt="Media" />
+      </div>
+      <div class="swatch-hex">Media</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Education.svg" style="width:56px;height:56px;object-fit:contain;" alt="Education" />
+      </div>
+      <div class="swatch-hex">Education</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Automotive.png" style="width:56px;height:56px;object-fit:contain;" alt="Automotive" />
+      </div>
+      <div class="swatch-hex">Automotive</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Energy & Utilities.png" style="width:56px;height:56px;object-fit:contain;" alt="Energy & Utilities" />
+      </div>
+      <div class="swatch-hex">Energy & Utilities</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:contain;">
+        <img src="assets/icons/2d/Consumer Goods.png" style="width:56px;height:56px;object-fit:contain;" alt="Consumer Goods" />
+      </div>
+      <div class="swatch-hex">Consumer Goods</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Net Zero.svg" style="width:56px;height:56px;object-fit:contain;" alt="Net Zero" />
+      </div>
+      <div class="swatch-hex">Net Zero</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Eng-Con-RE.png" style="width:56px;height:56px;object-fit:contain;" alt="Eng Con RE" />
+      </div>
+      <div class="swatch-hex">Eng, Con &amp; RE</div>
+    </div>
+    <div style="text-align:center;width:80px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/SMB.png" style="width:56px;height:56px;object-fit:contain;" alt="SMB" />
+      </div>
+      <div class="swatch-hex">SMB</div>
+    </div>
+  </div>
+
+  <p class="sg-note">
+    <strong>Icon usage rule (Brand Guidelines 2026):</strong> Use 2D full color icons for narrative pages, sales outreach, emails, and webinars. Reserve 3D icons for top-of-funnel moments (campaigns, events, Dreamforce). Never mix 2D and 3D on the same page. Files live in <code>assets/icons/2d/</code> and <code>assets/icons/3d/</code>.
+  </p>
+
+  <!-- Digital Product Suite -->
+  <h3 class="sg-label" style="margin-top:48px;margin-bottom:8px;">Digital Product Suite</h3>
+  <p class="sg-note" style="margin-bottom:24px;">Best-fit 2D icon assignments for MarTech/CX product suite — use these pairings consistently across all narrative pages.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;">
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Data Cloud.png" style="width:56px;height:56px;object-fit:contain;" alt="Data Cloud" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">Data 360</div>
+    </div>
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Marketing.png" style="width:56px;height:56px;object-fit:contain;" alt="Marketing" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">MC Next</div>
+    </div>
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Tableau.png" style="width:56px;height:56px;object-fit:contain;" alt="Tableau" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">Marketing Intelligence</div>
+    </div>
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Segments.png" style="width:56px;height:56px;object-fit:contain;" alt="Segments" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">Personalisation</div>
+    </div>
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Loyalty Management.svg" style="width:56px;height:56px;object-fit:contain;" alt="Loyalty Management" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">Loyalty Management</div>
+    </div>
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Contact Center.png" style="width:56px;height:56px;object-fit:contain;" alt="Contact Center" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">Digital Engagement</div>
+    </div>
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Experience Cloud.png" style="width:56px;height:56px;object-fit:contain;" alt="Experience Cloud" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">Adaptive Web</div>
+    </div>
+
+    <div style="text-align:center;width:96px;">
+      <div style="width:64px;height:64px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;">
+        <img src="assets/icons/2d/Commerce.png" style="width:56px;height:56px;object-fit:contain;" alt="Commerce" />
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);line-height:1.3;">Real-Time Offer Mgmt</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div style="height:80px;"></div>
+
+</body>
+</html>

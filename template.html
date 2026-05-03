@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salesforce × {{Customer}} · {{Story Title}}</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    /* Per-page override: set the customer accent colour here */
+    :root { --accent: #DA1710; --accent-l: #FF4A3D; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-lockup">
+        <img src="assets/logos/sf-logo.jpeg" class="nav-logo-sf" alt="Salesforce" />
+        <div class="nav-divider"></div>
+        <img src="REPLACE-customer-logo.png" class="nav-logo-customer" alt="{{Customer}}" />
+        <div class="nav-title">{{Subtitle · Short tagline}}</div>
+      </div>
+      <div class="nav-tag">Confidential · For Discussion · 2026</div>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ────────────────────────────────────────────── -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-eyebrow">Theme · Theme · Theme</div>
+        <h1>Top-line promise.<br/><em>Bold second clause.</em></h1>
+        <p class="hero-sub">One or two sentences on why this matters now. Keep it tight — the KPIs on the right do the heavy lifting.</p>
+        <div class="hero-quote">
+          <p>"Short pull-quote that signals executive alignment."</p>
+          <cite>Name, Title — Company</cite>
+        </div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-card">
+          <div class="hkc-val"><span>25%</span></div>
+          <div class="hkc-label">Headline stat — with source</div>
+        </div>
+        <div class="hero-kpi-card">
+          <div class="hkc-val"><span>40%</span></div>
+          <div class="hkc-label">Supporting stat</div>
+        </div>
+        <div class="hero-kpi-card">
+          <div class="hkc-val">350</div>
+          <div class="hkc-label">Structural fact about the business</div>
+        </div>
+        <div class="hero-kpi-card">
+          <div class="hkc-val">90<span style="font-size:18px;color:rgba(255,255,255,0.5);"> days</span></div>
+          <div class="hkc-label">Time-to-value commitment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── WHY NOW (4-card grid) ───────────────────────────── -->
+  <div class="section" style="padding-top:100px;">
+    <div class="eyebrow">Why Now</div>
+    <div class="section-title">The conditions are right<br/>because of these four shifts</div>
+    <div class="section-sub">One-line framing of the macro setup.</div>
+    <div class="card-grid-2">
+      <div class="card card-accent-blue">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">Shift one</div>
+        <div class="card-body">What changed and why it matters. <strong>Bolded punchline.</strong></div>
+      </div>
+      <div class="card card-accent-accent">
+        <div class="card-icon">🏦</div>
+        <div class="card-title">Shift two</div>
+        <div class="card-body">What changed and why it matters. <strong>Bolded punchline.</strong></div>
+      </div>
+      <div class="card card-accent-blue">
+        <div class="card-icon">👥</div>
+        <div class="card-title">Shift three</div>
+        <div class="card-body">What changed and why it matters. <strong>Bolded punchline.</strong></div>
+      </div>
+      <div class="card card-accent-accent">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title">Shift four</div>
+        <div class="card-body">What changed and why it matters. <strong>Bolded punchline.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─── THE GAP (compare table) ─────────────────────────── -->
+  <div class="section-bg">
+    <div class="section">
+      <div class="eyebrow eyebrow-accent">The Gap</div>
+      <div class="section-title">Today vs. tomorrow</div>
+      <div class="section-sub">What's happening now vs. what this unlocks.</div>
+
+      <div class="compare-wrap">
+        <div class="compare-head">
+          <div class="compare-head-col today">Today</div>
+          <div class="compare-head-col tomorrow">With Salesforce</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell today"><strong>Current state A.</strong> What it does and doesn't do.</div>
+          <div class="compare-cell tomorrow"><strong>Future state A.</strong> What this unlocks.</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell today"><strong>Current state B.</strong> What it does and doesn't do.</div>
+          <div class="compare-cell tomorrow"><strong>Future state B.</strong> What this unlocks.</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell today"><strong>Current state C.</strong> What it does and doesn't do.</div>
+          <div class="compare-cell tomorrow"><strong>Future state C.</strong> What this unlocks.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─── STACK (layered diagram) ─────────────────────────── -->
+  <div class="section">
+    <div class="eyebrow">The Connected Stack</div>
+    <div class="section-title">Built on infrastructure<br/>you already own</div>
+    <div class="section-sub">Each layer below builds on the one before it.</div>
+
+    <div class="stack-wrap">
+      <div class="stack-header">
+        <div class="stack-header-label">N layers</div>
+        <div class="stack-header-title">One engine across the business</div>
+      </div>
+      <div class="stack-layer sl-layer-01">
+        <div class="sl-left">
+          <div class="sl-num">01</div>
+          <div class="sl-product">Data Cloud</div>
+          <div class="sl-product-sub">Unified Customer Profile</div>
+        </div>
+        <div class="sl-right">What this layer does. <strong>The punchline.</strong> How it feeds the next layer.</div>
+      </div>
+      <div class="stack-layer sl-layer-02">
+        <div class="sl-left">
+          <div class="sl-num">02</div>
+          <div class="sl-product">Einstein Studio + Flow</div>
+          <div class="sl-product-sub">Scoring Engine</div>
+        </div>
+        <div class="sl-right">What this layer does. <strong>The punchline.</strong></div>
+      </div>
+      <div class="stack-layer sl-layer-03">
+        <div class="sl-left">
+          <div class="sl-num">03</div>
+          <div class="sl-product">Promotions &amp; Offers</div>
+          <div class="sl-product-sub">Offer Eligibility</div>
+        </div>
+        <div class="sl-right">What this layer does.</div>
+      </div>
+      <div class="stack-layer sl-layer-04">
+        <div class="sl-left">
+          <div class="sl-num">04</div>
+          <div class="sl-product">Financial Services Cloud</div>
+          <div class="sl-product-sub">CRM Surface</div>
+        </div>
+        <div class="sl-right">What this layer does.</div>
+      </div>
+      <div class="stack-layer sl-layer-05">
+        <div class="sl-left">
+          <div class="sl-num">05</div>
+          <div class="sl-product">Personalisation</div>
+          <div class="sl-product-sub">Digital Channel</div>
+        </div>
+        <div class="sl-right">What this layer does.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─── BEACHHEADS (two use-case cards) ─────────────────── -->
+  <div class="section-bg">
+    <div class="section">
+      <div class="eyebrow">Start Here</div>
+      <div class="section-title">Two beachheads.<br/>Clear ROI. Expandable.</div>
+      <div class="section-sub">Where to start based on commercial mandate and momentum.</div>
+
+      <div class="card-grid-2">
+        <div class="beach-card">
+          <div class="bc-head">
+            <div class="bc-icon" style="background:rgba(1,118,211,0.08);">🏛️</div>
+            <div class="bc-meta">
+              <div class="bc-title">Beachhead A</div>
+              <div class="bc-sub">Why this one first</div>
+            </div>
+            <div class="bc-badge" style="background:rgba(1,118,211,0.08);color:var(--sf-blue);border:1px solid rgba(1,118,211,0.15);">Phase 1</div>
+          </div>
+          <div class="bc-body">
+            <div class="bc-use-case">
+              <div class="bc-dot" style="background:var(--sf-blue);"></div>
+              <div>
+                <div class="bc-uc-title">Use case 1</div>
+                <div class="bc-uc-desc">Short narrative of the scenario.</div>
+              </div>
+            </div>
+            <div class="bc-use-case">
+              <div class="bc-dot" style="background:var(--sf-blue);"></div>
+              <div>
+                <div class="bc-uc-title">Use case 2</div>
+                <div class="bc-uc-desc">Short narrative of the scenario.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="beach-card">
+          <div class="bc-head">
+            <div class="bc-icon" style="background:rgba(218,23,16,0.08);">💼</div>
+            <div class="bc-meta">
+              <div class="bc-title">Beachhead B</div>
+              <div class="bc-sub">Why this one second</div>
+            </div>
+            <div class="bc-badge" style="background:rgba(218,23,16,0.08);color:var(--accent);border:1px solid rgba(218,23,16,0.15);">Phase 1</div>
+          </div>
+          <div class="bc-body">
+            <div class="bc-use-case">
+              <div class="bc-dot" style="background:var(--accent);"></div>
+              <div>
+                <div class="bc-uc-title">Use case 1</div>
+                <div class="bc-uc-desc">Short narrative of the scenario.</div>
+              </div>
+            </div>
+            <div class="bc-use-case">
+              <div class="bc-dot" style="background:var(--accent);"></div>
+              <div>
+                <div class="bc-uc-title">Use case 2</div>
+                <div class="bc-uc-desc">Short narrative of the scenario.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─── SCALE (3-card use case strip) ───────────────────── -->
+  <div class="section">
+    <div class="eyebrow">The Scale Story</div>
+    <div class="section-title">Phase 2 — extending the engine</div>
+    <div class="section-sub">Once live in beachheads, the same engine extends here.</div>
+    <div class="card-grid-3">
+      <div class="scale-card">
+        <div class="sc-num">USE CASE 01</div>
+        <div class="sc-title">Use case one</div>
+        <div class="sc-body">Narrative.</div>
+      </div>
+      <div class="scale-card">
+        <div class="sc-num">USE CASE 02</div>
+        <div class="sc-title">Use case two</div>
+        <div class="sc-body">Narrative.</div>
+      </div>
+      <div class="scale-card">
+        <div class="sc-num">USE CASE 03</div>
+        <div class="sc-title">Use case three</div>
+        <div class="sc-body">Narrative.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─── PROOF (dark quote block) ────────────────────────── -->
+  <div class="section-bg">
+    <div class="section">
+      <div class="eyebrow">Platform Proof at Scale</div>
+      <div class="section-title" style="margin-bottom:32px;">Companies like yours<br/>already run this.</div>
+      <div class="proof-wrap">
+        <div>
+          <div class="proof-eyebrow">Customer · Event or Source</div>
+          <div class="proof-quote">"Short, punchy quote from the reference."</div>
+          <p class="proof-desc">A paragraph explaining what they did, the outcome, and why it's relevant to this customer. <strong>Numbered punchline in bold.</strong></p>
+          <div class="proof-source">Source: Where this came from</div>
+        </div>
+        <div class="proof-stats">
+          <div class="proof-stat">
+            <div class="proof-stat-val"><span>75%</span></div>
+            <div class="proof-stat-label">Stat label</div>
+          </div>
+          <div class="proof-stat">
+            <div class="proof-stat-val">RT</div>
+            <div class="proof-stat-label">Stat label</div>
+          </div>
+          <div class="proof-stat">
+            <div class="proof-stat-val">Same</div>
+            <div class="proof-stat-label">Stat label</div>
+          </div>
+          <div class="proof-stat">
+            <div class="proof-stat-val">Live</div>
+            <div class="proof-stat-label">Stat label</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─── ROADMAP (two phase cards) ───────────────────────── -->
+  <div class="section">
+    <div class="eyebrow">The Path Forward</div>
+    <div class="section-title">90 days to first value.<br/>12 months to scale.</div>
+    <div class="section-sub">Two phases. Clear ownership. Measurable outcomes.</div>
+    <div class="card-grid-2">
+      <div class="phase-card">
+        <div class="phase-head">
+          <div class="phase-badge" style="background:rgba(1,118,211,0.1);color:var(--sf-blue);border:1px solid rgba(1,118,211,0.2);">Phase 1 · 0–90 days</div>
+          <div>
+            <div class="phase-title">Phase one title</div>
+            <div class="phase-timeline">Scope line</div>
+          </div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-item">
+            <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+            <div><div class="phase-item-title">Deliverable</div><div class="phase-item-desc">What this unlocks.</div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+            <div><div class="phase-item-title">Deliverable</div><div class="phase-item-desc">What this unlocks.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <div class="phase-head">
+          <div class="phase-badge" style="background:rgba(218,23,16,0.08);color:var(--accent);border:1px solid rgba(218,23,16,0.15);">Phase 2 · 90 days – 12 months</div>
+          <div>
+            <div class="phase-title">Phase two title</div>
+            <div class="phase-timeline">Scope line</div>
+          </div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-item">
+            <div class="phase-item-dot" style="background:var(--accent);"></div>
+            <div><div class="phase-item-title">Deliverable</div><div class="phase-item-desc">What this unlocks.</div></div>
+          </div>
+          <div class="phase-item">
+            <div class="phase-item-dot" style="background:var(--accent);"></div>
+            <div><div class="phase-item-title">Deliverable</div><div class="phase-item-desc">What this unlocks.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ─── CLOSING CTA ─────────────────────────────────────── -->
+  <div class="section">
+    <div class="closing-inner">
+      <h2>The platform is proven.<br/>The data is already there.<br/>90 days to first live outcome.</h2>
+      <p>One line to re-ground the reader, then the three-step CTA.</p>
+      <div class="closing-steps">
+        <div class="c-step">Discovery workshop</div>
+        <div class="c-arrow">→</div>
+        <div class="c-step">Blueprint</div>
+        <div class="c-arrow">→</div>
+        <div class="c-step">Phase 1 kickoff</div>
+        <div class="c-arrow">→</div>
+        <div class="c-step primary">First outcome in 90 days</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access gate (optional — remove if page is public) -->
+  <script src="gate.js" data-page="{{Page Name Here}}"></script>
+
+</body>
+</html>

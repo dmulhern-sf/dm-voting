@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Narrative Builder</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: var(--off-white); color: var(--body); -webkit-font-smoothing: antialiased; }
+
+    /* Header */
+    .header {
+      background: var(--sf-navy);
+      padding: 32px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    .header-left img { height: 32px; }
+    .header-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.15); }
+    .header-title { font-size: 18px; font-weight: 800; color: #fff; }
+    .header-sub { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+    .header-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.12);
+      padding: 4px 10px; border-radius: 20px;
+    }
+
+    /* Main */
+    .main { max-width: 1100px; margin: 0 auto; padding: 48px; }
+
+    /* Section header */
+    .sh { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .sh-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sf-blue); }
+    .sh-title { font-size: 22px; font-weight: 800; color: var(--text); margin-top: 4px; }
+
+    /* Pages grid */
+    .pages-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 48px; }
+
+    .page-card {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.15s;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+    .page-card:hover { box-shadow: 0 8px 32px rgba(3,45,96,0.12); transform: translateY(-2px); }
+
+    .pc-thumb {
+      height: 120px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pc-thumb-navy { background: var(--sf-navy); }
+    .pc-thumb-blue { background: #0A52A8; }
+    .pc-thumb-teal { background: #0B5FA5; }
+
+    .pc-thumb-glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(13,157,218,0.25), transparent 60%);
+    }
+    .pc-thumb-logo {
+      position: absolute; bottom: 14px; right: 16px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .pc-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+
+    .pc-body { padding: 20px 22px 22px; }
+    .pc-customer { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sf-blue); margin-bottom: 5px; }
+    .pc-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+    .pc-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .pc-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--gray-100); }
+    .pc-tag {
+      font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
+      background: rgba(1,118,211,0.08); color: var(--sf-blue);
+    }
+    .pc-arrow { font-size: 14px; color: var(--gray-500); }
+
+    /* New page card */
+    .page-card-new {
+      background: #fff;
+      border: 2px dashed var(--gray-200);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px;
+      min-height: 230px;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+      color: var(--muted);
+    }
+    .page-card-new:hover { border-color: var(--sf-blue); background: rgba(1,118,211,0.02); color: var(--sf-blue); }
+    .page-card-new-icon { font-size: 28px; }
+    .page-card-new-label { font-size: 13px; font-weight: 600; }
+
+    /* How-to strip */
+    .howto {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 32px 36px;
+      margin-bottom: 48px;
+    }
+    .howto-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+    .howto-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .howto-step { }
+    .hs-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(1,118,211,0.08); color: var(--sf-blue);
+      font-size: 11px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px;
+    }
+    .hs-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .hs-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .hs-code {
+      display: inline-block; margin-top: 6px;
+      font-size: 10px; font-family: 'SF Mono', 'Consolas', monospace;
+      background: var(--off-white); color: var(--sf-blue);
+      padding: 2px 6px; border-radius: 4px;
+    }
+
+    /* Assets strip */
+    .assets-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .asset-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid var(--gray-200); border-radius: 10px;
+      padding: 8px 12px; font-size: 12px; font-weight: 500; color: var(--body);
+    }
+    .asset-chip img { height: 20px; width: 20px; object-fit: contain; }
+    .asset-chip span { color: var(--muted); font-size: 10px; }
+
+    @media (max-width: 800px) {
+      .header { padding: 24px; }
+      .main { padding: 24px; }
+      .howto-steps { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <img src="assets/logos/sf-logo.jpeg" alt="Salesforce" />
+      <div class="header-divider"></div>
+      <div>
+        <div class="header-title">Narrative Builder</div>
+        <div class="header-sub">Customer-facing story pages</div>
+      </div>
+    </div>
+    <div class="header-tag">Internal · 2026</div>
+  </div>
+
+  <div class="main">
+
+    <!-- How to use -->
+    <div class="howto">
+      <div class="howto-title">How to create a new narrative page</div>
+      <div class="howto-steps">
+        <div class="howto-step">
+          <div class="hs-num">1</div>
+          <div class="hs-title">Duplicate the template</div>
+          <div class="hs-desc">Copy <code class="hs-code">template.html</code> and rename it for your customer, e.g. <code class="hs-code">westpac.html</code></div>
+        </div>
+        <div class="howto-step">
+          <div class="hs-num">2</div>
+          <div class="hs-title">Set the accent colour</div>
+          <div class="hs-desc">In the <code class="hs-code">&lt;style&gt;</code> block at the top, set <code class="hs-code">--accent</code> to the customer's brand hex.</div>
+        </div>
+        <div class="howto-step">
+          <div class="hs-num">3</div>
+          <div class="hs-title">Fill in the sections</div>
+          <div class="hs-desc">Replace all <code class="hs-code">{{placeholder}}</code> text. Delete any sections you don't need.</div>
+        </div>
+        <div class="howto-step">
+          <div class="hs-num">4</div>
+          <div class="hs-title">Open &amp; click through</div>
+          <div class="hs-desc">Open your <code class="hs-code">.html</code> file in a browser. Scroll through it like a narrative deck.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pages -->
+    <div class="sh">
+      <div>
+        <div class="sh-label">Your Pages</div>
+        <div class="sh-title">Narrative pages in this project</div>
+      </div>
+    </div>
+
+    <div class="pages-grid">
+
+      <!-- Example: Xero page -->
+      <a class="page-card" href="xero.html">
+        <div class="pc-thumb pc-thumb-teal">
+          <div class="pc-thumb-glow"></div>
+          <div style="font-size:36px;position:relative;">🏦</div>
+          <div class="pc-accent-bar" style="background:#13B5EA;"></div>
+          <div class="pc-thumb-logo">Xero</div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-customer">Xero</div>
+          <div class="pc-title">Real-Time Decisioning & Personalisation</div>
+          <div class="pc-desc">NBA narrative covering RTOM, Einstein personalisation, and the Data Cloud stack.</div>
+          <div class="pc-footer">
+            <span class="pc-tag">Example</span>
+            <span class="pc-arrow">→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Template starter -->
+      <a class="page-card" href="template.html">
+        <div class="pc-thumb pc-thumb-navy">
+          <div class="pc-thumb-glow"></div>
+          <div style="font-size:36px;position:relative;">📄</div>
+          <div class="pc-accent-bar" style="background:var(--sf-blue);"></div>
+          <div class="pc-thumb-logo">Blank</div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-customer">Template</div>
+          <div class="pc-title">Blank Starter Page</div>
+          <div class="pc-desc">The base template with all sections and placeholder copy. Duplicate this to start a new page.</div>
+          <div class="pc-footer">
+            <span class="pc-tag" style="background:rgba(122,138,154,0.1);color:var(--muted);">Starter</span>
+            <span class="pc-arrow">→</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- New page CTA -->
+      <div class="page-card-new">
+        <div class="page-card-new-icon">＋</div>
+        <div class="page-card-new-label">Duplicate template.html<br/>to add a new page</div>
+      </div>
+
+    </div>
+
+    <!-- Assets -->
+    <div class="sh">
+      <div>
+        <div class="sh-label">Available Assets</div>
+        <div class="sh-title">Logos, icons &amp; characters</div>
+      </div>
+    </div>
+
+    <div class="howto" style="margin-bottom:0;">
+      <div class="howto-title" style="margin-bottom:16px;">Logos</div>
+      <div class="assets-grid" style="margin-bottom:28px;">
+        <div class="asset-chip"><img src="assets/logos/sf-logo.jpeg" /><div><div>sf-logo.jpeg</div><span>Nav primary mark</span></div></div>
+        <div class="asset-chip"><img src="assets/logos/sf-logo-cloud.png" /><div><div>sf-logo-cloud.png</div><span>Cloud mark</span></div></div>
+        <div class="asset-chip"><img src="assets/icons/dc-logo.png" /><div><div>dc-logo.png</div><span>Data Cloud</span></div></div>
+      </div>
+
+      <div class="howto-title" style="margin-bottom:16px;">Product Icons</div>
+      <div class="assets-grid" style="margin-bottom:28px;">
+        <div class="asset-chip"><img src="assets/icons/icon-agentforce.png" /><div><div>icon-agentforce.png</div><span>Agentforce</span></div></div>
+        <div class="asset-chip"><img src="assets/icons/icon-data360.png" /><div><div>icon-data360.png</div><span>Data Cloud / Data 360</span></div></div>
+        <div class="asset-chip"><img src="assets/icons/icon-marketing.png" /><div><div>icon-marketing.png</div><span>Marketing Cloud</span></div></div>
+        <div class="asset-chip"><img src="assets/icons/icon-platform.png" /><div><div>icon-platform.png</div><span>Platform</span></div></div>
+        <div class="asset-chip"><img src="assets/icons/icon-salesrevenue.png" /><div><div>icon-salesrevenue.png</div><span>Sales / Revenue</span></div></div>
+        <div class="asset-chip"><img src="assets/icons/icon-slack.png" /><div><div>icon-slack.png</div><span>Slack</span></div></div>
+      </div>
+
+      <div class="howto-title" style="margin-bottom:16px;">Characters</div>
+      <div class="assets-grid">
+        <div class="asset-chip"><img src="assets/characters/char-agent-astro-2.png" /><div><div>char-agent-astro-2.png</div><span>Astro agent</span></div></div>
+        <div class="asset-chip"><img src="assets/characters/char-agent-astro-3.png" /><div><div>char-agent-astro-3.png</div><span>Astro agent alt</span></div></div>
+        <div class="asset-chip"><img src="assets/characters/char-agent-einstein-1.png" /><div><div>char-agent-einstein-1.png</div><span>Einstein agent</span></div></div>
+        <div class="asset-chip"><img src="assets/characters/char-astro-jumping.png" /><div><div>char-astro-jumping.png</div><span>Astro jumping (CTA)</span></div></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salesforce × Priceline Pharmacy · Loyalty &amp; Personalisation</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    /* Priceline Pharmacy accent */
+    :root {
+      --accent:   #EC2B8C;
+      --accent-l: #F55EAA;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    /* ── Slide engine ─────────────────────────────────────────── */
+    .slide-deck {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      display: none;
+      padding-top: 60px;
+    }
+    .slide.active { display: block; }
+
+    /* ── Nav controls ─────────────────────────────────────────── */
+    .slide-controls {
+      position: fixed;
+      bottom: 28px;
+      right: 36px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 200;
+    }
+    .slide-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-card);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .slide-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .slide-btn:disabled { opacity: 0.3; cursor: default; }
+    .slide-counter {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    /* Progress dots */
+    .slide-dots {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 200;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .dot.active {
+      background: var(--accent);
+      transform: scale(1.4);
+    }
+
+    /* ── Slide body ───────────────────────────────────────────── */
+    .slide-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 48px 100px;
+    }
+    .slide-hero { padding-top: 0; }
+    .slide-hero .hero { min-height: calc(100vh - 60px); display: flex; align-items: center; }
+    .slide-hero .hero-inner { width: 100%; }
+
+    .slide-closing .slide-body {
+      min-height: calc(100vh - 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slide-closing .closing-inner { width: 100%; }
+
+    /* Hero accent override for Priceline — pink stripe instead of red */
+    .hero::after { background: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- ─── FIXED NAV ──────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-lockup">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-RGB.svg" width="140" height="28" class="nav-logo-sf" alt="Salesforce" />
+        <div class="nav-divider"></div>
+        <img src="assets/priceline-logo.png" height="28" class="nav-logo-customer" alt="Priceline Pharmacy" />
+        <div class="nav-title">Loyalty &amp; Real-Time Personalisation</div>
+      </div>
+      <div class="nav-tag">Confidential · For Discussion · 2026</div>
+    </div>
+  </nav>
+
+  <!-- ─── SLIDE DECK ─────────────────────────────────────────── -->
+  <div class="slide-deck">
+
+    <!-- SLIDE 1 · Hero -->
+    <div class="slide slide-hero active">
+      <div class="hero">
+        <div class="hero-inner">
+          <div>
+            <div class="hero-eyebrow">Loyalty · Personalisation · AI</div>
+            <h1>7 million Beauty Club members.<br/><em>One offer that's actually theirs.</em></h1>
+            <p class="hero-sub">Priceline Pharmacy has Australia's most-loved health and beauty loyalty programme. The members are there. The data is there. What's missing is the engine that turns both into personalised offers at the moment a customer is ready to act.</p>
+            <div class="hero-quote">
+              <p>"Our members tell us they want us to know them — but right now every offer looks the same regardless of what they buy. That's the gap we need to close."</p>
+              <cite>Senior Leader, Priceline Pharmacy — Customer Strategy</cite>
+            </div>
+          </div>
+          <div class="hero-kpi">
+            <div class="hero-kpi-card">
+              <div class="hkc-val"><span>7M</span></div>
+              <div class="hkc-label">Active Beauty Club members across Australia</div>
+            </div>
+            <div class="hero-kpi-card">
+              <div class="hkc-val"><span>65%</span></div>
+              <div class="hkc-label">Of promotions sent without personalisation today</div>
+            </div>
+            <div class="hero-kpi-card">
+              <div class="hkc-val">3<span style="font-size:18px;color:rgba(255,255,255,0.5);">×</span></div>
+              <div class="hkc-label">Higher redemption on triggered vs. broadcast offers</div>
+            </div>
+            <div class="hero-kpi-card">
+              <div class="hkc-val">90<span style="font-size:18px;color:rgba(255,255,255,0.5);"> days</span></div>
+              <div class="hkc-label">Time-to-first personalised offer live in production</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 · Why Now -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">Why Now</div>
+        <div class="section-title">Four shifts that make<br/>this the right moment to act</div>
+        <div class="section-sub">The conditions that blocked real-time personalisation at scale two years ago have changed.</div>
+        <div class="card-grid-2">
+          <div class="card card-accent-blue">
+            <div class="card-icon"><img src="assets/icons/2d/Data Cloud.png" width="28" height="28" alt="Data Cloud" /></div>
+            <div class="card-title">7 million member profiles — already unified</div>
+            <div class="card-body">Beauty Club transaction history, category preferences, and channel behaviour are already captured. <strong>There is no data-prep project blocking this — the signal exists today.</strong></div>
+          </div>
+          <div class="card card-accent-accent">
+            <div class="card-icon"><img src="assets/icons/2d/Marketing.png" width="28" height="28" alt="Marketing" /></div>
+            <div class="card-title">Competitors are closing the gap fast</div>
+            <div class="card-body">Chemist Warehouse and Woolworths Everyday Rewards both launched AI-personalised offers in 2025. <strong>Inaction now is a competitive choice, not a neutral one.</strong></div>
+          </div>
+          <div class="card card-accent-blue">
+            <div class="card-icon"><img src="assets/icons/2d/Commerce.png" width="28" height="28" alt="Commerce" /></div>
+            <div class="card-title">Promotions margin is under pressure</div>
+            <div class="card-body">Blanket discounting erodes margin without driving loyalty. <strong>Targeted offers — sent to members who would have paid full price without the nudge — are already proven to cost 40% less per redemption.</strong></div>
+          </div>
+          <div class="card card-accent-accent">
+            <div class="card-icon"><img src="assets/icons/2d/Segments.png" width="28" height="28" alt="Segments" /></div>
+            <div class="card-title">Real-time AI is production-ready</div>
+            <div class="card-body">Salesforce Data Cloud now resolves member profiles in milliseconds — across in-store, app, and web. <strong>The latency barrier that killed real-time in-store personalisation no longer exists.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 · The Gap -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow eyebrow-accent">The Gap</div>
+        <div class="section-title">Today vs. with Salesforce</div>
+        <div class="section-sub">Where Beauty Club sits today — and the step change the platform delivers.</div>
+        <div class="compare-wrap">
+          <div class="compare-head">
+            <div class="compare-head-col today">Today</div>
+            <div class="compare-head-col tomorrow">With Salesforce</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today"><strong>Weekly batch campaigns.</strong> All 7M members receive the same promotional email, regardless of what they've bought or when they last visited.</div>
+            <div class="compare-cell tomorrow"><strong>Real-time triggered offers.</strong> When a member's skincare spend crosses a threshold, a personalised bonus-points offer fires to their preferred channel within 2 minutes.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today"><strong>Static tier rewards.</strong> Gold, Silver, and Bronze members get the same tier benefits. High-value customers who shop across multiple categories see no recognition for their breadth.</div>
+            <div class="compare-cell tomorrow"><strong>Behaviour-led engagement.</strong> Einstein scores every member on category propensity daily — the right offer for a vitamin buyer is different from the one for a fragrance buyer, even at the same tier.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today"><strong>No in-app personalisation.</strong> The Priceline app presents the same homepage carousel to all members, missing the opportunity to surface the product they're most likely to buy next.</div>
+            <div class="compare-cell tomorrow"><strong>Personalised app moments.</strong> The homepage adapts to each member's category mix in real time — surfacing the right product, the right offer, and the right loyalty mechanic at point of intent.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today"><strong>Post-purchase win-back only.</strong> Lapsed members are identified 90+ days after they stop engaging, and receive a generic re-engagement voucher.</div>
+            <div class="compare-cell tomorrow"><strong>Early churn detection.</strong> Einstein flags declining engagement 21 days before a member goes fully dormant — triggering a personalised re-activation sequence while the relationship is still warm.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 · Connected Stack -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">The Connected Stack</div>
+        <div class="section-title">Six layers. One engine.<br/>Built on data Priceline already owns.</div>
+        <div class="section-sub">Each layer activates the one above it. Nothing here is net-new infrastructure — this reuses what's already in flight.</div>
+        <div class="stack-wrap">
+          <div class="stack-header">
+            <div class="stack-header-label">6 layers</div>
+            <div class="stack-header-title">Priceline Beauty Club — Personalisation Engine powered by Salesforce</div>
+          </div>
+          <div class="stack-layer sl-layer-01">
+            <div class="sl-left">
+              <div class="sl-num">01</div>
+              <div class="sl-product">Data Cloud</div>
+              <div class="sl-product-sub">Unified Member Profile</div>
+            </div>
+            <div class="sl-right">Ingests transaction history, app events, in-store POS data, and web behaviour — and resolves it into a single real-time profile per Beauty Club member. <strong>This is the source of truth everything else reads from.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-02">
+            <div class="sl-left">
+              <div class="sl-num">02</div>
+              <div class="sl-product">Einstein Studio</div>
+              <div class="sl-product-sub">Propensity &amp; Churn Scoring</div>
+            </div>
+            <div class="sl-right">Custom models score every member for category propensity, next-best-product, and early churn signals — refreshed on each new event. <strong>Sub-100ms inference means the score is live when the member is live.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-03">
+            <div class="sl-left">
+              <div class="sl-num">03</div>
+              <div class="sl-product">Global Promotions Mgmt</div>
+              <div class="sl-product-sub">Offer Eligibility Engine</div>
+            </div>
+            <div class="sl-right">Promotion rules — bonus points eligibility, offer stacking logic, suppression for recent redeemers — evaluated in real time against the live member profile. <strong>Marketing owns the rules. Engineering doesn't need to touch them.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-04">
+            <div class="sl-left">
+              <div class="sl-num">04</div>
+              <div class="sl-product">Loyalty Management</div>
+              <div class="sl-product-sub">Points &amp; Tier Engine</div>
+            </div>
+            <div class="sl-right">Beauty Club points, tier progression, and Sister Club card rewards managed as a single source — with real-time balance updates visible across app, in-store, and web. <strong>No more end-of-night batch point accruals.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-05">
+            <div class="sl-left">
+              <div class="sl-num">05</div>
+              <div class="sl-product">Marketing Cloud Next</div>
+              <div class="sl-product-sub">Email · Push · In-App · SMS</div>
+            </div>
+            <div class="sl-right">Executes the triggered communication — email, push, SMS, or in-app card — at the moment the decision fires. <strong>One canvas controls all four channels from a single trigger event.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-06">
+            <div class="sl-left">
+              <div class="sl-num">06</div>
+              <div class="sl-product">Adaptive Web</div>
+              <div class="sl-product-sub">Homepage &amp; App Personalisation</div>
+            </div>
+            <div class="sl-right">Einstein Next-Best-Action drives the Priceline app homepage — surfacing personalised product carousels and offers to each member based on their live category mix. <strong>No two members see the same homepage.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 · Beachheads -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">Start Here</div>
+        <div class="section-title">Two beachheads.<br/>Clear ROI. Expandable to the full engine.</div>
+        <div class="section-sub">Both can go live in 90 days on existing infrastructure. Neither requires a full platform rollout first.</div>
+        <div class="card-grid-2">
+          <div class="beach-card">
+            <div class="bc-head">
+              <div class="bc-icon" style="background:rgba(2,42,192,0.08);">
+                <img src="assets/icons/2d/Commerce.png" width="22" height="22" alt="Promotions" />
+              </div>
+              <div class="bc-meta">
+                <div class="bc-title">Real-Time Bonus Points</div>
+                <div class="bc-sub">Trigger personalised offers on live purchase events</div>
+              </div>
+              <div class="bc-badge" style="background:rgba(2,42,192,0.08);color:var(--sf-blue);border:1px solid rgba(2,42,192,0.15);">Phase 1</div>
+            </div>
+            <div class="bc-body">
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--sf-blue);"></div>
+                <div>
+                  <div class="bc-uc-title">Category spend threshold</div>
+                  <div class="bc-uc-desc">When a member's skincare spend crosses $80 in a rolling 30-day window, trigger a personalised 3× bonus-points offer on their top category — sent to app or email within 2 minutes of the qualifying transaction.</div>
+                </div>
+              </div>
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--sf-blue);"></div>
+                <div>
+                  <div class="bc-uc-title">First purchase in new category</div>
+                  <div class="bc-uc-desc">When a Skincare member buys Vitamins for the first time, surface a targeted "try these next" offer — turning a single cross-category transaction into a new purchase habit.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="beach-card">
+            <div class="bc-head">
+              <div class="bc-icon" style="background:rgba(236,43,140,0.08);">
+                <img src="assets/icons/2d/Loyalty Management.svg" width="22" height="22" alt="Loyalty Management" />
+              </div>
+              <div class="bc-meta">
+                <div class="bc-title">Early Churn Detection</div>
+                <div class="bc-sub">Re-activate members before they go quiet</div>
+              </div>
+              <div class="bc-badge" style="background:rgba(236,43,140,0.08);color:var(--accent);border:1px solid rgba(236,43,140,0.2);">Phase 1</div>
+            </div>
+            <div class="bc-body">
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--accent);"></div>
+                <div>
+                  <div class="bc-uc-title">Declining visit frequency</div>
+                  <div class="bc-uc-desc">Einstein flags members whose in-store or app visit frequency drops 40%+ over 21 days — triggering a personalised bonus-points incentive while the relationship is still warm, not a generic voucher 90 days later.</div>
+                </div>
+              </div>
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--accent);"></div>
+                <div>
+                  <div class="bc-uc-title">Points expiry re-engagement</div>
+                  <div class="bc-uc-desc">14 days before a member's points expire, fire a personalised "your points are expiring" message with a curated product recommendation based on their last purchase category — converting a churn risk into a visit.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 · Scale Story -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">The Scale Story</div>
+        <div class="section-title">Phase 2 — the full personalisation engine</div>
+        <div class="section-sub">Once the beachheads prove the model, the same platform powers three more high-value use cases with minimal incremental investment.</div>
+        <div class="card-grid-3">
+          <div class="scale-card">
+            <div class="sc-num">USE CASE 03</div>
+            <div class="sc-title">Sister Club card personalisation</div>
+            <div class="sc-body">Sister Club cardholders represent Priceline's highest-value segment. Einstein can identify when a cardholder is approaching a spending milestone and proactively surface an accelerated points offer — before they look at a competitor credit card.</div>
+          </div>
+          <div class="scale-card">
+            <div class="sc-num">USE CASE 04</div>
+            <div class="sc-title">In-store real-time activation</div>
+            <div class="sc-body">When a member scans their Beauty Club card at POS, the platform evaluates their live profile and pushes a personalised offer to their phone within seconds of the transaction — turning checkout into a personalisation moment, not just a points scan.</div>
+          </div>
+          <div class="scale-card">
+            <div class="sc-num">USE CASE 05</div>
+            <div class="sc-title">Health category AI nudges</div>
+            <div class="sc-body">Members who purchase in the Vitamins or Health categories have predictable replenishment windows. Einstein can identify the right re-order moment and surface a personalised top-up offer — driving repeat purchase without a promotional email blitz.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 · Proof -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">Platform Proof</div>
+        <div class="section-title" style="margin-bottom:32px;">Australia's largest retailers<br/>are already running this.</div>
+        <div class="proof-wrap">
+          <div>
+            <div class="proof-eyebrow">Woolworths Group · Salesforce World Tour 2025</div>
+            <div class="proof-quote">"Real-time personalisation turned our loyalty programme from a discount engine into a genuine relationship platform."</div>
+            <p class="proof-desc">Woolworths deployed Data Cloud + Marketing Cloud Next to personalise Everyday Rewards offers across 13 million members. Starting from a single beachhead — expiry re-engagement — they scaled to eight triggered journeys in 18 months. <strong>Average offer redemption rate lifted from 4% to 14% across the personalised cohort.</strong></p>
+            <div class="proof-source">Source: Salesforce World Tour Sydney 2025 · Woolworths Customer Session</div>
+          </div>
+          <div class="proof-stats">
+            <div class="proof-stat">
+              <div class="proof-stat-val"><span>3.5×</span></div>
+              <div class="proof-stat-label">Redemption lift on triggered vs. broadcast offers</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-val">13M</div>
+              <div class="proof-stat-label">Members on the same platform stack</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-val"><span>18</span></div>
+              <div class="proof-stat-label">Months from 1 to 8 triggered journeys</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-val">14<span style="font-size:18px;">%</span></div>
+              <div class="proof-stat-label">Average redemption rate on personalised cohort</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 · Roadmap -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">The Path Forward</div>
+        <div class="section-title">90 days to first live trigger.<br/>18 months to the full engine.</div>
+        <div class="section-sub">Two phases. Measurable outcomes at every gate. Marketing owns the roadmap after Phase 1 lands.</div>
+        <div class="card-grid-2">
+          <div class="phase-card">
+            <div class="phase-head">
+              <div class="phase-badge" style="background:rgba(2,42,192,0.08);color:var(--sf-blue);border:1px solid rgba(2,42,192,0.15);">Phase 1 · 0–90 days</div>
+              <div>
+                <div class="phase-title">Beachheads live</div>
+                <div class="phase-timeline">Real-time bonus points + early churn detection in production</div>
+              </div>
+            </div>
+            <div class="phase-body">
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+                <div><div class="phase-item-title">Data Cloud activation</div><div class="phase-item-desc">Connect Beauty Club transaction data, app events, and in-store POS. Unified member profiles live in Data Cloud.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+                <div><div class="phase-item-title">Einstein models trained</div><div class="phase-item-desc">Category propensity and churn early-warning models trained on 24 months of Beauty Club transaction history.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+                <div><div class="phase-item-title">First triggers firing</div><div class="phase-item-desc">Category spend threshold offer and churn re-engagement sequence live — with A/B measurement framework in place from day one.</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="phase-card">
+            <div class="phase-head">
+              <div class="phase-badge" style="background:rgba(236,43,140,0.08);color:var(--accent);border:1px solid rgba(236,43,140,0.2);">Phase 2 · 90 days – 18 months</div>
+              <div>
+                <div class="phase-title">Full engine</div>
+                <div class="phase-timeline">Scale to 5 use cases across all channels and in-store</div>
+              </div>
+            </div>
+            <div class="phase-body">
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--accent);"></div>
+                <div><div class="phase-item-title">Sister Club card integration</div><div class="phase-item-desc">Einstein scoring feeds personalised milestone offers to Priceline's highest-value cardholders before competitors can intercept them.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--accent);"></div>
+                <div><div class="phase-item-title">In-store real-time activation</div><div class="phase-item-desc">POS integration delivers a personalised offer to the member's phone within seconds of a qualifying in-store transaction.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--accent);"></div>
+                <div><div class="phase-item-title">Adaptive app homepage</div><div class="phase-item-desc">Experience Cloud personalises the Priceline app homepage carousel in real time — no two members see the same view.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9 · Closing -->
+    <div class="slide slide-closing">
+      <div class="slide-body">
+        <div class="closing-inner">
+          <h2>7 million members.<br/>The data is already there.<br/>Your first trigger live in 90 days.</h2>
+          <p>One beachhead. Real measurement from day one. The proof that turns this into the full engine — on a timeline marketing can own.</p>
+          <div class="closing-steps">
+            <div class="c-step">Discovery workshop</div>
+            <div class="c-arrow">→</div>
+            <div class="c-step">Data Cloud blueprint</div>
+            <div class="c-arrow">→</div>
+            <div class="c-step">Phase 1 kickoff</div>
+            <div class="c-arrow">→</div>
+            <div class="c-step primary">First trigger live in 90 days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slide-deck -->
+
+  <!-- ─── NAVIGATION ─────────────────────────────────────────── -->
+  <div class="slide-dots" id="dots"></div>
+
+  <div class="slide-controls">
+    <button class="slide-btn" id="prev" title="Previous (←)">&#8592;</button>
+    <span class="slide-counter" id="counter">1 / 9</span>
+    <button class="slide-btn" id="next" title="Next (→)">&#8594;</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dotsEl = document.getElementById('dots');
+    const counterEl = document.getElementById('counter');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => go(i));
+      dotsEl.appendChild(d);
+    });
+
+    function go(n) {
+      slides[current].classList.remove('active');
+      document.querySelectorAll('.dot')[current].classList.remove('active');
+      current = Math.max(0, Math.min(n, slides.length - 1));
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      document.querySelectorAll('.dot')[current].classList.add('active');
+      counterEl.textContent = `${current + 1} / ${slides.length}`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+    }
+
+    prevBtn.addEventListener('click', () => go(current - 1));
+    nextBtn.addEventListener('click', () => go(current + 1));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+    });
+
+    go(0);
+  </script>
+
+</body>
+</html>
