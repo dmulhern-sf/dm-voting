@@ -17,13 +17,13 @@ Vanilla HTML/CSS/JS — no build tool, no framework, no CMS.
   - `assets/icons/2d/` — 2D full colour product icons (use in narrative pages)
   - `assets/icons/3d/` — 3D icons (campaigns/events only, NOT in narrative pages)
   - `assets/logos/` — official SVG logos (use these, not legacy JPEGs)
-  - `assets/fonts/` — Salesforce Sans (all weights) + Trailhead
+  - `assets/fonts/` — Salesforce Sans (all weights) + Trailhead + Avant Garde For Salesforce Demi (display headings)
 
 ## Narrative structure (10 sections)
 Nav → Hero → Why Now → The Gap → Stack → Beachheads → Scale → Proof → Roadmap → Closing
 
 ## Conventions
-- Typeface: Salesforce Sans (all weights in assets/fonts/), max-width 1200px, 48px padding
+- Typeface: Avant Garde For Salesforce Demi (`--font-display`) for all headings; Salesforce Sans (`--font-body`) for body/cards. Both in assets/fonts/. max-width 1200px, 48px padding
 - Alternating dark hero + light sections
 - One accent color CSS variable override per page — never override primary blues
 - Numbered big figures carry narrative; em-dashes for voice

@@ -87,6 +87,17 @@
        url('assets/fonts/SalesforceSans-BoldItalic.woff') format('woff');
 }
 
+/* ── Avant Garde For Salesforce ─────────────────────────────── */
+@font-face {
+  font-family: 'Avant Garde For Salesforce';
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url('assets/fonts/AvantGardeForSalesforceW05-Dm.woff2') format('woff2'),
+       url('assets/fonts/AvantGardeForSalesforceW05-Dm.woff') format('woff'),
+       url('assets/fonts/AvantGardeForSalesforce-Demi.ttf') format('truetype');
+}
+
 /* ── Trailhead ───────────────────────────────────────────────── */
 @font-face {
   font-family: 'Trailhead';
@@ -174,7 +185,7 @@
   --muted:      #5A5C61;   /* secondary copy */
 
   /* ── Typography ────────────────────────────────────────────── */
-  --font-display: 'Salesforce Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Avant Garde For Salesforce', 'Salesforce Sans', system-ui, -apple-system, sans-serif;
   --font-body:    'Salesforce Sans', system-ui, -apple-system, BlinkMacSystemFont,
                   'Segoe UI', 'Segoe UI Emoji', sans-serif;
   --font-trailhead: 'Trailhead', 'Salesforce Sans', system-ui, sans-serif;
