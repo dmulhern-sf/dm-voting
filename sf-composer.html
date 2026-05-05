@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Composer · AI-Powered MarTech Journey Builder</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    /* SF Composer — no customer accent, use sf-blue-m as accent pop */
+    :root { --accent: #066AFE; --accent-l: #00B3FF; }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    .slide-deck {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      display: none;
+      padding-top: 60px;
+    }
+    .slide.active { display: block; }
+
+    .slide-controls {
+      position: fixed;
+      bottom: 28px;
+      right: 36px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 200;
+    }
+    .slide-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-card);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .slide-btn:hover { background: var(--sf-blue); color: #fff; border-color: var(--sf-blue); }
+    .slide-btn:disabled { opacity: 0.3; cursor: default; }
+    .slide-counter {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .slide-dots {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 200;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .dot.active {
+      background: var(--sf-blue);
+      transform: scale(1.4);
+    }
+
+    .slide-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 48px 100px;
+    }
+    .slide-hero { padding-top: 0; }
+    .slide-hero .hero { min-height: calc(100vh - 60px); display: flex; align-items: center; }
+    .slide-hero .hero-inner { width: 100%; }
+
+    .slide-closing .slide-body {
+      min-height: calc(100vh - 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slide-closing .closing-inner { width: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── FIXED NAV ──────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-lockup">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-RGB.svg" width="140" height="28" class="nav-logo-sf" alt="Salesforce" />
+        <div class="nav-divider"></div>
+        <div class="nav-title">SF Composer · AI MarTech Journey Builder</div>
+      </div>
+      <div class="nav-tag">Concept · For Discussion · 2026</div>
+    </div>
+  </nav>
+
+  <!-- ─── SLIDE DECK ─────────────────────────────────────────── -->
+  <div class="slide-deck">
+
+    <!-- SLIDE 1 · Hero -->
+    <div class="slide slide-hero active">
+      <div class="hero">
+        <div class="hero-inner">
+          <div>
+            <div class="hero-eyebrow">AI · MarTech · Orchestration</div>
+            <h1>Your entire customer journey —<br/><em>designed by AI in seconds.</em></h1>
+            <p class="hero-sub">Marketing teams spend weeks mapping cross-channel journeys. SF Composer changes that — describe your use case in plain language and Claude builds the full journey, channel by channel, in real time.</p>
+            <div class="hero-quote">
+              <p>"We had the tools. We didn't have a fast way to connect them. SF Composer is the missing layer between strategy and execution."</p>
+              <cite>Concept validated with Salesforce SE team — May 2026</cite>
+            </div>
+          </div>
+          <div class="hero-kpi">
+            <div class="hero-kpi-card">
+              <div class="hkc-val"><span>30s</span></div>
+              <div class="hkc-label">From prompt to full journey canvas</div>
+            </div>
+            <div class="hero-kpi-card">
+              <div class="hkc-val"><span>11</span></div>
+              <div class="hkc-label">MarTech platform categories connected</div>
+            </div>
+            <div class="hero-kpi-card">
+              <div class="hkc-val">CX · EX</div>
+              <div class="hkc-label">Customer and employee lanes — one view</div>
+            </div>
+            <div class="hero-kpi-card">
+              <div class="hkc-val">0<span style="font-size:18px;color:rgba(255,255,255,0.5);"> code</span></div>
+              <div class="hkc-label">No technical skills required to build</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 · Why Now -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">Why Now</div>
+        <div class="section-title">Four shifts that make<br/>this the right moment to build it</div>
+        <div class="section-sub">The tools marketers need already exist — what's been missing is the intelligence layer that connects them.</div>
+        <div class="card-grid-2">
+          <div class="card card-accent-blue">
+            <div class="card-icon">
+              <img src="assets/icons/2d/Agentforce.svg" width="28" height="28" alt="Agentforce" />
+            </div>
+            <div class="card-title">AI can reason about journeys</div>
+            <div class="card-body">Claude Sonnet can ingest a stack configuration and generate a coherent, multi-step, multi-channel journey without any templates. <strong>The intelligence to design journeys is now available via API — not locked inside a vendor platform.</strong></div>
+          </div>
+          <div class="card card-accent-accent">
+            <div class="card-icon">
+              <img src="assets/icons/2d/MuleSoft.png" width="28" height="28" alt="MuleSoft" />
+            </div>
+            <div class="card-title">MCP makes every platform connectable</div>
+            <div class="card-body">Model Context Protocol means Shopify, HubSpot, Segment, and Salesforce can all be orchestrated from a single AI session. <strong>The connector problem — the one that killed every previous MarTech unification attempt — is solved.</strong></div>
+          </div>
+          <div class="card card-accent-blue">
+            <div class="card-icon">
+              <img src="assets/icons/2d/Marketing.png" width="28" height="28" alt="Marketing Cloud" />
+            </div>
+            <div class="card-title">Journey complexity is at breaking point</div>
+            <div class="card-body">Marketers now manage 7–10 platforms on average. Journey mapping takes weeks and goes stale before it's finished. <strong>The speed gap between strategy and execution is costing pipeline — every quarter.</strong></div>
+          </div>
+          <div class="card card-accent-accent">
+            <div class="card-icon">
+              <img src="assets/icons/2d/Data Cloud.png" width="28" height="28" alt="Data Cloud" />
+            </div>
+            <div class="card-title">Salesforce customers already have the data</div>
+            <div class="card-body">Data Cloud customers have unified profiles ready to activate. SF Composer gives that data a fast path to execution — no new infrastructure, no new integration projects. <strong>The raw material is already there.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 · The Gap -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow eyebrow-accent">The Gap</div>
+        <div class="section-title">How teams work today vs.<br/>how SF Composer changes it</div>
+        <div class="section-sub">The difference isn't marginal — it's the gap between a week of workshops and thirty seconds of conversation.</div>
+        <div class="compare-wrap">
+          <div class="compare-head">
+            <div class="compare-head-col today">Today</div>
+            <div class="compare-head-col tomorrow">With SF Composer</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today"><strong>Whiteboard sessions.</strong> Journey mapping requires 2–3 cross-functional workshops before a single step is configured in any tool.</div>
+            <div class="compare-cell tomorrow"><strong>Plain language prompt.</strong> Describe the use case — "onboard a new loyalty member across email, SMS, and in-app" — and the full journey canvas generates in under 30 seconds.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today"><strong>Platform silos.</strong> Email, SMS, push, and paid media are configured separately in separate tools by separate teams with no shared view of the journey.</div>
+            <div class="compare-cell tomorrow"><strong>One canvas, all channels.</strong> Every step — CX lane, EX lane, and the connectors between them — is visible in a single swimlane view. Changes propagate across all platforms.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today"><strong>Static documentation.</strong> Journey maps live in Miro or PowerPoint. They go stale the moment a platform changes and are never connected to the tools that execute them.</div>
+            <div class="compare-cell tomorrow"><strong>Live, executable design.</strong> The canvas is the configuration. Export a step and it generates the MuleSoft flow, the Marketing Cloud journey entry, or the Agentforce action — directly from the design.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 · Connected Stack -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">How It Works</div>
+        <div class="section-title">Four layers. One canvas.<br/>From prompt to live execution.</div>
+        <div class="section-sub">Each layer builds on the one below. The AI handles the design. The MCP layer handles the execution. Your team owns the outcome.</div>
+        <div class="stack-wrap">
+          <div class="stack-header">
+            <div class="stack-header-label">4 layers</div>
+            <div class="stack-header-title">SF Composer — AI Journey Architecture</div>
+          </div>
+          <div class="stack-layer sl-layer-01">
+            <div class="sl-left">
+              <div class="sl-num">01</div>
+              <div class="sl-product">Claude AI</div>
+              <div class="sl-product-sub">Journey Intelligence</div>
+            </div>
+            <div class="sl-right">Receives a natural language brief — use case, audience, stack selection, channels — and generates a structured, multi-step journey with CX and EX lanes. <strong>No templates. No configuration menus. Just a conversation.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-02">
+            <div class="sl-left">
+              <div class="sl-num">02</div>
+              <div class="sl-product">Canvas Engine</div>
+              <div class="sl-product-sub">Visual Swimlane Renderer</div>
+            </div>
+            <div class="sl-right">Renders the AI output as an interactive swimlane canvas — CX row, EX row, and connector row. Each step is clickable, editable, and carries full configuration metadata. <strong>The map is the source of truth — not a decoration of it.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-03">
+            <div class="sl-left">
+              <div class="sl-num">03</div>
+              <div class="sl-product">Stack Configurator</div>
+              <div class="sl-product-sub">11 Platform Categories</div>
+            </div>
+            <div class="sl-right">Marketers select their live platforms — Salesforce native, MCP-connected (Shopify, HubSpot, Segment), or agent-orchestrated — before generating. The AI builds the journey using only the tools they actually have. <strong>No fictional stack. No vendor assumptions.</strong></div>
+          </div>
+          <div class="stack-layer sl-layer-04">
+            <div class="sl-left">
+              <div class="sl-num">04</div>
+              <div class="sl-product">MCP + Export Layer</div>
+              <div class="sl-product-sub">Live Execution Bridge</div>
+            </div>
+            <div class="sl-right">Each journey step exports as an executable artefact — a MuleSoft flow, a Marketing Cloud entry source, an Agentforce action, or a Salesforce Flow. <strong>The gap between journey design and journey execution closes to a single click.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 · Beachheads -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">Start Here</div>
+        <div class="section-title">Two use cases that prove<br/>the model immediately.</div>
+        <div class="section-sub">Both are live today in the working prototype. Neither requires a Salesforce org to demo — mock mode shows the full journey experience in any browser.</div>
+        <div class="card-grid-2">
+          <div class="beach-card">
+            <div class="bc-head">
+              <div class="bc-icon" style="background:rgba(2,42,192,0.08);">
+                <img src="assets/icons/2d/Loyalty Management.svg" width="28" height="28" alt="Loyalty Management" />
+              </div>
+              <div class="bc-meta">
+                <div class="bc-title">Loyalty Onboarding Journey</div>
+                <div class="bc-sub">New member activation across all channels</div>
+              </div>
+              <div class="bc-badge" style="background:rgba(2,42,192,0.08);color:var(--sf-blue);border:1px solid rgba(2,42,192,0.15);">Live in demo</div>
+            </div>
+            <div class="bc-body">
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--sf-blue);"></div>
+                <div>
+                  <div class="bc-uc-title">Prompt-to-canvas in 30 seconds</div>
+                  <div class="bc-uc-desc">Type "onboard a new loyalty member — we use Salesforce, Shopify, and Klaviyo" and watch the full 7-step journey generate with CX and EX lanes populated.</div>
+                </div>
+              </div>
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--sf-blue);"></div>
+                <div>
+                  <div class="bc-uc-title">Editable at every step</div>
+                  <div class="bc-uc-desc">Click any step to open the detail panel — adjust messaging, timing, channel, or configuration path. The canvas updates live without regenerating.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="beach-card">
+            <div class="bc-head">
+              <div class="bc-icon" style="background:rgba(6,106,254,0.08);">
+                <img src="assets/icons/2d/Agentforce.svg" width="28" height="28" alt="Agentforce" />
+              </div>
+              <div class="bc-meta">
+                <div class="bc-title">Agentforce-Assisted Journeys</div>
+                <div class="bc-sub">AI agents in the execution layer</div>
+              </div>
+              <div class="bc-badge" style="background:rgba(6,106,254,0.08);color:var(--accent);border:1px solid rgba(6,106,254,0.2);">Roadmap</div>
+            </div>
+            <div class="bc-body">
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--accent);"></div>
+                <div>
+                  <div class="bc-uc-title">Agent steps in the journey canvas</div>
+                  <div class="bc-uc-desc">Journey steps marked as "agent" in the canvas automatically generate Agentforce action definitions — the design becomes the agent spec without a separate authoring process.</div>
+                </div>
+              </div>
+              <div class="bc-use-case">
+                <div class="bc-dot" style="background:var(--accent);"></div>
+                <div>
+                  <div class="bc-uc-title">Live Salesforce data in the journey</div>
+                  <div class="bc-uc-desc">When the Salesforce MCP server is active, journey steps pull real loyalty tiers, product catalogues, and segment memberships — no mock data needed for the live demo path.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 · Scale Story -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">Where This Goes</div>
+        <div class="section-title">Three extensions that open<br/>the full platform opportunity</div>
+        <div class="section-sub">The canvas and AI layer are the foundation. These three extensions turn SF Composer from a demo asset into a product-grade journey design system.</div>
+        <div class="card-grid-3">
+          <div class="scale-card">
+            <div class="sc-num">EXTENSION 01</div>
+            <div class="sc-title">MuleSoft live execution bridge</div>
+            <div class="sc-body">Every journey step with a MCP config path exports as a deployable MuleSoft flow. Journey design and integration design become the same artefact — built once, executed anywhere in the Anypoint platform.</div>
+          </div>
+          <div class="scale-card">
+            <div class="sc-num">EXTENSION 02</div>
+            <div class="sc-title">Data Cloud segment activation</div>
+            <div class="sc-body">Journey entry conditions in the canvas map directly to Data Cloud segment definitions. When a customer's profile triggers the segment, the journey fires — no manual handoff between the design tool and the data platform.</div>
+          </div>
+          <div class="scale-card">
+            <div class="sc-num">EXTENSION 03</div>
+            <div class="sc-title">Multi-journey workspace</div>
+            <div class="sc-body">Teams manage dozens of journeys simultaneously. A workspace layer lets marketers organise journeys by programme, campaign, or lifecycle stage — with shared stack configuration and reusable step templates across all of them.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 · Proof -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">What It Does Today</div>
+        <div class="section-title" style="margin-bottom:32px;">A working prototype —<br/>not a concept deck.</div>
+        <div class="proof-wrap">
+          <div>
+            <div class="proof-eyebrow">SF Composer · Built May 2026</div>
+            <div class="proof-quote">"The gap between what a marketing team wants to do and what they can configure in their tools is still measured in weeks. SF Composer closes that gap to a conversation."</div>
+            <p class="proof-desc">The prototype runs today at localhost:3131 — stack selector, AI journey generation, swimlane canvas, and step detail panel all working. Mock mode means it runs without an API key. Live mode pulls real Salesforce data via the SF CLI MCP server. <strong>The full demo path — prompt, generate, edit, export — takes under two minutes from a cold start.</strong></p>
+            <div class="proof-source">Built on: Claude Sonnet 4.6 · Node/Express · Vanilla JS Canvas · Salesforce MCP · MuleSoft Anypoint MCP</div>
+          </div>
+          <div class="proof-stats">
+            <div class="proof-stat">
+              <div class="proof-stat-val"><span>30s</span></div>
+              <div class="proof-stat-label">Prompt to full journey canvas</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-val">11</div>
+              <div class="proof-stat-label">Platform categories in the stack selector</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-val"><span>3</span></div>
+              <div class="proof-stat-label">Config paths: Salesforce native, MCP, Agent</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-val">0</div>
+              <div class="proof-stat-label">Vendor dependencies to run the demo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 · Roadmap -->
+    <div class="slide">
+      <div class="slide-body">
+        <div class="eyebrow">The Path Forward</div>
+        <div class="section-title">Working prototype today.<br/>Product-grade tool in two phases.</div>
+        <div class="section-sub">Phase 1 completes the demo-ready experience. Phase 2 connects it to live execution infrastructure.</div>
+        <div class="card-grid-2">
+          <div class="phase-card">
+            <div class="phase-head">
+              <div class="phase-badge" style="background:rgba(2,42,192,0.08);color:var(--sf-blue);border:1px solid rgba(2,42,192,0.15);">Phase 1 · Now – 60 days</div>
+              <div>
+                <div class="phase-title">Demo-complete</div>
+                <div class="phase-timeline">Full SE demo path, shareable build</div>
+              </div>
+            </div>
+            <div class="phase-body">
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+                <div><div class="phase-item-title">Live Salesforce data path</div><div class="phase-item-desc">Replace mock journeys with real Data Cloud segments and loyalty programme data via SF CLI MCP.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+                <div><div class="phase-item-title">Journey export</div><div class="phase-item-desc">Each step exports as a structured JSON artefact ready for MuleSoft flow import or Marketing Cloud entry configuration.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
+                <div><div class="phase-item-title">Hosted demo URL</div><div class="phase-item-desc">Deployed to a shareable URL — no local setup required for colleagues or customers to explore the prototype.</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="phase-card">
+            <div class="phase-head">
+              <div class="phase-badge" style="background:rgba(6,106,254,0.08);color:var(--accent);border:1px solid rgba(6,106,254,0.2);">Phase 2 · 60 days – 6 months</div>
+              <div>
+                <div class="phase-title">Live execution</div>
+                <div class="phase-timeline">MuleSoft bridge + Agentforce integration</div>
+              </div>
+            </div>
+            <div class="phase-body">
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--accent);"></div>
+                <div><div class="phase-item-title">MuleSoft Anypoint deployment</div><div class="phase-item-desc">Journey steps with MCP config paths deploy directly to Anypoint Runtime Manager — canvas to live API in one action.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--accent);"></div>
+                <div><div class="phase-item-title">Agentforce action generation</div><div class="phase-item-desc">Agent steps in the canvas auto-generate Agentforce action definitions — no separate authoring in Agent Builder.</div></div>
+              </div>
+              <div class="phase-item">
+                <div class="phase-item-dot" style="background:var(--accent);"></div>
+                <div><div class="phase-item-title">Multi-journey workspace</div><div class="phase-item-desc">Shared stack config, reusable steps, and journey organisation by programme — built for marketing ops teams, not just SEs.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9 · Closing -->
+    <div class="slide slide-closing">
+      <div class="slide-body">
+        <div class="closing-inner">
+          <h2>The prototype is live.<br/>The use case is real.<br/>30 seconds to see it work.</h2>
+          <p>One conversation replaces a week of journey workshops — and the canvas it produces is already connected to the tools that execute it.</p>
+          <div class="closing-steps">
+            <div class="c-step">See the live demo</div>
+            <div class="c-arrow">→</div>
+            <div class="c-step">Identify your first use case</div>
+            <div class="c-arrow">→</div>
+            <div class="c-step">Connect your stack</div>
+            <div class="c-arrow">→</div>
+            <div class="c-step primary">Your first journey live this week</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slide-deck -->
+
+  <!-- ─── NAVIGATION CONTROLS ────────────────────────────────── -->
+  <div class="slide-dots" id="dots"></div>
+
+  <div class="slide-controls">
+    <button class="slide-btn" id="prev" title="Previous (←)">&#8592;</button>
+    <span class="slide-counter" id="counter">1 / 9</span>
+    <button class="slide-btn" id="next" title="Next (→)">&#8594;</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dotsEl = document.getElementById('dots');
+    const counterEl = document.getElementById('counter');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => go(i));
+      dotsEl.appendChild(d);
+    });
+
+    function go(n) {
+      slides[current].classList.remove('active');
+      document.querySelectorAll('.dot')[current].classList.remove('active');
+      current = Math.max(0, Math.min(n, slides.length - 1));
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      document.querySelectorAll('.dot')[current].classList.add('active');
+      counterEl.textContent = `${current + 1} / ${slides.length}`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+    }
+
+    prevBtn.addEventListener('click', () => go(current - 1));
+    nextBtn.addEventListener('click', () => go(current + 1));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+    });
+
+    go(0);
+  </script>
+
+</body>
+</html>
