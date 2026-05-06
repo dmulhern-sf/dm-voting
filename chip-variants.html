@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chip Variants — CW RFP Deck</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: #001E5B; color: #fff; padding: 60px; }
+
+    .variant-block {
+      margin-bottom: 52px;
+      padding-bottom: 52px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .variant-block:last-child { border-bottom: none; }
+
+    .variant-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 6px;
+    }
+    .variant-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    /* Dark variants — no borders */
+    .chip-a {
+      background: #022AC0;
+      color: #90D0FE;
+      border: none;
+    }
+    .chip-b {
+      background: rgba(0,179,255,0.12);
+      color: #90D0FE;
+      border: none;
+    }
+    .chip-c {
+      background: rgba(6,106,254,0.25);
+      color: #90D0FE;
+      border: none;
+    }
+    .chip-d {
+      background: rgba(6,106,254,0.4);
+      color: #fff;
+      border: none;
+    }
+    .chip-e {
+      background: rgba(144,208,254,0.1);
+      color: #90D0FE;
+      border: none;
+    }
+
+    .context-label {
+      font-size: 11px;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── Light bg context label ── */
+    .section-dark  .context-label { color: rgba(255,255,255,0.4); }
+    .section-light .context-label { color: #737479; }
+
+    .section-dark  .variant-label { color: rgba(255,255,255,0.3); }
+    .section-light .variant-label { color: #737479; }
+
+    .section-dark  .variant-name { color: #fff; }
+    .section-light .variant-name { color: #001E5B; }
+
+    .section-dark  { background: #001E5B; padding: 52px 60px; }
+    .section-light { background: #EAF5FE; padding: 52px 60px; }
+
+    .section-header {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 10px 60px;
+    }
+    .section-header-dark  { background: #000E2E; color: rgba(255,255,255,0.3); }
+    .section-header-light { background: #d4ecfc; color: #022AC0; }
+
+    /* Light variants — no borders */
+    .chip-a-light {
+      background: #022AC0;
+      color: #EAF5FE;
+      border: none;
+    }
+    .chip-b-light {
+      background: rgba(2,42,192,0.12);
+      color: #022AC0;
+      border: none;
+    }
+    .chip-c-light {
+      background: rgba(6,106,254,0.12);
+      color: #022AC0;
+      border: none;
+    }
+    .chip-d-light {
+      background: rgba(0,179,255,0.18);
+      color: #001E5B;
+      border: none;
+    }
+    .chip-e-light {
+      background: rgba(144,208,254,0.5);
+      color: #001E5B;
+      border: none;
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0;">
+
+  <!-- ── DARK BACKGROUND (Tell slides — bg-navy) ── -->
+  <div class="section-header section-header-dark">Dark background — Tell slides (bg-navy #001E5B)</div>
+  <div class="section-dark">
+
+    <div class="variant-block">
+      <div class="variant-label">Option A — Current</div>
+      <div class="variant-name">Solid filled · Electric Blue 30</div>
+      <div class="chip-row">
+        <span class="chip chip-a">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-a">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-a">Predictive scoring</span>
+        <span class="chip chip-a">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-a">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">Solid #022AC0 fill · #90D0FE text · 1px #066AFE border. Heaviest weight — reads as a tag.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option B</div>
+      <div class="variant-name">Ghost · Outline only</div>
+      <div class="chip-row">
+        <span class="chip chip-b">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-b">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-b">Predictive scoring</span>
+        <span class="chip chip-b">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-b">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">Transparent fill · #00B3FF text + border. Lightest — chips recede, content dominates.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option C — Recommended (dark)</div>
+      <div class="variant-name">Frosted · Alpha tint + subtle border</div>
+      <div class="chip-row">
+        <span class="chip chip-c">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-c">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-c">Predictive scoring</span>
+        <span class="chip chip-c">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-c">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">rgba(0,179,255,0.1) fill · #90D0FE text · rgba(0,179,255,0.25) border. Matches phase badge pattern from narrative kit.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option D</div>
+      <div class="variant-name">Soft fill · No border</div>
+      <div class="chip-row">
+        <span class="chip chip-d">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-d">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-d">Predictive scoring</span>
+        <span class="chip chip-d">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-d">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">rgba(6,106,254,0.3) fill · #90D0FE text · no border. Softer than A, heavier than C.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option E</div>
+      <div class="variant-name">Cloud tint · Most recessive</div>
+      <div class="chip-row">
+        <span class="chip chip-e">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-e">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-e">Predictive scoring</span>
+        <span class="chip chip-e">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-e">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">rgba(144,208,254,0.08) fill · #90D0FE text · rgba(144,208,254,0.2) border. Barely there — headline completely dominates.</p>
+    </div>
+
+  </div>
+
+  <!-- ── LIGHT BACKGROUND (Land slides — bg-offwhite) ── -->
+  <div class="section-header section-header-light">Light background — Land slides (bg-offwhite #EAF5FE)</div>
+  <div class="section-light">
+
+    <div class="variant-block">
+      <div class="variant-label">Option A</div>
+      <div class="variant-name">Solid filled · Electric Blue 30</div>
+      <div class="chip-row">
+        <span class="chip chip-a-light">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-a-light">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-a-light">Predictive scoring</span>
+        <span class="chip chip-a-light">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-a-light">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">Solid #022AC0 fill · light text. High contrast on light bg — same weight as dark version.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option B</div>
+      <div class="variant-name">Ghost · Outline only</div>
+      <div class="chip-row">
+        <span class="chip chip-b-light">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-b-light">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-b-light">Predictive scoring</span>
+        <span class="chip chip-b-light">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-b-light">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">Transparent fill · #022AC0 text + border. Clean, minimal on light.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option C — Recommended (light)</div>
+      <div class="variant-name">Frosted · Alpha tint + subtle border</div>
+      <div class="chip-row">
+        <span class="chip chip-c-light">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-c-light">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-c-light">Predictive scoring</span>
+        <span class="chip chip-c-light">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-c-light">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">rgba(2,42,192,0.08) fill · #022AC0 text · rgba(2,42,192,0.2) border. Light version of the beachhead badge pattern.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option D</div>
+      <div class="variant-name">Soft fill · No border</div>
+      <div class="chip-row">
+        <span class="chip chip-d-light">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-d-light">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-d-light">Predictive scoring</span>
+        <span class="chip chip-d-light">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-d-light">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">rgba(6,106,254,0.1) fill · #022AC0 text · no border. Soft blue pill, no edge.</p>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Option E</div>
+      <div class="variant-name">Cloud tint · Softest</div>
+      <div class="chip-row">
+        <span class="chip chip-e-light">High-intent audience build — behavioural + lifecycle</span>
+        <span class="chip chip-e-light">Behavioural segmentation — browse, email, purchase</span>
+        <span class="chip chip-e-light">Predictive scoring</span>
+        <span class="chip chip-e-light">Machine opens — MPP &amp; proxy opens</span>
+        <span class="chip chip-e-light">Waterfall inclusion / exclusion logic</span>
+      </div>
+      <p class="context-label">rgba(144,208,254,0.4) fill · #001E5B text · rgba(2,42,192,0.15) border. Soft cloud blue — very light, barely tinted.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>
