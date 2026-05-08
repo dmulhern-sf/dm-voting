@@ -49,6 +49,15 @@ export default {
         // Event log (500 cap)
         await appendLog(env, 'event_log', event, 500);
 
+        // ── install enrichment ──────────────────────────────────────
+        if (event.event === 'install') {
+          await appendLog(env, 'installers', {
+            user:    event.user    || '—',
+            version: event.version || '—',
+            ts:      event.ts,
+          }, 200);
+        }
+
         // ── deck_new enrichment ──────────────────────────────────
         if (event.event === 'deck_new') {
           // Deck list with full metadata
@@ -176,7 +185,7 @@ async function loadDashboardData(env) {
   const keys = [
     'total:install', 'total:deck_new', 'total:deck_open', 'total:review_end',
     'reviews_comments_total',
-    'users', 'decks', 'event_log',
+    'users', 'decks', 'installers', 'event_log',
     // product counters
     'product:agentforce','product:data_cloud','product:marketing_cloud',
     'product:sales_cloud','product:mulesoft','product:slack','product:platform',
@@ -186,7 +195,7 @@ async function loadDashboardData(env) {
   const results = await Promise.all(keys.map(k => env.DT_KV.get(k)));
   const [
     installs, deckNews, opens, reviews, totalComments,
-    usersRaw, decksRaw, logRaw,
+    usersRaw, decksRaw, installersRaw, logRaw,
     pAgentforce, pDataCloud, pMarketing, pSales, pMulesoft, pSlack, pPlatform,
     dtTst, dtPov, dtProposal,
   ] = results;
@@ -197,9 +206,10 @@ async function loadDashboardData(env) {
     opens:         parseInt(opens         || '0'),
     reviews:       parseInt(reviews       || '0'),
     totalComments: parseInt(totalComments || '0'),
-    users:         JSON.parse(usersRaw    || '[]'),
-    decks:         JSON.parse(decksRaw    || '[]'),
-    log:           JSON.parse(logRaw      || '[]').slice(0, 30),
+    users:         JSON.parse(usersRaw      || '[]'),
+    decks:         JSON.parse(decksRaw      || '[]'),
+    installers:    JSON.parse(installersRaw || '[]'),
+    log:           JSON.parse(logRaw        || '[]').slice(0, 30),
     products: {
       'Agentforce':      parseInt(pAgentforce || '0'),
       'Data Cloud':      parseInt(pDataCloud  || '0'),
@@ -224,6 +234,12 @@ function buildDashboard(d) {
     day: 'numeric', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   });
+
+  const installersHtml = d.installers.map(i => `<tr>
+    <td>${escHtml(i.user)}</td>
+    <td><code style="font-size:11px">${escHtml(i.version)}</code></td>
+    <td style="white-space:nowrap;color:#6B7280;font-size:11px">${new Date(i.ts).toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+  </tr>`).join('');
 
   const decksHtml = d.decks.slice(0, 50).map(dk => {
     const products = Array.isArray(dk.products) && dk.products.length
@@ -365,6 +381,16 @@ function buildDashboard(d) {
   <div class="card">
     <div class="card-title">Deck types</div>
     ${typeBars}
+  </div>
+</div>
+
+<div class="grid-full" style="margin-top:0">
+  <div class="card">
+    <div class="card-title">Skill installs (${d.installers.length})</div>
+    <table>
+      <thead><tr><th>User</th><th>Version</th><th>Date</th></tr></thead>
+      <tbody>${installersHtml || '<tr><td colspan="3" style="color:#9CA3AF;text-align:center;padding:20px">No installs recorded yet</td></tr>'}</tbody>
+    </table>
   </div>
 </div>
 
