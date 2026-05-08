@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decktools · Animation Pattern Reference</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="animation.css" />
+  <link rel="stylesheet" href="animation-interactions.css" />
+  <style>
+    body { background: var(--gray-100); padding: 0 0 80px 0; }
+
+    .page-header {
+      background: var(--sf-navy);
+      padding: 40px 48px 36px;
+      margin-bottom: 40px;
+    }
+    .page-header .eyebrow { color: var(--sf-blue-l); margin-bottom: 10px; }
+    .page-header h1 { color: #fff; font-size: 32px; margin-bottom: 8px; }
+    .page-header p { color: rgba(255,255,255,0.65); font-size: 14px; max-width: 600px; line-height: 1.6; }
+
+    .patterns-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .pattern-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+    .pattern-head {
+      padding: 18px 24px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .pattern-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--sf-blue);
+    }
+    .pattern-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 2px;
+    }
+    .pattern-fn {
+      font-family: 'SF Mono', Menlo, Consolas, monospace;
+      font-size: 12px;
+      background: var(--cloud-95);
+      color: var(--sf-blue);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+    }
+    .pattern-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 14px 24px;
+      background: var(--gray-100);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .pattern-demo {
+      padding: 28px 24px;
+    }
+    .pattern-note {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 10px 24px 14px;
+      border-top: 1px solid var(--gray-200);
+      font-style: italic;
+    }
+
+    /* Demo-specific layouts */
+    .demo-chat { max-width: 420px; }
+    .demo-flow { max-width: 380px; }
+    .demo-pipe { max-width: 340px; }
+    .demo-numbers { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; }
+    .demo-number-item { display: flex; flex-direction: column; gap: 8px; min-width: 140px; }
+    .demo-number-val { font-size: 40px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; }
+    .demo-number-label { font-size: 12px; color: var(--muted); }
+    .demo-ring { display: flex; gap: 32px; align-items: center; flex-wrap: wrap; }
+
+    /* Flow node demo styling uses components.css stack-layer pattern */
+    .demo-flow .flow-node {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      box-shadow: var(--shadow-card);
+    }
+    .demo-flow .flow-node-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--sf-blue);
+    }
+    .demo-flow .flow-node-body {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 3px;
+    }
+    .demo-flow .flow-node-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .pipe-node-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .pipe-node-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .pipe-node-content { flex: 1; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="eyebrow">Decktools · Reference</div>
+    <h1>Interactive Animation Patterns</h1>
+    <p>Every pattern in one place. Each demo is wired to the real CSS classes and JS functions in <code>animation-interactions.css</code> + <code>animation.js</code>. Copy the HTML structure and call the function shown.</p>
+  </div>
+
+  <div class="patterns-wrap">
+
+    <!-- ── 1. Typewriter chat ───────────────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 01</div>
+          <div class="pattern-title">Typewriter Chat</div>
+        </div>
+        <div class="pattern-fn">typeInto(el, text, speed?)</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="chat-play">&#9654; Play</button>
+        <button class="anim-reset-btn" id="chat-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div class="chat-wrap demo-chat" id="chat-demo">
+          <div class="chat-msg user" id="chat-user">
+            <span class="type-stack">
+              <span class="type-ghost">Find subscribers at high churn risk who are still actively reading.</span>
+              <span class="type-live"><span id="chat-typed"></span><span class="type-caret">▍</span></span>
+            </span>
+          </div>
+          <div class="chat-msg bot" id="chat-bot">
+            <div class="chat-bot-label">AI · building segment</div>
+            <div id="chat-rows">
+              <div class="build-row" data-row="1"><span class="build-dot"></span> Churn score ≥ 0.65</div>
+              <div class="build-row" data-row="2"><span class="build-dot"></span> Article reads ≥ 10 / month</div>
+              <div class="build-row" data-row="3"><span class="build-dot"></span> Active last 7 days</div>
+            </div>
+            <div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--gray-200); font-size:13px; color:var(--muted);">
+              Members: <strong id="chat-count" style="color:var(--text); font-variant-numeric:tabular-nums;">0</strong>
+            </div>
+          </div>
+          <div class="chat-msg bot" id="chat-confirm">
+            <div class="chat-bot-label">Segment ready</div>
+            <ul class="check-list" id="chat-checklist">
+              <li><span class="check-box"></span> Segment created — 42,180 members</li>
+              <li><span class="check-box"></span> Audience synced to Marketing Cloud</li>
+              <li><span class="check-box"></span> Journey entry activated</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note">Use <code>.type-stack</code> + ghost span to pre-size the bubble before typing starts — no layout shift.</div>
+    </div>
+
+    <!-- ── 2. Flow / decision tree ─────────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 02</div>
+          <div class="pattern-title">Flow / Decision Tree</div>
+        </div>
+        <div class="pattern-fn">makeSequence() + reveal()</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="flow-play-yes">&#9654; Yes path</button>
+        <button class="anim-play-btn" id="flow-play-no" style="background:var(--pink)">&#9654; No path</button>
+        <button class="anim-reset-btn" id="flow-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div class="flow-wrap demo-flow" id="flow-demo">
+          <div class="flow-node" data-step="1">
+            <div class="flow-node-label">Trigger</div>
+            <div class="flow-node-body">Payment failed</div>
+            <div class="flow-node-meta">Zuora · insufficient funds</div>
+          </div>
+          <div class="flow-connector" data-step="1"></div>
+          <div class="flow-node" data-step="2">
+            <div class="flow-node-label">① Action</div>
+            <div class="flow-node-body">Retention email sent</div>
+            <div class="flow-node-meta">Wait 24h</div>
+          </div>
+          <div class="flow-connector" data-step="2"></div>
+          <div class="flow-decision" data-step="3">
+            <div class="decision-pill">
+              <span class="decision-question">Paid?</span>
+              <span class="decision-sep"></span>
+              <span class="decision-branch yes" id="branch-yes">Yes</span>
+              <span class="decision-sep"></span>
+              <span class="decision-branch no" id="branch-no">No</span>
+            </div>
+          </div>
+          <div class="flow-exit exit-clear" id="flow-exit-yes">✓ Removed from dunning flow</div>
+          <div class="flow-connector" data-step="3" id="flow-conn-no"></div>
+          <div class="flow-node" data-step="4" id="flow-node-sms">
+            <div class="flow-node-label">② Action</div>
+            <div class="flow-node-body">SMS sent</div>
+            <div class="flow-node-meta">Quick-tap billing link · Wait 24h</div>
+          </div>
+          <div class="flow-connector" data-step="4"></div>
+          <div class="flow-exit exit-success" data-step="5">
+            <strong>✓ Payment recovered</strong><br/>
+            <span style="font-size:12px; font-weight:400; color:var(--muted);">Subscriber exits flow · reminders cleared</span>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note">Add <code>.sending</code> to a node while it's "processing" — it pulses until you remove the class.</div>
+    </div>
+
+    <!-- ── 3. Pipe packets ─────────────────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 03</div>
+          <div class="pattern-title">Data Pipeline + Packets</div>
+        </div>
+        <div class="pattern-fn">makeSequence() + .pipe-packet.flowing</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="pipe-play">&#9654; Play</button>
+        <button class="anim-reset-btn" id="pipe-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div class="pipe-wrap demo-pipe" id="pipe-demo">
+          <div class="pipe-node" id="pipe-node-1">
+            <div class="pipe-icon" style="background:rgba(2,42,192,0.1);"><div style="width:10px;height:10px;border-radius:50%;background:var(--sf-blue-m);"></div></div>
+            <div class="pipe-node-content">
+              <div class="pipe-node-title">WebSDK</div>
+              <div class="pipe-node-sub">Real-time engagement capture</div>
+              <ul class="stream-list" id="pipe-stream"></ul>
+            </div>
+          </div>
+          <div class="pipe-line" id="pipe-line-1"><span class="pipe-packet" id="pipe-pkt-1"></span></div>
+          <div class="pipe-node" id="pipe-node-2">
+            <div class="pipe-icon" style="background:rgba(0,179,255,0.1);"><div style="width:10px;height:10px;border-radius:50%;background:var(--sf-blue-l);"></div></div>
+            <div class="pipe-node-content">
+              <div class="pipe-node-title">Data Cloud</div>
+              <div class="pipe-node-sub">Zero-copy sync</div>
+              <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+                <span class="sync-dot" id="pipe-sync-dot"></span>
+                <span class="sync-indicator" id="pipe-sync" style="font-size:11px; color:var(--muted);">Waiting…</span>
+              </div>
+            </div>
+          </div>
+          <div class="pipe-line" id="pipe-line-2"><span class="pipe-packet" id="pipe-pkt-2"></span></div>
+          <div class="pipe-node" id="pipe-node-3">
+            <div class="pipe-icon" style="background:rgba(115,3,148,0.1);"><div style="width:10px;height:10px;border-radius:50%;background:var(--violet);"></div></div>
+            <div class="pipe-node-content">
+              <div class="pipe-node-title">ML Model</div>
+              <div class="pipe-node-sub">Score computation</div>
+              <div style="margin-top:8px;">
+                <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:4px;">Winback Score</div>
+                <div class="progress-bar-wrap"><span class="progress-bar-fill fill-violet" id="pipe-bar"></span></div>
+                <div style="font-size:14px; font-weight:700; color:var(--text); margin-top:4px; font-variant-numeric:tabular-nums;"><span id="pipe-score">0.00</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="pipe-line back" id="pipe-line-3"><span class="pipe-packet back" id="pipe-pkt-3"></span></div>
+          <div class="pipe-node highlight" id="pipe-node-4">
+            <div class="pipe-icon" style="background:rgba(6,165,154,0.1);"><div style="width:10px;height:10px;border-radius:50%;background:var(--teal);"></div></div>
+            <div class="pipe-node-content">
+              <div class="pipe-node-title">Next Best Action</div>
+              <div class="pipe-node-sub">Updated in Salesforce</div>
+              <div style="margin-top:8px; font-size:12px; color:var(--muted);" id="pipe-result">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note"><code>.pipe-line.back</code> + <code>.pipe-packet.back</code> reverses the color to violet/pink for return data flows.</div>
+    </div>
+
+    <!-- ── 4. Count-up ─────────────────────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 04</div>
+          <div class="pattern-title">Count-Up Number</div>
+        </div>
+        <div class="pattern-fn">countUp(el, target, ms?)</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="count-play">&#9654; Play</button>
+        <button class="anim-reset-btn" id="count-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div class="demo-numbers">
+          <div class="demo-number-item">
+            <div class="demo-number-val"><span id="count-1">0</span></div>
+            <div class="demo-number-label">Members in segment</div>
+          </div>
+          <div class="demo-number-item">
+            <div class="demo-number-val"><span id="count-2">0</span>%</div>
+            <div class="demo-number-label">Churn reduction</div>
+          </div>
+          <div class="demo-number-item">
+            <div class="demo-number-val">$<span id="count-3">0</span></div>
+            <div class="demo-number-label">Revenue recovered</div>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note">Eases with cubic-bezier deceleration. Pass a longer <code>ms</code> for dramatic effect on large numbers.</div>
+    </div>
+
+    <!-- ── 5. Progress fill bar ────────────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 05</div>
+          <div class="pattern-title">Progress Fill Bar</div>
+        </div>
+        <div class="pattern-fn">fillBar(fillEl, pct, ms?)</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="bar-play">&#9654; Play</button>
+        <button class="anim-reset-btn" id="bar-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div style="display:flex; flex-direction:column; gap:16px; max-width:400px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px;"><span>Churn score</span><span id="bar-val-1">0</span></div>
+            <div class="progress-bar-wrap"><span class="progress-bar-fill" id="bar-fill-1"></span></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px;"><span>Retention propensity</span><span id="bar-val-2">0</span></div>
+            <div class="progress-bar-wrap"><span class="progress-bar-fill fill-teal" id="bar-fill-2"></span></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px;"><span>Winback score</span><span id="bar-val-3">0</span></div>
+            <div class="progress-bar-wrap"><span class="progress-bar-fill fill-violet" id="bar-fill-3"></span></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px;"><span>Payment risk</span><span id="bar-val-4">0</span></div>
+            <div class="progress-bar-wrap"><span class="progress-bar-fill fill-amber" id="bar-fill-4"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note">Color variants: default blue, <code>.fill-teal</code>, <code>.fill-violet</code>, <code>.fill-amber</code>.</div>
+    </div>
+
+    <!-- ── 6. Score ring ───────────────────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 06</div>
+          <div class="pattern-title">Score Ring</div>
+        </div>
+        <div class="pattern-fn">fillRing(circleEl, pct, ms?)</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="ring-play">&#9654; Play</button>
+        <button class="anim-reset-btn" id="ring-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div class="demo-ring">
+          <div>
+            <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--sf-blue); margin-bottom:8px;">Churn Score</div>
+            <div class="score-ring-wrap">
+              <svg viewBox="0 0 120 120">
+                <circle class="score-ring-track" cx="60" cy="60" r="52" stroke-width="10"/>
+                <circle id="ring-fill-1" class="score-ring-fill" cx="60" cy="60" r="52"
+                  stroke="var(--pink, #FF538A)" stroke-width="10"
+                  stroke-dasharray="326" stroke-dashoffset="326"
+                  transform="rotate(-90 60 60)"/>
+              </svg>
+              <div class="score-ring-value"><span id="ring-val-1">0</span>%</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--teal); margin-bottom:8px;">Retention Score</div>
+            <div class="score-ring-wrap">
+              <svg viewBox="0 0 120 120">
+                <circle class="score-ring-track" cx="60" cy="60" r="52" stroke-width="10"/>
+                <circle id="ring-fill-2" class="score-ring-fill" cx="60" cy="60" r="52"
+                  stroke="var(--teal, #06A59A)" stroke-width="10"
+                  stroke-dasharray="326" stroke-dashoffset="326"
+                  transform="rotate(-90 60 60)"/>
+              </svg>
+              <div class="score-ring-value"><span id="ring-val-2">0</span>%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note">Set <code>stroke-dasharray</code> = circumference (2πr). <code>fillRing</code> animates <code>stroke-dashoffset</code> from full to partial.</div>
+    </div>
+
+    <!-- ── 7. Scrolling event stream ───────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 07</div>
+          <div class="pattern-title">Scrolling Event Stream</div>
+        </div>
+        <div class="pattern-fn">streamItem(listEl, html, maxVisible?)</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="stream-play">&#9654; Play</button>
+        <button class="anim-reset-btn" id="stream-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div style="max-width:360px; background:var(--cloud-95); border:1px solid var(--gray-200); border-radius:var(--radius-md); padding:14px 16px;">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--sf-blue); margin-bottom:10px;">Live Engagement Feed</div>
+          <ul class="stream-list" id="stream-demo"></ul>
+          <div style="display:flex; gap:16px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--gray-200); font-size:12px; color:var(--muted);">
+            Articles: <strong id="s-articles" style="color:var(--text);">0</strong>
+            &nbsp;Videos: <strong id="s-videos" style="color:var(--text);">0</strong>
+            &nbsp;Paywall: <strong id="s-paywall" style="color:var(--pink);">0</strong>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note">Old items fade out automatically — <code>maxVisible</code> defaults to 4. Add <code>.stream-warn</code> for alert-coloured items.</div>
+    </div>
+
+    <!-- ── 8. Pulse / active node ──────────────────────────────── -->
+    <div class="pattern-card">
+      <div class="pattern-head">
+        <div>
+          <div class="pattern-name">Pattern 08</div>
+          <div class="pattern-title">Pulse Ring (active node)</div>
+        </div>
+        <div class="pattern-fn">.pulse-ring / .pulse-teal / .pulse-violet</div>
+      </div>
+      <div class="pattern-controls">
+        <button class="anim-play-btn" id="pulse-play">&#9654; Activate</button>
+        <button class="anim-reset-btn" id="pulse-reset">Reset</button>
+      </div>
+      <div class="pattern-demo">
+        <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div id="pulse-1" style="width:48px; height:48px; border-radius:50%; background:var(--sf-blue); display:flex; align-items:center; justify-content:center;">
+              <div style="width:16px;height:16px;border-radius:50%;background:#fff;opacity:0.9;"></div>
+            </div>
+            <div style="font-size:11px; color:var(--muted);">Blue</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div id="pulse-2" style="width:48px; height:48px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center;">
+              <div style="width:16px;height:16px;border-radius:50%;background:#fff;opacity:0.9;"></div>
+            </div>
+            <div style="font-size:11px; color:var(--muted);">Teal</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div id="pulse-3" style="width:48px; height:48px; border-radius:50%; background:var(--violet); display:flex; align-items:center; justify-content:center;">
+              <div style="width:16px;height:16px;border-radius:50%;background:#fff;opacity:0.9;"></div>
+            </div>
+            <div style="font-size:11px; color:var(--muted);">Violet</div>
+          </div>
+        </div>
+      </div>
+      <div class="pattern-note">Add/remove <code>.pulse-ring</code> class on any element. No JS required — pure CSS animation.</div>
+    </div>
+
+  </div><!-- /patterns-wrap -->
+
+  <script src="animation.js"></script>
+  <script>
+  (() => {
+
+    /* ── 1. Typewriter chat ──────────────────────────────────────── */
+    const chatSeq = makeSequence();
+    const chatReset = () => {
+      document.getElementById('chat-user').classList.remove('show');
+      document.getElementById('chat-bot').classList.remove('show');
+      document.getElementById('chat-confirm').classList.remove('show');
+      document.getElementById('chat-typed').textContent = '';
+      document.getElementById('chat-count').textContent = '0';
+      document.querySelectorAll('#chat-rows .build-row').forEach(r => r.classList.remove('show','done'));
+      document.querySelectorAll('#chat-checklist li').forEach(l => l.classList.remove('checked'));
+    };
+    chatReset();
+
+    document.getElementById('chat-play').addEventListener('click', () => {
+      chatSeq.run(async (guard) => {
+        const userMsg = document.getElementById('chat-user');
+        const botMsg  = document.getElementById('chat-bot');
+        const confirm = document.getElementById('chat-confirm');
+        const typed   = document.getElementById('chat-typed');
+
+        userMsg.classList.add('show');
+        await guard(300);
+        await typeInto(typed, 'Find subscribers at high churn risk who are still actively reading.');
+        await guard(400);
+
+        botMsg.classList.add('show');
+        const rows = document.querySelectorAll('#chat-rows .build-row');
+        for (const row of rows) {
+          row.classList.add('show');
+          await guard(500);
+          row.classList.add('done');
+        }
+        await countUp(document.getElementById('chat-count'), 42180, 1000);
+        await guard(500);
+
+        confirm.classList.add('show');
+        const checks = document.querySelectorAll('#chat-checklist li');
+        for (const li of checks) { await guard(600); li.classList.add('checked'); }
+      });
+    });
+    document.getElementById('chat-reset').addEventListener('click', () => { chatSeq.abort(); chatReset(); });
+
+
+    /* ── 2. Flow / decision tree ────────────────────────────────── */
+    const flowSeq = makeSequence();
+    const flowWrap = document.getElementById('flow-demo');
+
+    const flowReset = () => {
+      flowWrap.querySelectorAll('.flow-node, .flow-connector, .flow-decision, .flow-exit')
+        .forEach(el => el.classList.remove('revealed','sending'));
+      flowWrap.querySelectorAll('.flow-connector').forEach(el => el.classList.remove('flowing'));
+      document.getElementById('branch-yes').classList.remove('active','inactive');
+      document.getElementById('branch-no').classList.remove('active','inactive');
+      document.getElementById('flow-exit-yes').classList.remove('cleared');
+      document.getElementById('flow-conn-no').style.display = '';
+      document.getElementById('flow-node-sms').style.display = '';
+    };
+    flowReset();
+
+    const playFlow = (path) => {
+      flowSeq.run(async (guard) => {
+        reveal(flowWrap, '.flow-node[data-step="1"]'); await guard(500);
+        const c1 = flowWrap.querySelector('.flow-connector[data-step="1"]');
+        c1.classList.add('revealed','flowing'); await guard(500);
+
+        const n2 = flowWrap.querySelector('.flow-node[data-step="2"]');
+        n2.classList.add('revealed','sending'); await guard(1200);
+        n2.classList.remove('sending');
+        const c2 = flowWrap.querySelector('.flow-connector[data-step="2"]');
+        c2.classList.add('revealed','flowing'); await guard(500);
+
+        reveal(flowWrap, '.flow-decision[data-step="3"]'); await guard(700);
+
+        if (path === 'yes') {
+          document.getElementById('branch-yes').classList.add('active');
+          document.getElementById('branch-no').classList.add('inactive');
+          await guard(500);
+          const exitYes = document.getElementById('flow-exit-yes');
+          exitYes.classList.add('revealed','cleared');
+          document.getElementById('flow-conn-no').style.display = 'none';
+          document.getElementById('flow-node-sms').style.display = 'none';
+        } else {
+          document.getElementById('branch-no').classList.add('active');
+          document.getElementById('branch-yes').classList.add('inactive');
+          await guard(700);
+          const cn = document.getElementById('flow-conn-no');
+          cn.classList.add('revealed','flowing'); await guard(500);
+          const sms = document.getElementById('flow-node-sms');
+          sms.classList.add('revealed','sending'); await guard(1200);
+          sms.classList.remove('sending');
+          const c4 = flowWrap.querySelector('.flow-connector[data-step="4"]');
+          c4.classList.add('revealed','flowing'); await guard(500);
+          reveal(flowWrap, '.flow-exit[data-step="5"]');
+        }
+      });
+    };
+
+    document.getElementById('flow-play-yes').addEventListener('click', () => playFlow('yes'));
+    document.getElementById('flow-play-no').addEventListener('click', () => playFlow('no'));
+    document.getElementById('flow-reset').addEventListener('click', () => { flowSeq.abort(); flowReset(); });
+
+
+    /* ── 3. Pipe / packets ──────────────────────────────────────── */
+    const pipeSeq = makeSequence();
+    const events = [
+      { type:'article', html:'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sf-blue-m);margin-right:6px;vertical-align:middle;"></span> Herald Sun · AFL finals preview' },
+      { type:'article', html:'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sf-blue-m);margin-right:6px;vertical-align:middle;"></span> Herald Sun · Demons injury report' },
+      { type:'video',   html:'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--teal);margin-right:6px;vertical-align:middle;"></span> NRL round 12 highlights' },
+      { type:'video',   html:'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--teal);margin-right:6px;vertical-align:middle;"></span> Socceroos goals compilation' },
+      { type:'paywall', html:'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pink);margin-right:6px;vertical-align:middle;"></span> Match-day exclusive — paywall hit', cls:'stream-warn' },
+    ];
+
+    const pipeReset = () => {
+      ['pipe-node-1','pipe-node-2','pipe-node-3','pipe-node-4'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      ['pipe-line-1','pipe-line-2','pipe-line-3'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      ['pipe-pkt-1','pipe-pkt-2','pipe-pkt-3'].forEach(id => {
+        document.getElementById(id).classList.remove('flowing');
+      });
+      document.getElementById('pipe-stream').innerHTML = '';
+      document.getElementById('pipe-bar').style.width = '0';
+      document.getElementById('pipe-score').textContent = '0.00';
+      document.getElementById('pipe-result').textContent = '—';
+      const sync = document.getElementById('pipe-sync');
+      const dot = document.getElementById('pipe-sync-dot');
+      sync.textContent = 'Waiting…'; sync.style.color = 'var(--muted)';
+      dot.closest('.pipe-node-content').querySelector('.sync-indicator')?.classList.remove('live');
+      dot.classList.remove('live'); // handled via parent
+      sync.classList.remove('live');
+    };
+    pipeReset();
+
+    document.getElementById('pipe-play').addEventListener('click', () => {
+      pipeSeq.run(async (guard) => {
+        const streamEl = document.getElementById('pipe-stream');
+        document.getElementById('pipe-node-1').classList.add('active');
+        let articles = 0, videos = 0, paywall = 0;
+        for (const evt of events) {
+          const li = document.createElement('li');
+          li.className = 'stream-item' + (evt.cls ? ' ' + evt.cls : '');
+          li.innerHTML = evt.html;
+          streamEl.appendChild(li);
+          requestAnimationFrame(() => li.classList.add('show'));
+          while (streamEl.children.length > 4) streamEl.removeChild(streamEl.firstChild);
+          await guard(550);
+        }
+
+        document.getElementById('pipe-line-1').classList.add('active');
+        document.getElementById('pipe-pkt-1').classList.add('flowing');
+        document.getElementById('pipe-node-2').classList.add('active');
+        const syncEl = document.getElementById('pipe-sync');
+        const dotEl  = document.getElementById('pipe-sync-dot');
+        syncEl.textContent = 'Streaming live'; syncEl.style.color = 'var(--teal)';
+        dotEl.style.background = 'var(--teal)';
+        dotEl.style.animation = 'sync-pulse 1.2s infinite';
+        await guard(1400);
+
+        document.getElementById('pipe-line-2').classList.add('active');
+        document.getElementById('pipe-pkt-2').classList.add('flowing');
+        document.getElementById('pipe-node-3').classList.add('active');
+        await guard(400);
+
+        const barEl   = document.getElementById('pipe-bar');
+        const scoreEl = document.getElementById('pipe-score');
+        const target  = 0.82;
+        const start   = performance.now();
+        await new Promise(resolve => {
+          const tick = (now) => {
+            const t = Math.min(1, (now - start) / 1400);
+            const v = (1 - Math.pow(1 - t, 3)) * target;
+            barEl.style.width = (v * 100) + '%';
+            scoreEl.textContent = v.toFixed(2);
+            if (t < 1) requestAnimationFrame(tick); else resolve();
+          };
+          requestAnimationFrame(tick);
+        });
+        await guard(400);
+
+        document.getElementById('pipe-line-3').classList.add('active');
+        document.getElementById('pipe-pkt-3').classList.add('flowing');
+        document.getElementById('pipe-node-4').classList.add('active');
+        await guard(700);
+        document.getElementById('pipe-result').innerHTML = '<strong style="color:var(--text)">Winback · Code Sports Trial</strong><br><span style="color:var(--muted); font-size:11px;">Audience synced · priority 92</span>';
+      });
+    });
+    document.getElementById('pipe-reset').addEventListener('click', () => { pipeSeq.abort(); pipeReset(); });
+
+
+    /* ── 4. Count-up ────────────────────────────────────────────── */
+    const countReset = () => {
+      document.getElementById('count-1').textContent = '0';
+      document.getElementById('count-2').textContent = '0';
+      document.getElementById('count-3').textContent = '0';
+    };
+    countReset();
+    document.getElementById('count-play').addEventListener('click', () => {
+      countUp(document.getElementById('count-1'), 218430, 1400);
+      countUp(document.getElementById('count-2'), 34, 1000);
+      countUp(document.getElementById('count-3'), 142000, 1600);
+    });
+    document.getElementById('count-reset').addEventListener('click', countReset);
+
+
+    /* ── 5. Progress bars ───────────────────────────────────────── */
+    const barData = [
+      { fill: 'bar-fill-1', val: 'bar-val-1', pct: 74 },
+      { fill: 'bar-fill-2', val: 'bar-val-2', pct: 88 },
+      { fill: 'bar-fill-3', val: 'bar-val-3', pct: 62 },
+      { fill: 'bar-fill-4', val: 'bar-val-4', pct: 48 },
+    ];
+    const barReset = () => barData.forEach(b => {
+      document.getElementById(b.fill).style.width = '0';
+      document.getElementById(b.val).textContent = '0';
+    });
+    barReset();
+    document.getElementById('bar-play').addEventListener('click', () => {
+      barData.forEach((b, i) => {
+        const fillEl = document.getElementById(b.fill);
+        const valEl  = document.getElementById(b.val);
+        setTimeout(() => {
+          fillBar(fillEl, b.pct, 900);
+          countUp(valEl, b.pct, 900);
+        }, i * 120);
+      });
+    });
+    document.getElementById('bar-reset').addEventListener('click', barReset);
+
+
+    /* ── 6. Score ring ──────────────────────────────────────────── */
+    const ringReset = () => {
+      document.getElementById('ring-fill-1').setAttribute('stroke-dashoffset', '326');
+      document.getElementById('ring-fill-2').setAttribute('stroke-dashoffset', '326');
+      document.getElementById('ring-val-1').textContent = '0';
+      document.getElementById('ring-val-2').textContent = '0';
+    };
+    ringReset();
+    document.getElementById('ring-play').addEventListener('click', () => {
+      fillRing(document.getElementById('ring-fill-1'), 74, 1200);
+      countUp(document.getElementById('ring-val-1'), 74, 1200);
+      fillRing(document.getElementById('ring-fill-2'), 88, 1200);
+      countUp(document.getElementById('ring-val-2'), 88, 1200);
+    });
+    document.getElementById('ring-reset').addEventListener('click', ringReset);
+
+
+    /* ── 7. Event stream ────────────────────────────────────────── */
+    const streamEvents = [
+      { html: '· Herald Sun · AFL finals preview' },
+      { html: '· Herald Sun · Demons injury report', delay: 600 },
+      { html: '· NRL round 12 highlights', delay: 600 },
+      { html: '· Socceroos goals compilation', delay: 700 },
+      { html: '· Paywall hit — Code Sports exclusive', cls: 'stream-warn', delay: 500 },
+      { html: '· Paywall hit — Match-day exclusive', cls: 'stream-warn', delay: 600 },
+      { html: '· Herald Sun · Grand Prix wrap', delay: 700 },
+    ];
+    const streamReset = () => {
+      document.getElementById('stream-demo').innerHTML = '';
+      document.getElementById('s-articles').textContent = '0';
+      document.getElementById('s-videos').textContent = '0';
+      document.getElementById('s-paywall').textContent = '0';
+    };
+    streamReset();
+    let streamTimer = null;
+    document.getElementById('stream-play').addEventListener('click', async () => {
+      const listEl = document.getElementById('stream-demo');
+      let a = 0, v = 0, p = 0;
+      for (const evt of streamEvents) {
+        await wait(evt.delay || 550);
+        const li = document.createElement('li');
+        li.className = 'stream-item' + (evt.cls ? ' ' + evt.cls : '');
+        li.textContent = evt.html;
+        listEl.appendChild(li);
+        requestAnimationFrame(() => li.classList.add('show'));
+        while (listEl.children.length > 4) listEl.removeChild(listEl.firstChild);
+        if (evt.html.includes('Herald Sun') || evt.html.includes('Grand Prix')) document.getElementById('s-articles').textContent = ++a;
+        if (evt.html.includes('NRL') || evt.html.includes('Socceroos')) document.getElementById('s-videos').textContent = ++v;
+        if (evt.html.includes('Paywall')) document.getElementById('s-paywall').textContent = ++p;
+      }
+    });
+    document.getElementById('stream-reset').addEventListener('click', streamReset);
+
+
+    /* ── 8. Pulse rings ─────────────────────────────────────────── */
+    document.getElementById('pulse-play').addEventListener('click', () => {
+      document.getElementById('pulse-1').classList.add('pulse-ring');
+      document.getElementById('pulse-2').classList.add('pulse-ring', 'pulse-teal');
+      document.getElementById('pulse-3').classList.add('pulse-ring', 'pulse-violet');
+    });
+    document.getElementById('pulse-reset').addEventListener('click', () => {
+      document.getElementById('pulse-1').classList.remove('pulse-ring');
+      document.getElementById('pulse-2').classList.remove('pulse-ring', 'pulse-teal');
+      document.getElementById('pulse-3').classList.remove('pulse-ring', 'pulse-violet');
+    });
+
+  })();
+  </script>
+</body>
+</html>

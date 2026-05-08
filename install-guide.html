@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Decktools — Install Guide</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    :root { --accent: #04E1CB; --accent-l: #06A59A; }
+
+    * { box-sizing: border-box; }
+    body { background: var(--white); color: var(--text); }
+
+    /* ── Page layout ── */
+    .page-wrap { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* ── Hero ── */
+    .guide-hero {
+      background: var(--grad-evening);
+      padding: 72px 40px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .guide-hero::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 100%;
+      height: 3px; background: var(--accent);
+      animation: accent-line 1.2s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
+    }
+    @keyframes accent-line { to { right: 0; } }
+
+    .guide-hero-inner { max-width: 860px; margin: 0 auto; }
+    .guide-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--sf-blue-l); margin-bottom: 18px;
+    }
+    .guide-eyebrow::before {
+      content: ''; width: 20px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .guide-hero h1 {
+      font-size: clamp(28px, 3vw, 42px);
+      font-weight: 700; line-height: 1.1; letter-spacing: -0.025em;
+      color: var(--white); margin: 0 0 16px;
+    }
+    .guide-hero h1 em { font-style: normal; color: var(--sf-blue-l); }
+    .guide-hero p {
+      font-size: 16px; color: rgba(255,255,255,0.75); line-height: 1.6;
+      max-width: 620px; margin: 0;
+    }
+    .guide-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px;
+      background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    /* ── Section titles ── */
+    .section { padding: 56px 0 0; }
+    .section-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--sf-blue-m); margin-bottom: 8px;
+    }
+    .section h2 {
+      font-size: 24px; font-weight: 700; color: var(--sf-navy);
+      margin: 0 0 28px; letter-spacing: -0.02em;
+    }
+
+    /* ── What is it ── */
+    .what-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      margin-top: 4px;
+    }
+    .what-card {
+      background: var(--off-white); border-radius: 12px; padding: 24px 20px;
+      border: 1px solid var(--gray-200);
+    }
+    .what-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px; font-size: 20px;
+    }
+    .what-card h3 { font-size: 14px; font-weight: 700; color: var(--sf-navy); margin: 0 0 6px; }
+    .what-card p { font-size: 13px; color: var(--body); line-height: 1.55; margin: 0; }
+
+    /* ── Prerequisites ── */
+    .prereq-list {
+      display: flex; flex-direction: column; gap: 10px;
+      margin: 0; padding: 0; list-style: none;
+    }
+    .prereq-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px; border-radius: 10px;
+      background: var(--off-white); border: 1px solid var(--gray-200);
+    }
+    .prereq-badge {
+      flex-shrink: 0;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--sf-blue); color: #fff;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .prereq-item strong { font-size: 13px; color: var(--sf-navy); }
+    .prereq-item span { font-size: 12px; color: var(--muted); }
+    .prereq-item .prereq-text { display: flex; flex-direction: column; gap: 1px; }
+
+    /* ── Install steps ── */
+    .install-steps { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
+    .step {
+      display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start;
+    }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--sf-navy); color: #fff;
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .step-body h3 { font-size: 15px; font-weight: 700; color: var(--sf-navy); margin: 0 0 4px; }
+    .step-body p { font-size: 13px; color: var(--body); line-height: 1.55; margin: 0 0 10px; }
+    .step-body p:last-child { margin-bottom: 0; }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: var(--sf-navy);
+      border-radius: 8px; padding: 14px 18px;
+      font-family: 'SF Mono', 'Fira Mono', 'Consolas', monospace;
+      font-size: 13px; color: var(--sf-blue-l);
+      overflow-x: auto; position: relative;
+      margin: 8px 0 0;
+    }
+    .code-block .comment { color: rgba(255,255,255,0.3); }
+    .code-block .cmd { color: #fff; }
+    .code-block .flag { color: var(--accent); }
+    .code-copy {
+      position: absolute; top: 10px; right: 12px;
+      background: rgba(255,255,255,0.1); border: none; border-radius: 5px;
+      color: rgba(255,255,255,0.6); font-size: 10px; font-weight: 600;
+      padding: 3px 8px; cursor: pointer; letter-spacing: 0.05em;
+      transition: background 0.15s, color 0.15s;
+    }
+    .code-copy:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+    /* ── Divider ── */
+    hr.div { border: none; border-top: 1px solid var(--gray-200); margin: 48px 0 0; }
+
+    /* ── File map ── */
+    .file-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    .file-table th {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); padding: 8px 12px; text-align: left;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    .file-table td {
+      font-size: 13px; padding: 10px 12px; border-bottom: 1px solid var(--gray-200);
+      vertical-align: top;
+    }
+    .file-table tr:last-child td { border-bottom: none; }
+    .file-table .fname {
+      font-family: 'SF Mono', 'Fira Mono', monospace;
+      font-size: 12px; color: var(--sf-blue); font-weight: 600;
+      white-space: nowrap;
+    }
+    .file-table .fdesc { color: var(--body); }
+    .file-table .freq {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 999px;
+    }
+    .req-required { background: #EFF6FF; color: var(--sf-blue); }
+    .req-optional { background: var(--off-white); color: var(--muted); }
+
+    /* ── Workflow ── */
+    .workflow-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px; }
+    .workflow-card {
+      border-radius: 12px; border: 1px solid var(--gray-200);
+      padding: 22px 20px; background: var(--white);
+    }
+    .workflow-card.highlight {
+      background: linear-gradient(135deg, #EFF6FF, #EAF5FE);
+      border-color: var(--sf-blue-l);
+    }
+    .workflow-card h3 {
+      font-size: 13px; font-weight: 700; color: var(--sf-navy);
+      margin: 0 0 10px; letter-spacing: 0.01em;
+    }
+    .workflow-card ol, .workflow-card ul {
+      margin: 0; padding-left: 18px;
+    }
+    .workflow-card li { font-size: 13px; color: var(--body); line-height: 1.6; margin-bottom: 2px; }
+
+    /* ── Feedback widget callout ── */
+    .widget-callout {
+      background: linear-gradient(135deg, #EFF6FF 0%, #F0FDF9 100%);
+      border: 1.5px solid var(--sf-blue-l);
+      border-radius: 14px; padding: 28px 28px 24px;
+      margin-top: 4px;
+    }
+    .widget-callout h3 { font-size: 16px; font-weight: 700; color: var(--sf-navy); margin: 0 0 8px; }
+    .widget-callout p { font-size: 13px; color: var(--body); line-height: 1.6; margin: 0 0 16px; }
+    .widget-steps { display: flex; flex-direction: column; gap: 8px; }
+    .widget-step {
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .ws-num {
+      flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--sf-blue-m); color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .ws-text { font-size: 13px; color: var(--body); line-height: 1.55; }
+    .ws-text strong { color: var(--sf-navy); }
+
+    /* ── Update flow ── */
+    .update-box {
+      background: var(--sf-navy); border-radius: 12px;
+      padding: 24px 24px 20px; margin-top: 4px;
+      color: rgba(255,255,255,0.85);
+    }
+    .update-box h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 10px; }
+    .update-box p { font-size: 13px; line-height: 1.6; margin: 0 0 12px; }
+    .update-box p:last-child { margin-bottom: 0; }
+
+    /* ── Closing ── */
+    .closing-band {
+      background: var(--grad-evening);
+      border-radius: 16px; padding: 40px 36px;
+      margin-top: 48px;
+      text-align: center;
+    }
+    .closing-band h2 { font-size: 22px; font-weight: 700; color: #fff; margin: 0 0 10px; }
+    .closing-band p { font-size: 14px; color: rgba(255,255,255,0.7); margin: 0 0 24px; line-height: 1.6; }
+    .closing-steps { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .c-step {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px; padding: 14px 20px; min-width: 160px;
+    }
+    .c-step.primary { background: var(--sf-blue-m); border-color: var(--sf-blue-m); }
+    .c-step .cs-num { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .c-step .cs-text { font-size: 13px; font-weight: 700; color: #fff; }
+
+    @media (max-width: 640px) {
+      .what-grid { grid-template-columns: 1fr; }
+      .workflow-cards { grid-template-columns: 1fr; }
+      .closing-steps { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="guide-hero">
+    <div class="guide-hero-inner">
+      <div class="guide-eyebrow">Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;opacity:0.8;">Miles Toolin</a></div>
+      <h1>Build Salesforce customer decks<br/><em>in minutes, not days.</em></h1>
+      <p>SF Decktools is a complete design system for building narrative-driven HTML decks — built on the official 2026 Salesforce brand guidelines. One command installs everything into Claude Code, and it enforces the rules for you automatically.</p>
+      <div class="guide-chips">
+        <span class="chip">Salesforce Brand 2026</span>
+        <span class="chip">Claude Code Skill</span>
+        <span class="chip">Async Review Widget</span>
+        <span class="chip">No Build Step</span>
+        <span class="chip">Chrome + Edge</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-wrap">
+
+    <!-- WHAT IS IT -->
+    <div class="section">
+      <div class="section-eyebrow">What you get</div>
+      <h2>Three things that work together</h2>
+      <div class="what-grid">
+        <div class="what-card">
+          <div class="what-icon" style="background:#EFF6FF;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#022AC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <h3>Design System</h3>
+          <p>Tokens, components, fonts, icons, and brand rules — all correct, all ready. Drop them into any deck with two `&lt;link&gt;` tags.</p>
+        </div>
+        <div class="what-card">
+          <div class="what-icon" style="background:#F0FDF9;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06A59A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Claude Skill</h3>
+          <p>Installs into Claude Code with one command. Automatically loads every brand rule before touching any deck — you never have to describe the system manually.</p>
+        </div>
+        <div class="what-card">
+          <div class="what-icon" style="background:#EAF5FE;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#066AFE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>Feedback Widget</h3>
+          <p>Every deck ships with an async review widget. Reviewers leave comments per slide — like Google Slides — and Claude reads the output to apply changes automatically.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="div" />
+
+    <!-- PREREQUISITES -->
+    <div class="section">
+      <div class="section-eyebrow">Before you start</div>
+      <h2>Prerequisites</h2>
+      <ul class="prereq-list">
+        <li class="prereq-item">
+          <div class="prereq-badge">1</div>
+          <div class="prereq-text">
+            <strong>Claude Code CLI installed</strong>
+            <span>Install from claude.ai/code or via <code>npm i -g @anthropic-ai/claude-code</code></span>
+          </div>
+        </li>
+        <li class="prereq-item">
+          <div class="prereq-badge">2</div>
+          <div class="prereq-text">
+            <strong>Git installed</strong>
+            <span>Required for <code>claude skills install</code> to fetch the repo</span>
+          </div>
+        </li>
+        <li class="prereq-item">
+          <div class="prereq-badge">3</div>
+          <div class="prereq-text">
+            <strong>Chrome or Edge browser</strong>
+            <span>Required for the feedback widget's file-write feature. Firefox works for presenting but can't write feedback.md directly.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <hr class="div" />
+
+    <!-- INSTALL -->
+    <div class="section">
+      <div class="section-eyebrow">Installation</div>
+      <h2>Get up and running in 3 steps</h2>
+      <div class="install-steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Install the Claude skill</h3>
+            <p>Run this once. It pulls the full decktools repo and registers the skill globally in Claude Code.</p>
+            <div class="code-block">
+              <button class="code-copy" onclick="copyCode(this, 'claude skills install github.com/mtoolin/sf-decktools')">COPY</button>
+              <span class="cmd">claude skills install github.com/mtoolin/sf-decktools</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Open Claude Code in the decktools directory</h3>
+            <p>All deck files live here. Claude reads the design system files from this directory automatically when the skill is active.</p>
+            <div class="code-block">
+              <button class="code-copy" onclick="copyCode(this, 'cd ~/claude/decktools && claude')">COPY</button>
+              <span class="cmd">cd ~/claude/decktools <span class="comment">&amp;&amp;</span> claude</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Build your first deck</h3>
+            <p>Type this in Claude Code. The skill kicks in automatically — it loads every brand rule, reads the canonical template, and scaffolds a new deck for your customer.</p>
+            <div class="code-block">
+              <button class="code-copy" onclick="copyCode(this, '/sf-decktools new')">COPY</button>
+              <span class="cmd">/sf-decktools new</span>
+            </div>
+            <p style="margin-top:10px;">Claude will ask: customer name, brand color, story arc, KPI numbers, and two beachhead use cases. Answer those — it builds the full deck.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="div" />
+
+    <!-- FILE MAP -->
+    <div class="section">
+      <div class="section-eyebrow">What's in the repo</div>
+      <h2>Key files</h2>
+      <table class="file-table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>What it does</th>
+            <th>Use it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fname">tokens.css</td>
+            <td class="fdesc">All design tokens — colors, spacing, typography, gradients. Source of truth for the 2026 Salesforce brand palette.</td>
+            <td><span class="freq req-required">Required</span></td>
+          </tr>
+          <tr>
+            <td class="fname">components.css</td>
+            <td class="fdesc">Every reusable component class — nav, hero, cards, proof stats, closing. Never write custom layout CSS when a component exists here.</td>
+            <td><span class="freq req-required">Required</span></td>
+          </tr>
+          <tr>
+            <td class="fname">sf-composer.html</td>
+            <td class="fdesc">The canonical 12-slide best-deck example. Read this before building anything — it's the reference for structure, animation, and copy style.</td>
+            <td><span class="freq req-required">Required</span></td>
+          </tr>
+          <tr>
+            <td class="fname">feedback-widget.js</td>
+            <td class="fdesc">Async review widget. Drop one script tag into any deck — reviewer leaves per-slide comments, Claude reads feedback.md to apply changes.</td>
+            <td><span class="freq req-required">Required</span></td>
+          </tr>
+          <tr>
+            <td class="fname">animation.js</td>
+            <td class="fdesc">Entrance animation engine. typeInto, countUp, fillBar, streamItem — all the interactive patterns.</td>
+            <td><span class="freq req-optional">Optional</span></td>
+          </tr>
+          <tr>
+            <td class="fname">STYLE-GUIDE.md</td>
+            <td class="fdesc">Full brand rules, voice guidelines, color system, persuasion framework (Bowden). Claude reads this automatically when the skill is active.</td>
+            <td><span class="freq req-optional">Reference</span></td>
+          </tr>
+          <tr>
+            <td class="fname">SLIDE-PRINCIPLES.md</td>
+            <td class="fdesc">Slide-specific rules — section order, component assignments, do/don't list. Claude reads this automatically.</td>
+            <td><span class="freq req-optional">Reference</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="div" />
+
+    <!-- WORKFLOW -->
+    <div class="section">
+      <div class="section-eyebrow">Day to day</div>
+      <h2>Two core workflows</h2>
+      <div class="workflow-cards">
+        <div class="workflow-card highlight">
+          <h3>Building a new customer deck</h3>
+          <ol>
+            <li>Open Claude Code in <code>~/claude/decktools</code></li>
+            <li>Run <code>/sf-decktools new</code></li>
+            <li>Answer 6 questions (Claude handles the rest)</li>
+            <li>Open the generated HTML file in Chrome — no build step</li>
+            <li>Iterate with plain English: "make the hero copy more direct"</li>
+            <li>Share the file or host it — it's self-contained</li>
+          </ol>
+        </div>
+        <div class="workflow-card">
+          <h3>Editing an existing deck</h3>
+          <ol>
+            <li>Open Claude Code in <code>~/claude/decktools</code></li>
+            <li>Say: "edit westpac.html — change the proof section"</li>
+            <li>Claude loads all style rules automatically before touching the file</li>
+            <li>Review the change in Chrome, iterate</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <hr class="div" />
+
+    <!-- FEEDBACK WIDGET -->
+    <div class="section">
+      <div class="section-eyebrow">Async review</div>
+      <h2>The feedback widget</h2>
+      <div class="widget-callout">
+        <h3>How it works — reviewer side</h3>
+        <p>Every deck built with decktools has a floating review button (bottom-right). Share the deck URL with a teammate — they open it in Chrome and leave comments directly on each slide. No Slack thread of disconnected feedback. No screen share required.</p>
+        <div class="widget-steps">
+          <div class="widget-step">
+            <div class="ws-num">1</div>
+            <div class="ws-text"><strong>Click the chat icon</strong> bottom-right to open the review panel</div>
+          </div>
+          <div class="widget-step">
+            <div class="ws-num">2</div>
+            <div class="ws-text"><strong>Enter your name once</strong> — it's remembered for the session</div>
+          </div>
+          <div class="widget-step">
+            <div class="ws-num">3</div>
+            <div class="ws-text"><strong>Navigate slides, type comments</strong> — each one is tagged to the slide automatically</div>
+          </div>
+          <div class="widget-step">
+            <div class="ws-num">4</div>
+            <div class="ws-text">On first comment, Chrome asks permission to <strong>save feedback.md</strong> to your local folder — grant it once</div>
+          </div>
+          <div class="widget-step">
+            <div class="ws-num">5</div>
+            <div class="ws-text"><strong>Click "End Review"</strong> — saves the final file and shows a summary</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:16px; padding:20px 22px; border-radius:12px; background:var(--off-white); border:1px solid var(--gray-200);">
+        <h3 style="font-size:14px;font-weight:700;color:var(--sf-navy);margin:0 0 8px;">Applying feedback — author side</h3>
+        <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0 0 10px;">After the reviewer sends you their feedback.md, drop it in the decktools directory and tell Claude:</p>
+        <div class="code-block">
+          <button class="code-copy" onclick="copyCode(this, 'read feedback.md and apply the changes to westpac.html')">COPY</button>
+          <span class="cmd">read feedback.md and apply the changes to westpac.html</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin:10px 0 0;">Claude reads the per-slide comment threads and applies each change — copy edits, layout changes, and design notes — then reports back what it did.</p>
+      </div>
+      <div style="margin-top:12px;padding:14px 18px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;">
+        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">Presenter mode: click the <strong>P button</strong> (bottom-right, next to the review icon) to hide the widget entirely during a live demo. Click again to restore review mode.</p>
+      </div>
+    </div>
+
+    <hr class="div" />
+
+    <!-- UPDATES -->
+    <div class="section">
+      <div class="section-eyebrow">Staying current</div>
+      <h2>Updates</h2>
+      <div class="update-box">
+        <h3>Auto-update prompts</h3>
+        <p>When the decktools skill is updated, Claude will tell you at the start of your next session:</p>
+        <div class="code-block" style="background:rgba(255,255,255,0.08);border-radius:6px;padding:10px 14px;margin:0 0 12px;">
+          <span style="color:rgba(255,255,255,0.5);">sf-decktools skill v1.1 is available.</span><br/>
+          <span style="color:#fff;">Run </span><span style="color:var(--accent);">claude skills install github.com/mtoolin/sf-decktools</span><span style="color:#fff;"> to update.</span>
+        </div>
+        <p>Run that command any time to pull the latest brand rules, components, and widget improvements. Your deck files are untouched — only the skill and shared CSS/JS files update.</p>
+      </div>
+    </div>
+
+    <!-- CLOSING -->
+    <div class="closing-band">
+      <h2>Your first deck in under 10 minutes</h2>
+      <p>Install the skill, answer 6 questions, open the HTML file.<br/>No design tools. No PowerPoint. No brand review cycle.</p>
+      <div class="closing-steps">
+        <div class="c-step primary">
+          <div class="cs-num">Step 1</div>
+          <div class="cs-text">Install the skill</div>
+        </div>
+        <div class="c-step">
+          <div class="cs-num">Step 2</div>
+          <div class="cs-text">Run /sf-decktools new</div>
+        </div>
+        <div class="c-step">
+          <div class="cs-num">Step 3</div>
+          <div class="cs-text">Open in Chrome</div>
+        </div>
+      </div>
+      <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.4);">
+        Questions? Ping Matt in <strong style="color:rgba(255,255,255,0.6);">#mt-vibe-tutorials</strong>
+      </p>
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <div style="text-align:center;padding:32px 40px;font-size:12px;color:var(--muted);border-top:1px solid var(--gray-200);margin-top:0;">
+    Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:var(--sf-blue);text-decoration:none;font-weight:600;">Miles Toolin</a>
+  </div>
+
+  <script>
+    function copyCode(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'COPIED';
+        setTimeout(() => { btn.textContent = orig; }, 1800);
+      });
+    }
+  </script>
+
+</body>
+</html>

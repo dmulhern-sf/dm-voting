@@ -3,68 +3,128 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Style Guide — Salesforce Narrative System 2026</title>
+  <title>Style Guide Example — Decktools by Miles Toolin</title>
   <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="components.css" />
   <style>
-    body { padding-top: 60px; }
+    body { background: #0a0a0a; padding: 0; }
 
+    /* ── Hero header — full evening gradient ── */
     .sg-header {
       background: var(--grad-evening);
-      padding: 40px 48px;
-      border-bottom: 3px solid var(--sf-blue-l);
+      padding: 80px 96px 72px;
+      position: relative;
     }
-    .sg-header h1 { font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
-    .sg-header p  { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .sg-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--sf-blue-l);
+    }
+    .sg-header .eyebrow { color: var(--sf-blue-l); margin-bottom: 16px; }
+    .sg-header h1 {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .sg-header h1 em { color: var(--sf-blue-l); font-style: normal; }
+    .sg-header p { font-size: 15px; color: rgba(255,255,255,0.65); max-width: 620px; line-height: 1.6; }
+    .sg-header p a { color: var(--sf-blue-l); text-decoration: none; }
+    .sg-header p a:hover { text-decoration: underline; }
+
+    /* ── Alternating section bands ── */
+    .sg-band {
+      padding: 64px 96px;
+    }
+    .sg-band-dark  { background: var(--sf-navy); }
+    .sg-band-navy  { background: #000E2E; }
+    .sg-band-light { background: #fff; }
+    .sg-band-off   { background: var(--off-white); }
 
     .sg-section {
       max-width: 1200px; margin: 0 auto;
-      padding: 48px 48px 0;
     }
     .sg-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--sf-blue);
-      border-bottom: 1px solid var(--gray-200);
-      padding-bottom: 8px; margin-bottom: 24px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--sf-blue-l);
+      padding-bottom: 10px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    .sg-spacer { height: 48px; }
+    .sg-band-light .sg-label,
+    .sg-band-off   .sg-label {
+      color: var(--sf-blue);
+      border-bottom-color: var(--gray-200);
+    }
+    .sg-spacer { height: 40px; }
     .sg-note {
-      font-size: 12px; color: var(--muted);
-      margin-top: 12px; padding: 10px 14px;
-      background: var(--off-white); border-left: 3px solid var(--sf-blue-l);
-      border-radius: 0 4px 4px 0;
+      font-size: 12px; color: rgba(255,255,255,0.5);
+      margin-top: 16px; padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid var(--sf-blue-l);
+      border-radius: 0 6px 6px 0;
+      line-height: 1.5;
     }
+    .sg-band-light .sg-note,
+    .sg-band-off   .sg-note {
+      color: var(--muted);
+      background: var(--cloud-95);
+      border-left-color: var(--sf-blue-l);
+    }
+    .sg-section-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 400;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .sg-band-light .sg-section-title,
+    .sg-band-off   .sg-section-title { color: var(--sf-navy); }
 
     /* Swatches */
     .swatch-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
     .swatch { display: flex; flex-direction: column; gap: 6px; width: 130px; }
-    .swatch-color { height: 56px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); }
-    .swatch-name { font-size: 11px; font-weight: 600; color: var(--text); font-family: monospace; }
-    .swatch-hex  { font-size: 10px; color: var(--muted); font-family: monospace; }
-    .swatch-tag  { font-size: 9px; color: var(--sf-blue); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .swatch-color { height: 56px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+    .swatch-name { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.85); font-family: monospace; }
+    .swatch-hex  { font-size: 10px; color: rgba(255,255,255,0.45); font-family: monospace; }
+    .swatch-tag  { font-size: 9px; color: var(--sf-blue-l); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .sg-band-light .swatch-name, .sg-band-off .swatch-name { color: var(--text); }
+    .sg-band-light .swatch-hex,  .sg-band-off .swatch-hex  { color: var(--muted); }
+    .sg-band-light .swatch-tag,  .sg-band-off .swatch-tag  { color: var(--sf-blue); }
+    .sg-band-light .swatch-color, .sg-band-off .swatch-color { border-color: rgba(0,0,0,0.08); }
 
     /* Gradient swatches */
     .grad-swatch { height: 120px; border-radius: 8px; margin-bottom: 6px; }
 
     /* Type */
-    .type-row { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--gray-100); }
-    .type-label { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; font-family: monospace; }
+    .type-row { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sg-band-light .type-row, .sg-band-off .type-row { border-bottom-color: var(--gray-100); }
+    .type-label { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; font-family: monospace; }
+    .sg-band-light .type-label, .sg-band-off .type-label { color: var(--muted); }
 
     /* Radius */
     .radius-row { display: flex; gap: 16px; flex-wrap: wrap; }
     .radius-box {
       width: 80px; height: 80px;
-      background: rgba(2,42,192,0.10);
-      border: 2px solid var(--sf-blue);
+      background: rgba(0,179,255,0.1);
+      border: 2px solid var(--sf-blue-l);
       display: flex; align-items: center; justify-content: center;
-      font-size: 10px; color: var(--sf-navy); font-weight: 700;
+      font-size: 10px; color: #fff; font-weight: 700;
     }
 
-    .dark-strip { background: var(--sf-navy); padding: 48px; }
+    .dark-strip { background: #000E2E; padding: 48px 96px; }
     .dark-strip .sg-label { color: rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.1); }
 
-    .font-specimen { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-100); }
-    .font-weight-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-family: monospace; }
+    .font-specimen { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sg-band-light .font-specimen, .sg-band-off .font-specimen { border-bottom-color: var(--gray-100); }
+    .font-weight-label { font-size: 10px; color: rgba(255,255,255,0.4); margin-bottom: 4px; font-family: monospace; }
+    .sg-band-light .font-weight-label, .sg-band-off .font-weight-label { color: var(--muted); }
 
     /* Logo fix — explicit dimensions prevent blurry render */
     .logo-horiz { height: 32px; width: auto; display: block; }
@@ -84,30 +144,18 @@
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <div class="nav-lockup">
-      <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-RGB.svg"
-           class="nav-logo-sf logo-horiz" alt="Salesforce"
-           width="160" height="28" />
-      <div class="nav-divider"></div>
-      <span class="nav-title">Narrative System 2026</span>
-    </div>
-    <span class="nav-tag">Brand Showcase — internal</span>
-  </div>
-</nav>
-
 <!-- PAGE HEADER -->
 <div class="sg-header">
-  <h1>Salesforce Narrative Design System — 2026</h1>
-  <p>Every token, component, and brand rule in one place. Source: Salesforce Brand Guidelines &amp; Toolkits 2026.</p>
+  <div class="eyebrow">Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">Miles Toolin</a> · 2026</div>
+  <h1>Every token, component,<br/><em>and pattern. One reference.</em></h1>
+  <p>Source: Salesforce Brand Guidelines &amp; Toolkits 2026. See also: <a href="chip-variants.html">chip-variants.html</a> · <a href="animation-demo.html">animation-demo.html</a> · <a href="sf-composer.html">sf-composer.html</a> (best-deck example)</p>
 </div>
 
 
 <!-- ─────────────────────────────────────────────
      1. COLOR — PRIMARY PALETTE
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-dark">
 <div class="sg-section">
   <div class="sg-label">1a — Primary Palette (Electric Blue Scale) — 80% of all color area</div>
   <div class="swatch-row">
@@ -195,31 +243,20 @@
     </div>
   </div>
 
-  <div class="sg-label" style="margin-top:32px;">1c — Customer Accent (swap per deal)</div>
-  <div class="swatch-row">
-    <div class="swatch">
-      <div class="swatch-color" style="background:#DA1710;"></div>
-      <div class="swatch-name">--accent</div>
-      <div class="swatch-hex">#DA1710</div>
-      <div class="swatch-tag">Default / Westpac</div>
-    </div>
-    <div class="swatch">
-      <div class="swatch-color" style="background:#FF4A3D;"></div>
-      <div class="swatch-name">--accent-l</div>
-      <div class="swatch-hex">#FF4A3D</div>
-      <div class="swatch-tag">Light variant</div>
-    </div>
+  <div class="sg-label" style="margin-top:32px;">1c — Customer Brand &amp; Accent Colours</div>
+  <div style="background:var(--sf-navy);border-radius:12px;padding:28px 32px;max-width:640px;">
+    <div style="font-size:13px;font-weight:700;color:var(--sf-blue-l);margin-bottom:8px;">Need to match a customer's brand?</div>
+    <p style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.6;margin-bottom:16px;">Share the customer's website with Claude and ask: <em style="color:var(--sf-blue-l);">"Extract the brand colours and suggest a <code>--accent</code> and <code>--accent-l</code> override for this deck."</em> Claude will pull their hex values, check contrast, and give you the exact CSS override to paste into the page head.</p>
+    <div style="font-size:12px;color:rgba(255,255,255,0.45);">Remember: accent replaces one secondary colour slot per page — never override the primary blues.</div>
   </div>
-  <p class="sg-note">80/20 rule: 80% of visible color must be primary blues. Secondary colors are single accent pops — never two on the same card. Customer accent replaces one secondary slot per page, not a primary blue.</p>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band colour -->
 
 
 <!-- ─────────────────────────────────────────────
      2. GRADIENTS
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-navy">
 <div class="sg-section">
   <div class="sg-label">2 — Atmosphere Gradients — official 2026 color stops</div>
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
@@ -250,14 +287,13 @@
   </div>
   <p class="sg-note">Gradients are approved for full-bleed section backgrounds only. Never on card interiors, text, or buttons. Data-dense sections (compare table, stack) use solid colors for legibility.</p>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band gradients -->
 
 
 <!-- ─────────────────────────────────────────────
      3. TYPOGRAPHY
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-light">
 <div class="sg-section">
   <div class="sg-label">3 — Typography — Salesforce Sans</div>
 
@@ -312,14 +348,13 @@
     <div class="card-body">Trigger personalised offers the moment a customer opens the app — not 24 hours later. <strong>The window is measured in seconds.</strong></div>
   </div>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band typography -->
 
 
 <!-- ─────────────────────────────────────────────
      4. BORDER RADIUS
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-dark">
 <div class="sg-section">
   <div class="sg-label">4 — Border Radius — tight, no large curves</div>
   <div class="radius-row">
@@ -337,14 +372,13 @@
     </div>
   </div>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band radius -->
 
 
 <!-- ─────────────────────────────────────────────
      5. BUTTONS
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-dark">
 <div class="sg-section">
   <div class="sg-label">5 — Buttons</div>
   <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
@@ -353,14 +387,13 @@
   </div>
   <p class="sg-note">Flat Electric Blue 30 — no gradient. Hover darkens to Electric Blue 15 (navy). 8px radius. Font: Salesforce Sans 700.</p>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band buttons -->
 
 
 <!-- ─────────────────────────────────────────────
      6. LOGOS
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-off">
 <div class="sg-section">
   <div class="sg-label">6 — Official 2026 Logos (SVG — vector, always crisp)</div>
   <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:center;margin-bottom:24px;">
@@ -392,14 +425,13 @@
   </div>
   <p class="sg-note">Always SVG. Explicit width/height attributes prevent browser blurriness. Use Horizontal-RGB on white (nav). Use White or KO on dark/gradient backgrounds. Cloud mark for icon-only or favicon contexts.</p>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band logos -->
 
 
 <!-- ─────────────────────────────────────────────
      7. HERO
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-dark">
 <div class="sg-section">
   <div class="sg-label">7 — Hero Section — Evening gradient, official KO logo</div>
 </div>
@@ -407,30 +439,30 @@
 <div class="hero">
   <div class="hero-inner">
     <div>
-      <div class="hero-eyebrow">Salesforce + Westpac</div>
-      <h1>Banking decisions<br/><em>made in milliseconds</em></h1>
-      <p class="hero-sub">Every branch visit and app interaction is already a signal. The question is whether you act on it in time.</p>
+      <div class="hero-eyebrow">Salesforce · AI · MarTech</div>
+      <h1>Your customer journey —<br/><em>designed by AI in seconds.</em></h1>
+      <p class="hero-sub">Marketing teams spend weeks mapping cross-channel journeys. One conversation replaces the workshop — and the canvas it produces is already connected to the tools that execute it.</p>
       <div class="hero-quote">
-        <p>"We want to be the bank that knows what you need before you do."</p>
-        <cite>— Chief Digital Officer, Westpac</cite>
+        <p>"We had the tools. We didn't have a fast way to connect them. SF Composer is the missing layer between strategy and execution."</p>
+        <cite>Concept validated with Salesforce SE team — May 2026</cite>
       </div>
     </div>
     <div class="hero-kpi">
       <div class="hero-kpi-card">
-        <div class="hkc-val"><span>$660</span>m</div>
-        <div class="hkc-label">incremental revenue opportunity</div>
+        <div class="hkc-val"><span>30s</span></div>
+        <div class="hkc-label">From prompt to full journey canvas</div>
       </div>
       <div class="hero-kpi-card">
-        <div class="hkc-val"><span>350</span></div>
-        <div class="hkc-label">bankers already using AI decisions</div>
+        <div class="hkc-val"><span>11</span></div>
+        <div class="hkc-label">MarTech platform categories connected</div>
       </div>
       <div class="hero-kpi-card">
-        <div class="hkc-val"><span>90</span>d</div>
-        <div class="hkc-label">to first live decisioning flow</div>
+        <div class="hkc-val">CX · EX</div>
+        <div class="hkc-label">Customer and employee lanes — one view</div>
       </div>
       <div class="hero-kpi-card">
-        <div class="hkc-val"><span>3×</span></div>
-        <div class="hkc-label">uplift in offer acceptance rate</div>
+        <div class="hkc-val">0<span style="font-size:18px;color:rgba(255,255,255,0.5);"> code</span></div>
+        <div class="hkc-label">No technical skills required to build</div>
       </div>
     </div>
   </div>
@@ -438,21 +470,20 @@
 <div style="background:var(--white);padding:12px 48px;">
   <p class="sg-note" style="max-width:1200px;margin:0 auto;">Evening gradient. KPI cards: 10% white fill, Cloud Blue 68 left border. Bottom line: customer --accent.</p>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band hero -->
 
 
 <!-- ─────────────────────────────────────────────
      8. CARDS — WHY NOW
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-light">
 <div class="sg-section">
   <div class="sg-label">8a — Cards 2-col (Why Now) — product icons, no emoji</div>
   <div class="card-grid-2">
     <div class="card card-accent-accent">
       <img src="assets/icons/icon-data360.png" class="card-icon-img" alt="Data Cloud" />
       <div class="card-title">The data is already there</div>
-      <div class="card-body">Westpac processes 4.2 million transactions daily. <strong>Each one is an unanswered question about what this customer needs next.</strong></div>
+      <div class="card-body">Marketers now manage 7–10 platforms on average. Their customer data is already there. <strong>Each interaction is an unanswered question about what this customer needs next.</strong></div>
     </div>
     <div class="card card-accent-blue">
       <img src="assets/icons/icon-agentforce.png" class="card-icon-img" alt="Agentforce" />
@@ -492,14 +523,13 @@
   </div>
   <p class="sg-note">Card icons use 2D multicolor product icons — correct tier for sales outreach. No emoji. One bolded punchline per card body.</p>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band cards -->
 
 
 <!-- ─────────────────────────────────────────────
      9. COMPARISON TABLE
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-dark">
 <div class="sg-section">
   <div class="sg-label">9 — Comparison Table (Today vs Tomorrow) — solid colors, no gradient</div>
   <div class="compare-wrap">
@@ -521,21 +551,20 @@
     </div>
   </div>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band compare -->
 
 
 <!-- ─────────────────────────────────────────────
      10. STACK DIAGRAM
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-off">
 <div class="sg-section">
   <div class="sg-label">10 — Connected Stack — Evening gradient header, 2026 secondary palette layers</div>
   <div class="stack-wrap">
     <div class="stack-header">
       <div>
         <div class="stack-header-label">Architecture</div>
-        <div class="stack-header-title">The Salesforce AI Platform — Westpac</div>
+        <div class="stack-header-title">SF Composer — AI Journey Architecture</div>
       </div>
     </div>
     <div class="stack-layer sl-layer-01">
@@ -552,7 +581,7 @@
         <div class="sl-product">Einstein</div>
         <div class="sl-product-sub">AI Decisioning</div>
       </div>
-      <div class="sl-right">Next-best-action model trained on Westpac's own outcomes. Scores every customer × offer combination in milliseconds. <strong>Explainable, auditable, APRA-ready.</strong></div>
+      <div class="sl-right">Next-best-action model trained on customer's own outcomes. Scores every customer × offer combination in milliseconds. <strong>Explainable, auditable, enterprise-ready.</strong></div>
     </div>
     <div class="stack-layer sl-layer-03">
       <div class="sl-left">
@@ -580,14 +609,13 @@
     </div>
   </div>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band stack -->
 
 
 <!-- ─────────────────────────────────────────────
      11. BEACHHEAD CARDS
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-dark">
 <div class="sg-section">
   <div class="sg-label">11 — Beachhead Cards — product icons, 2026 secondary palette badges</div>
   <div class="card-grid-2">
@@ -650,14 +678,13 @@
     </div>
   </div>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band beachhead -->
 
 
 <!-- ─────────────────────────────────────────────
      12. PROOF SECTION
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-navy">
 <div class="sg-section">
   <div class="sg-label">12 — Proof — solid navy, no gradient (data-dense)</div>
   <div class="proof-wrap">
@@ -687,14 +714,13 @@
     </div>
   </div>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band proof -->
 
 
 <!-- ─────────────────────────────────────────────
      13. PHASE CARDS
 ───────────────────────────────────────────── -->
+<div class="sg-band sg-band-light">
 <div class="sg-section">
   <div class="sg-label">13 — Phase / Roadmap Cards</div>
   <div class="card-grid-2">
@@ -718,14 +744,14 @@
           <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
           <div>
             <div class="phase-item-title">First decisioning model</div>
-            <div class="phase-item-desc">Home loan next-best-action trained on 18 months of Westpac outcomes.</div>
+            <div class="phase-item-desc">Loyalty onboarding journey trained on 18 months of customer outcomes — prompt to canvas in 30 seconds.</div>
           </div>
         </div>
         <div class="phase-item">
           <div class="phase-item-dot" style="background:var(--sf-blue);"></div>
           <div>
             <div class="phase-item-title">App channel live</div>
-            <div class="phase-item-desc">Real-time offers firing in the Westpac app. First measurement checkpoint.</div>
+            <div class="phase-item-desc">Real-time offers firing in the customer app. First measurement checkpoint.</div>
           </div>
         </div>
       </div>
@@ -757,22 +783,21 @@
           <div class="phase-item-dot" style="background:var(--accent);"></div>
           <div>
             <div class="phase-item-title">Partner API exposure</div>
-            <div class="phase-item-desc">Decisioning-as-a-service for approved fintech partners in the Westpac ecosystem.</div>
+            <div class="phase-item-desc">Decisioning-as-a-service for approved partners — canvas design becomes a shareable API.</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<div class="sg-spacer"></div>
-<hr class="divider" style="max-width:1200px;margin:0 auto;" />
+</div><!-- /sg-band phase -->
 
 
 <!-- ─────────────────────────────────────────────
      14. CLOSING CTA
 ───────────────────────────────────────────── -->
-<div class="sg-section" style="padding-bottom:80px;">
+<div class="sg-band sg-band-dark" style="padding-bottom:80px;">
+<div class="sg-section">
   <div class="sg-label">14 — Closing CTA — flat navy, accent top border</div>
   <div class="closing-inner">
     <h2>Ready to move from campaign-thinking<br/>to customer-thinking?</h2>
@@ -786,6 +811,7 @@
     </div>
   </div>
 </div>
+</div><!-- /sg-band closing -->
 
 
 <!-- ─────────────────────────────────────────────
@@ -1154,6 +1180,60 @@
 </div>
 
 <div style="height:80px;"></div>
+
+
+<!-- ─────────────────────────────────────────────
+     17. ANIMATION SYSTEM
+───────────────────────────────────────────── -->
+<div class="sg-band sg-band-light" style="padding-bottom:80px;">
+<div class="sg-section">
+  <div class="sg-label">17 — Animation System — entrance + interactive patterns</div>
+  <p style="font-size:14px;color:var(--body);margin-bottom:24px;max-width:680px;">Three files power all deck animations. Import in this order when a slide needs motion:</p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;">
+    <div style="background:var(--off-white);border:1px solid var(--gray-200);border-radius:8px;padding:20px;">
+      <div class="swatch-tag" style="margin-bottom:8px;">Slide entrance</div>
+      <div class="card-title" style="font-size:13px;">animation.css</div>
+      <div class="card-body" style="font-size:12px;margin-top:6px;">Defines <code>data-animate="fade-up|scale-in|fade-in"</code> classes and the <code>anim-in</code> trigger state. Pure CSS — no JS required for basic entrance.</div>
+    </div>
+    <div style="background:var(--off-white);border:1px solid var(--gray-200);border-radius:8px;padding:20px;">
+      <div class="swatch-tag" style="margin-bottom:8px;">Slide JS engine</div>
+      <div class="card-title" style="font-size:13px;">animation.js</div>
+      <div class="card-body" style="font-size:12px;margin-top:6px;">Watches <code>.slide</code> for <code>.active</code> class changes. On activate: fires entrance animations with per-element <code>data-anim-delay</code> stagger. Part 2 exposes: <code>typeInto</code>, <code>countUp</code>, <code>fillBar</code>, <code>fillRing</code>, <code>streamItem</code>, <code>reveal</code>, <code>makeSequence</code>.</div>
+    </div>
+    <div style="background:var(--off-white);border:1px solid var(--gray-200);border-radius:8px;padding:20px;">
+      <div class="swatch-tag" style="margin-bottom:8px;">Interactive patterns</div>
+      <div class="card-title" style="font-size:13px;">animation-interactions.css</div>
+      <div class="card-body" style="font-size:12px;margin-top:6px;">8 interactive patterns with state classes: typewriter chat, flow/decision tree, data pipeline, progress bar, score ring, stream list, checklist, pulse ring. Play/reset button styles included.</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+    <div style="background:#001E5B;border-radius:8px;padding:16px;">
+      <div class="swatch-tag" style="color:rgba(255,255,255,0.4);margin-bottom:8px;">data-animate="fade-up"</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);">Slides up 12px while fading in. Default entrance for eyebrows, titles, body copy.</div>
+    </div>
+    <div style="background:#001E5B;border-radius:8px;padding:16px;">
+      <div class="swatch-tag" style="color:rgba(255,255,255,0.4);margin-bottom:8px;">data-animate="scale-in"</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);">Scales from 0.94 while fading in. Use for cards, KPI tiles, stat elements.</div>
+    </div>
+    <div style="background:#001E5B;border-radius:8px;padding:16px;">
+      <div class="swatch-tag" style="color:rgba(255,255,255,0.4);margin-bottom:8px;">data-animate="fade-in"</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);">Opacity only — no movement. Use for compare table rows or any element that shouldn't shift.</div>
+    </div>
+    <div style="background:#001E5B;border-radius:8px;padding:16px;">
+      <div class="swatch-tag" style="color:rgba(255,255,255,0.4);margin-bottom:8px;">data-anim-delay="240"</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.8);">Per-element delay in ms. Stagger cards at +60ms increments. Hero KPIs: 300–480ms.</div>
+    </div>
+  </div>
+
+  <a href="animation-demo.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--sf-blue);color:#fff;border-radius:999px;font-size:13px;font-weight:700;text-decoration:none;">
+    View all 8 interactive patterns → animation-demo.html
+  </a>
+
+  <p class="sg-note" style="margin-top:16px;">All 8 interactive animation patterns are demonstrated with live play/reset controls in animation-demo.html. Import animation-interactions.css and animation.js together — the CSS defines the state classes, JS provides the sequencing utilities.</p>
+</div>
+</div><!-- /sg-band animation -->
 
 </body>
 </html>

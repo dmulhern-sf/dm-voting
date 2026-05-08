@@ -1,13 +1,13 @@
 # Slide Design Principles — Salesforce Narrative System
 
-Codified rules for building slide decks using the sf-narrative-project design system. Every deck built with this system must follow these principles without exception. They are derived directly from the Salesforce Brand Guidelines & Toolkits 2026.
+Codified rules for building slide decks using the decktools design system. Every deck built with this system must follow these principles without exception. They are derived directly from the Salesforce Brand Guidelines & Toolkits 2026.
 
 ---
 
 ## Architecture
 
 ### File structure
-Every customer deck is a single HTML file at the root of `sf-narrative-project/`:
+Every customer deck is a single HTML file at the root of `decktools/`:
 ```
 priceline.html
 xero.html

@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chip Variants — CW RFP Deck</title>
+  <title>Chip Variants — Decktools Design System</title>
   <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="animation-interactions.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font-body); background: #001E5B; color: #fff; padding: 60px; }
@@ -102,6 +103,60 @@
     }
     .section-header-dark  { background: #000E2E; color: rgba(255,255,255,0.3); }
     .section-header-light { background: #d4ecfc; color: #022AC0; }
+
+    /* Animated chip states */
+    .chip-animated {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      transition: background 0.25s ease, color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    }
+
+    /* Idle state — same as chip-c (frosted, recommended) */
+    .chip-anim-idle {
+      background: rgba(6,106,254,0.25);
+      color: #90D0FE;
+    }
+    /* Active state — highlight pop */
+    .chip-anim-active {
+      background: #00B3FF;
+      color: #001E5B;
+      font-weight: 700;
+      box-shadow: 0 0 0 3px rgba(0,179,255,0.2);
+    }
+    /* Success/done state — teal */
+    .chip-anim-done {
+      background: rgba(6,165,154,0.2);
+      color: #04E1CB;
+      border: 1px solid rgba(6,165,154,0.4);
+    }
+    /* Hover state — lift */
+    .chip-animated:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    /* Entry animation (stream-in) */
+    .chip-animated.chip-enter {
+      animation: chip-pop-in 0.3s cubic-bezier(0,0,0.2,1) forwards;
+    }
+    @keyframes chip-pop-in {
+      0%   { opacity: 0; transform: scale(0.85) translateY(4px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    /* Pulsing attention state */
+    .chip-animated.chip-pulse {
+      animation: chip-attention 2s ease infinite;
+    }
+    @keyframes chip-attention {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,179,255,0.4); }
+      50%       { box-shadow: 0 0 0 6px rgba(0,179,255,0); }
+    }
 
     /* Light variants — no borders */
     .chip-a-light {
@@ -274,6 +329,105 @@
     </div>
 
   </div>
+
+
+  <!-- ── ANIMATED STATES ── -->
+  <div class="section-header section-header-dark">Animated states — interactive &amp; entrance animations</div>
+  <div class="section-dark">
+
+    <div class="variant-block">
+      <div class="variant-label">State transitions</div>
+      <div class="variant-name">Idle → Active → Done</div>
+      <div class="chip-row" id="state-chips">
+        <span class="chip chip-animated chip-anim-idle" id="chip-s1">Idle state</span>
+        <span class="chip chip-animated chip-anim-active">Active state</span>
+        <span class="chip chip-animated chip-anim-done">Done / success state</span>
+      </div>
+      <p class="context-label">Click "Play" to see the idle→active→done state transition. Uses animation-interactions.css colour tokens.</p>
+      <div style="margin-top:16px;display:flex;gap:10px;">
+        <button class="anim-play-btn" id="state-play">Play transition</button>
+        <button class="anim-reset-btn" id="state-reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Entry animation</div>
+      <div class="variant-name">Stream-in — chips appear one at a time</div>
+      <div class="chip-row" id="stream-chips"></div>
+      <p class="context-label">chip-pop-in keyframe — 0.3s cubic-bezier, staggered 80ms per chip. Matches the cw-deck "Watch for" stream pattern.</p>
+      <div style="margin-top:16px;display:flex;gap:10px;">
+        <button class="anim-play-btn" id="stream-play">Stream chips in</button>
+        <button class="anim-reset-btn" id="stream-reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="variant-block">
+      <div class="variant-label">Attention state</div>
+      <div class="variant-name">Pulse ring — draws eye to a key chip</div>
+      <div class="chip-row">
+        <span class="chip chip-animated chip-anim-idle">Context chip</span>
+        <span class="chip chip-animated chip-anim-active chip-pulse" id="pulse-chip">Key insight</span>
+        <span class="chip chip-animated chip-anim-idle">Context chip</span>
+      </div>
+      <p class="context-label">chip-attention keyframe — 2s infinite glow. Use on the single most important chip per slide. Toggle with the button below.</p>
+      <div style="margin-top:16px;">
+        <button class="anim-play-btn" id="pulse-toggle">Stop pulse</button>
+      </div>
+    </div>
+
+    <div class="variant-block" style="border-bottom:none;">
+      <div class="variant-label">Hover behaviour</div>
+      <div class="variant-name">Lift on hover — all .chip-animated</div>
+      <div class="chip-row">
+        <span class="chip chip-animated chip-anim-idle">Hover me</span>
+        <span class="chip chip-animated chip-anim-active">Hover me</span>
+        <span class="chip chip-animated chip-anim-done">Hover me</span>
+      </div>
+      <p class="context-label">translateY(-1px) + shadow on :hover. Provides affordance for interactive chip contexts (e.g. filter tags, clickable categories).</p>
+    </div>
+
+  </div>
+
+  <script>
+    // State transition demo
+    const s1 = document.getElementById('chip-s1');
+    document.getElementById('state-play').addEventListener('click', async () => {
+      s1.className = 'chip chip-animated chip-anim-idle';
+      await new Promise(r => setTimeout(r, 400));
+      s1.className = 'chip chip-animated chip-anim-active';
+      await new Promise(r => setTimeout(r, 900));
+      s1.className = 'chip chip-animated chip-anim-done';
+    });
+    document.getElementById('state-reset').addEventListener('click', () => {
+      s1.className = 'chip chip-animated chip-anim-idle';
+      s1.textContent = 'Idle state';
+    });
+
+    // Stream-in demo
+    const streamLabels = ['Platform built', 'Audience ready', 'Journey live', 'AI scoring on', 'Attribution set'];
+    const streamWrap = document.getElementById('stream-chips');
+    document.getElementById('stream-play').addEventListener('click', async () => {
+      streamWrap.innerHTML = '';
+      for (let i = 0; i < streamLabels.length; i++) {
+        await new Promise(r => setTimeout(r, 80 * i));
+        const c = document.createElement('span');
+        c.className = 'chip chip-animated chip-anim-idle chip-enter';
+        c.textContent = streamLabels[i];
+        streamWrap.appendChild(c);
+      }
+    });
+    document.getElementById('stream-reset').addEventListener('click', () => {
+      streamWrap.innerHTML = '';
+    });
+
+    // Pulse toggle
+    const pulseChip = document.getElementById('pulse-chip');
+    const pulseBtn = document.getElementById('pulse-toggle');
+    pulseBtn.addEventListener('click', () => {
+      const on = pulseChip.classList.toggle('chip-pulse');
+      pulseBtn.textContent = on ? 'Stop pulse' : 'Start pulse';
+    });
+  </script>
 
 </body>
 </html>

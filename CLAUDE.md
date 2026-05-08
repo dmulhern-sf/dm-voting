@@ -32,5 +32,10 @@ Nav → Hero → Why Now → The Gap → Stack → Beachheads → Scale → Proo
 - Max font-weight: 700 (Bold) — Salesforce Sans has no 800/900
 - 2D icons only in narrative pages — 3D for campaigns/events only
 
-## Assets loaded by sf-composer
-This project's assets are referenced by `sf-composer` — keep the directory structure stable.
+## Verification
+Before reporting any task complete:
+1. Open the modified HTML file directly in browser — no build step needed
+2. Check all sections render: Nav → Hero → Why Now → Gap → Stack → Beachheads → Scale → Proof → Roadmap → Closing
+3. Confirm fonts load (Avant Garde display, Salesforce Sans body) — no fallback rendering
+4. Confirm 2D icons only — no 3D icons in narrative pages
+5. Validate 80/20 color rule — primary blues dominant, accent color ≤20%

@@ -51,10 +51,10 @@ design-kit/
 Copy this prompt into Claude Code to build a new narrative page from scratch:
 
 ```
-I'm building a Salesforce customer narrative page using the sf-narrative-project design kit.
+I'm building a Salesforce customer narrative page using the decktools design kit.
 
 Context:
-- Location: ~/claude/sf-narrative-project/
+- Location: ~/claude/decktools/
 - Stack: vanilla HTML/CSS/JS, no build tool, Salesforce Brand Guidelines 2026
 - Key files: tokens.css (design tokens), components.css (components), template.html (starter), gate.js (visitor gate)
 - Assets: assets/fonts/ (Salesforce Sans), assets/logos/ (SF SVGs), assets/icons/2d/ (product icons), assets/characters/ (Astro)
