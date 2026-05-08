@@ -444,13 +444,37 @@
     if (e.key === 'Escape') panel.classList.remove('open');
   });
 
+  // ── Share button ───────────────────────────────────────────────────────
+  function injectShareBtn() {
+    const controls = document.querySelector('.slide-controls');
+    if (!controls) return;
+    const shareBtn = document.createElement('button');
+    shareBtn.id = 'dt-share-btn';
+    shareBtn.title = 'Copy shareable link';
+    shareBtn.style.cssText = 'width:30px;height:30px;border-radius:50%;border:1px solid var(--gray-200,#E5E7EB);background:var(--white,#fff);color:var(--sf-navy,#001E5B);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s,color 0.15s;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-left:4px;flex-shrink:0;';
+    shareBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`;
+    shareBtn.addEventListener('mouseover', () => { shareBtn.style.background = 'var(--sf-navy,#001E5B)'; shareBtn.style.color = '#fff'; });
+    shareBtn.addEventListener('mouseout',  () => { shareBtn.style.background = 'var(--white,#fff)';      shareBtn.style.color = 'var(--sf-navy,#001E5B)'; });
+    shareBtn.addEventListener('click', () => {
+      const url = location.href.split('?')[0];
+      navigator.clipboard.writeText(url).then(() => {
+        ping({ event: 'deck_shared' });
+        const orig = shareBtn.innerHTML;
+        shareBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        shareBtn.style.background = '#022AC0'; shareBtn.style.color = '#fff';
+        setTimeout(() => { shareBtn.innerHTML = orig; shareBtn.style.background = 'var(--white,#fff)'; shareBtn.style.color = 'var(--sf-navy,#001E5B)'; }, 2000);
+      }).catch(() => {});
+    });
+    controls.appendChild(shareBtn);
+  }
+
   // ── Init ───────────────────────────────────────────────────────────────
   ping({ event: 'deck_open' });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectPresentBtn);
+    document.addEventListener('DOMContentLoaded', () => { injectPresentBtn(); injectShareBtn(); });
   } else {
-    injectPresentBtn();
+    injectPresentBtn(); injectShareBtn();
   }
   watchSlides();
   renderThread();

@@ -632,7 +632,30 @@
     Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:var(--sf-blue);text-decoration:none;font-weight:600;">Miles Toolin</a> with <a href="https://claude.ai/code" target="_blank" rel="noopener" style="color:var(--sf-blue);text-decoration:none;font-weight:600;">Claude Code</a>
   </div>
 
+  <!-- Lead capture modal -->
+  <div id="lc-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:10000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:36px 32px 28px;max-width:420px;width:90%;box-shadow:0 24px 64px rgba(0,0,0,0.22);position:relative;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#066AFE;margin-bottom:8px;">Welcome</div>
+      <h2 style="font-size:20px;font-weight:700;color:#001E5B;margin:0 0 6px;letter-spacing:-0.02em;">Before you install</h2>
+      <p style="font-size:13px;color:#6B7280;line-height:1.6;margin:0 0 22px;">Let Miles know who's using Decktools — takes 20 seconds.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <input id="lc-name"  type="text"  placeholder="Your name"           maxlength="80"  style="padding:10px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;font-family:inherit;outline:none;width:100%;box-sizing:border-box;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='#E5E7EB'"/>
+        <input id="lc-email" type="email" placeholder="Work email"          maxlength="120" style="padding:10px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;font-family:inherit;outline:none;width:100%;box-sizing:border-box;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='#E5E7EB'"/>
+        <input id="lc-role"  type="text"  placeholder="Role (e.g. Account Executive)" maxlength="80" style="padding:10px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;font-family:inherit;outline:none;width:100%;box-sizing:border-box;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='#E5E7EB'"/>
+      </div>
+      <button id="lc-submit" style="margin-top:18px;width:100%;padding:12px;background:#022AC0;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;" onmouseover="this.style.background='#066AFE'" onmouseout="this.style.background='#022AC0'">Let's go →</button>
+      <button id="lc-skip" style="margin-top:10px;width:100%;padding:8px;background:transparent;color:#9CA3AF;border:none;font-size:12px;cursor:pointer;font-family:inherit;">Skip for now</button>
+    </div>
+  </div>
+
   <script>
+    const TRACKER = 'https://decktools-tracker.mtoolin.workers.dev/track';
+
+    function ping(payload) {
+      payload.ts = new Date().toISOString();
+      fetch(TRACKER, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), keepalive:true }).catch(()=>{});
+    }
+
     function copyCode(btn, text) {
       navigator.clipboard.writeText(text).then(() => {
         const orig = btn.textContent;
@@ -640,6 +663,39 @@
         setTimeout(() => { btn.textContent = orig; }, 1800);
       });
     }
+
+    // ── Lead capture + page_visit ────────────────────────────────
+    (function() {
+      const ref = new URLSearchParams(location.search).get('ref') || 'direct';
+      ping({ event: 'page_visit', ref });
+
+      // Show modal once per browser (not per session)
+      if (localStorage.getItem('dt_lead_done')) return;
+
+      const backdrop = document.getElementById('lc-backdrop');
+      backdrop.style.display = 'flex';
+
+      function submit() {
+        const name  = document.getElementById('lc-name').value.trim();
+        const email = document.getElementById('lc-email').value.trim();
+        const role  = document.getElementById('lc-role').value.trim();
+        if (!name || !email) {
+          if (!name) document.getElementById('lc-name').style.borderColor = '#B60554';
+          if (!email) document.getElementById('lc-email').style.borderColor = '#B60554';
+          return;
+        }
+        ping({ event: 'lead_capture', name, email, role, ref });
+        localStorage.setItem('dt_lead_done', '1');
+        backdrop.style.display = 'none';
+      }
+
+      document.getElementById('lc-submit').addEventListener('click', submit);
+      document.getElementById('lc-skip').addEventListener('click', () => {
+        localStorage.setItem('dt_lead_done', '1');
+        backdrop.style.display = 'none';
+      });
+      document.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    })();
   </script>
 
 </body>

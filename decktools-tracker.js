@@ -1,18 +1,14 @@
-// Decktools Usage Tracker · Cloudflare Worker
+// Decktools Usage Tracker · Cloudflare Worker v1.2
 // ─────────────────────────────────────────────────────────────────
-// SETUP:
-//   1. npx wrangler deploy decktools-tracker.js (from decktools dir)
-//      or paste into workers.cloudflare.com manually
-//   2. KV: Settings → KV → create "decktools-tracker" → bind as DT_KV
-//   3. Secret: Settings → Variables → DASHBOARD_TOKEN = your password
-// ─────────────────────────────────────────────────────────────────
-//
-// Events tracked (POST /track):
-//   deck_new    – { customer, industry, deck_type, products[], accent,
-//                   story_arc, user, repo, ts }
-//   install     – { user, version, ts }
-//   deck_open   – { deck, user, ts }
-//   review_end  – { deck, user, comments, slides_with_comments, ts }
+// Events (POST /track):
+//   deck_new        – { customer, industry, deck_type, audience_type, products[], accent, story_arc, user, repo, ts }
+//   install         – { user, version, ts }
+//   deck_open       – { deck, user, ts }
+//   review_end      – { deck, user, comments, slides_with_comments, ts }
+//   page_visit      – { ref, ts }           ref = 'canvas' | 'direct'
+//   lead_capture    – { name, email, role, ref, ts }
+//   interview_start – { user, ts }
+//   deck_shared     – { deck, user, ts }
 //
 // GET /dashboard?token=TOKEN  → HTML impact report
 // GET /data?token=TOKEN        → raw JSON export
@@ -39,17 +35,14 @@ export default {
         event.ts = event.ts || new Date().toISOString();
         const day = event.ts.slice(0, 10);
 
-        // Global counters
         await incr(env, 'total:' + event.event);
         await incr(env, 'daily:' + day + ':' + event.event);
 
-        // Unique users
         if (event.user) await addToSet(env, 'users', event.user);
 
-        // Event log (500 cap)
         await appendLog(env, 'event_log', event, 500);
 
-        // ── install enrichment ──────────────────────────────────────
+        // ── install ──────────────────────────────────────────────
         if (event.event === 'install') {
           await appendLog(env, 'installers', {
             user:    event.user    || '—',
@@ -58,51 +51,70 @@ export default {
           }, 200);
         }
 
-        // ── deck_new enrichment ──────────────────────────────────
+        // ── page_visit ───────────────────────────────────────────
+        if (event.event === 'page_visit') {
+          const ref = (event.ref || 'direct').toLowerCase().replace(/\s+/g, '_');
+          await incr(env, 'source:' + ref);
+        }
+
+        // ── lead_capture ─────────────────────────────────────────
+        if (event.event === 'lead_capture') {
+          await appendLog(env, 'leads', {
+            name:  event.name  || '—',
+            email: event.email || '—',
+            role:  event.role  || '—',
+            ref:   event.ref   || 'direct',
+            ts:    event.ts,
+          }, 500);
+        }
+
+        // ── deck_new ─────────────────────────────────────────────
         if (event.event === 'deck_new') {
-          // Deck list with full metadata
           const deck = {
-            customer:  event.customer  || '—',
-            industry:  event.industry  || '—',
-            deck_type: event.deck_type || '—',
-            products:  event.products  || [],
-            accent:    event.accent    || '',
-            story_arc: event.story_arc || '',
-            repo:      event.repo      || '',
-            user:      event.user      || '—',
-            ts:        event.ts,
-            opens:     0,
-            reviews:   0,
+            customer:      event.customer      || '—',
+            industry:      event.industry      || '—',
+            deck_type:     event.deck_type     || '—',
+            audience_type: event.audience_type || '—',
+            products:      event.products      || [],
+            accent:        event.accent        || '',
+            story_arc:     event.story_arc     || '',
+            repo:          event.repo          || '',
+            user:          event.user          || '—',
+            ts:            event.ts,
+            opens: 0, reviews: 0, shares: 0,
           };
           await appendLog(env, 'decks', deck, 200);
 
-          // Per-product counters
           if (Array.isArray(event.products)) {
             for (const p of event.products) {
               await incr(env, 'product:' + p.toLowerCase().replace(/\s+/g, '_'));
             }
           }
-
-          // Per-industry counter
           if (event.industry) {
             await incr(env, 'industry:' + event.industry.toLowerCase().replace(/\s+/g, '_'));
           }
-
-          // Deck type counter
           if (event.deck_type) {
             await incr(env, 'deck_type:' + event.deck_type.toLowerCase().replace(/[\s/-]+/g, '_'));
           }
+          if (event.audience_type) {
+            await incr(env, 'audience:' + event.audience_type.toLowerCase().replace(/\s+/g, '_'));
+          }
         }
 
-        // ── review_end: update deck record's review count ────────
+        // ── review_end ───────────────────────────────────────────
         if (event.event === 'review_end' && event.deck) {
           await incr(env, 'reviews_comments_total');
           await incrementDeckStat(env, event.deck, 'reviews');
         }
 
-        // ── deck_open: update deck record's open count ───────────
+        // ── deck_open ────────────────────────────────────────────
         if (event.event === 'deck_open' && event.deck) {
           await incrementDeckStat(env, event.deck, 'opens');
+        }
+
+        // ── deck_shared ──────────────────────────────────────────
+        if (event.event === 'deck_shared' && event.deck) {
+          await incrementDeckStat(env, event.deck, 'shares');
         }
 
         return new Response(JSON.stringify({ ok: true }), {
@@ -115,7 +127,7 @@ export default {
       }
     }
 
-    // ── GET /data (raw JSON export) ──────────────────────────────
+    // ── GET /data ────────────────────────────────────────────────
     if (request.method === 'GET' && url.pathname === '/data') {
       if (!auth(url, env)) return new Response('Unauthorized', { status: 401 });
       const data = await loadDashboardData(env);
@@ -168,12 +180,10 @@ async function appendLog(env, key, item, cap) {
 }
 
 async function incrementDeckStat(env, deckName, stat) {
-  // Note: KV read-modify-write is not atomic. At current traffic levels this is
-  // acceptable; migrate to Durable Objects if concurrent writes become an issue.
+  // KV read-modify-write is not atomic — acceptable at current traffic levels
   const raw = await env.DT_KV.get('decks') || '[]';
   const decks = JSON.parse(raw);
   const slug = deckName.replace('.html', '');
-  // Exact match: full repo path OR trailing slug segment only
   const match = decks.find(d => d.repo && slug && (d.repo === slug || d.repo.endsWith('/' + slug)));
   if (match) {
     match[stat] = (match[stat] || 0) + 1;
@@ -184,32 +194,46 @@ async function incrementDeckStat(env, deckName, stat) {
 async function loadDashboardData(env) {
   const keys = [
     'total:install', 'total:deck_new', 'total:deck_open', 'total:review_end',
+    'total:interview_start', 'total:deck_shared', 'total:page_visit', 'total:lead_capture',
     'reviews_comments_total',
-    'users', 'decks', 'installers', 'event_log',
-    // product counters
-    'product:agentforce','product:data_cloud','product:marketing_cloud',
-    'product:sales_cloud','product:mulesoft','product:slack','product:platform',
-    // deck type counters
-    'deck_type:tell_show_tell','deck_type:pov','deck_type:proposal_business_case',
+    'users', 'decks', 'installers', 'leads', 'event_log',
+    'product:agentforce', 'product:data_cloud', 'product:marketing_cloud',
+    'product:sales_cloud', 'product:mulesoft', 'product:slack', 'product:platform',
+    'deck_type:tell_show_tell', 'deck_type:pov', 'deck_type:proposal_business_case',
+    'source:canvas', 'source:direct',
+    'audience:customer_meeting', 'audience:internal_review',
   ];
   const results = await Promise.all(keys.map(k => env.DT_KV.get(k)));
   const [
-    installs, deckNews, opens, reviews, totalComments,
-    usersRaw, decksRaw, installersRaw, logRaw,
+    installs, deckNews, opens, reviews,
+    interviewStarts, deckShares, pageVisits, leadCaptures,
+    totalComments,
+    usersRaw, decksRaw, installersRaw, leadsRaw, logRaw,
     pAgentforce, pDataCloud, pMarketing, pSales, pMulesoft, pSlack, pPlatform,
     dtTst, dtPov, dtProposal,
+    srcCanvas, srcDirect,
+    audCustomer, audInternal,
   ] = results;
 
+  const deckNewsInt       = parseInt(deckNews        || '0');
+  const interviewStartInt = parseInt(interviewStarts || '0');
+
   return {
-    installs:      parseInt(installs      || '0'),
-    deckNews:      parseInt(deckNews      || '0'),
-    opens:         parseInt(opens         || '0'),
-    reviews:       parseInt(reviews       || '0'),
-    totalComments: parseInt(totalComments || '0'),
-    users:         JSON.parse(usersRaw      || '[]'),
-    decks:         JSON.parse(decksRaw      || '[]'),
-    installers:    JSON.parse(installersRaw || '[]'),
-    log:           JSON.parse(logRaw        || '[]').slice(0, 30),
+    installs:        parseInt(installs     || '0'),
+    deckNews:        deckNewsInt,
+    opens:           parseInt(opens        || '0'),
+    reviews:         parseInt(reviews      || '0'),
+    interviewStarts: interviewStartInt,
+    deckShares:      parseInt(deckShares   || '0'),
+    pageVisits:      parseInt(pageVisits   || '0'),
+    leadCaptures:    parseInt(leadCaptures || '0'),
+    totalComments:   parseInt(totalComments|| '0'),
+    completionRate:  interviewStartInt > 0 ? Math.round((deckNewsInt / interviewStartInt) * 100) : null,
+    users:      JSON.parse(usersRaw      || '[]'),
+    decks:      JSON.parse(decksRaw      || '[]'),
+    installers: JSON.parse(installersRaw || '[]'),
+    leads:      JSON.parse(leadsRaw      || '[]'),
+    log:        JSON.parse(logRaw        || '[]').slice(0, 30),
     products: {
       'Agentforce':      parseInt(pAgentforce || '0'),
       'Data Cloud':      parseInt(pDataCloud  || '0'),
@@ -224,6 +248,14 @@ async function loadDashboardData(env) {
       'POV':            parseInt(dtPov      || '0'),
       'Proposal':       parseInt(dtProposal || '0'),
     },
+    sources: {
+      'Canvas': parseInt(srcCanvas || '0'),
+      'Direct': parseInt(srcDirect || '0'),
+    },
+    audience: {
+      'Customer meeting': parseInt(audCustomer || '0'),
+      'Internal review':  parseInt(audInternal || '0'),
+    },
   };
 }
 
@@ -235,12 +267,23 @@ function buildDashboard(d) {
     hour: '2-digit', minute: '2-digit',
   });
 
+  // ── Leads table ──────────────────────────────────────────────────
+  const leadsHtml = d.leads.map(l => `<tr>
+    <td><strong>${escHtml(l.name)}</strong></td>
+    <td><a href="mailto:${escAttr(l.email)}" style="color:#022AC0;text-decoration:none">${escHtml(l.email)}</a></td>
+    <td>${escHtml(l.role)}</td>
+    <td><span class="badge badge-${l.ref === 'canvas' ? 'install' : 'deck_open'}">${escHtml(l.ref)}</span></td>
+    <td style="white-space:nowrap;color:#6B7280;font-size:11px">${new Date(l.ts).toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+  </tr>`).join('');
+
+  // ── Installers table ─────────────────────────────────────────────
   const installersHtml = d.installers.map(i => `<tr>
     <td>${escHtml(i.user)}</td>
     <td><code style="font-size:11px">${escHtml(i.version)}</code></td>
     <td style="white-space:nowrap;color:#6B7280;font-size:11px">${new Date(i.ts).toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
   </tr>`).join('');
 
+  // ── Decks table ──────────────────────────────────────────────────
   const decksHtml = d.decks.slice(0, 50).map(dk => {
     const products = Array.isArray(dk.products) && dk.products.length
       ? dk.products.map(p => `<span class="tag">${escHtml(p)}</span>`).join(' ')
@@ -255,57 +298,57 @@ function buildDashboard(d) {
       <td><strong>${escHtml(dk.customer)}</strong>${dk.story_arc ? `<div style="font-size:11px;color:#6B7280;margin-top:2px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escAttr(dk.story_arc)}">${escHtml(dk.story_arc)}</div>` : ''}</td>
       <td>${escHtml(dk.industry)}</td>
       <td><span class="badge badge-type">${escHtml(dk.deck_type)}</span></td>
+      <td><span style="font-size:11px;color:#6B7280">${escHtml(dk.audience_type || '—')}</span></td>
       <td>${products}</td>
       <td>${accentDot}${dk.accent ? `<code style="font-size:11px">${escHtml(dk.accent)}</code>` : '—'}</td>
       <td>${repoLink}</td>
       <td>${escHtml(dk.user)}</td>
       <td style="text-align:center">${dk.opens || 0}</td>
+      <td style="text-align:center">${dk.shares || 0}</td>
       <td style="text-align:center">${dk.reviews || 0}</td>
       <td style="white-space:nowrap">${new Date(dk.ts).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}</td>
     </tr>`;
   }).join('');
 
+  // ── Recent activity ──────────────────────────────────────────────
   const logHtml = d.log.map(e => `<tr>
     <td style="white-space:nowrap;color:#6B7280;font-size:11px">${new Date(e.ts).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
     <td><span class="badge badge-${escAttr(e.event)}">${escHtml(e.event)}</span></td>
     <td>${escHtml(e.user || '—')}</td>
-    <td style="font-size:12px;color:#374151">${escHtml(e.customer || e.deck || '')}</td>
-    <td style="font-size:12px;color:#6B7280">${escHtml(e.industry || (e.comments != null ? e.comments + ' comments' : ''))}</td>
+    <td style="font-size:12px;color:#374151">${escHtml(e.customer || e.deck || e.name || '')}</td>
+    <td style="font-size:12px;color:#6B7280">${escHtml(e.industry || e.role || (e.comments != null ? e.comments + ' comments' : ''))}</td>
   </tr>`).join('');
 
-  const productBars = Object.entries(d.products)
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, count]) => {
-      const max = Math.max(...Object.values(d.products), 1);
+  // ── Bar chart helper ─────────────────────────────────────────────
+  function barChart(entries, colorMap) {
+    const max = Math.max(...entries.map(([,v]) => v), 1);
+    return entries.sort((a,b) => b[1]-a[1]).map(([name, count]) => {
       const pct = Math.round((count / max) * 100);
+      const color = (colorMap && colorMap[name]) || '#022AC0';
       return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <div style="width:120px;font-size:12px;font-weight:600;color:#374151;flex-shrink:0">${escHtml(name)}</div>
-        <div style="flex:1;background:#EFF6FF;border-radius:4px;height:8px;overflow:hidden">
-          <div style="width:${pct}%;height:100%;background:#022AC0;border-radius:4px;transition:width 0.3s"></div>
+        <div style="width:140px;font-size:12px;font-weight:600;color:#374151;flex-shrink:0">${escHtml(name)}</div>
+        <div style="flex:1;background:#F3F4F6;border-radius:4px;height:8px;overflow:hidden">
+          <div style="width:${pct}%;height:100%;background:${color};border-radius:4px;transition:width 0.3s"></div>
         </div>
-        <div style="width:24px;font-size:12px;font-weight:700;color:#022AC0;text-align:right">${count}</div>
+        <div style="width:24px;font-size:12px;font-weight:700;color:${color};text-align:right">${count}</div>
       </div>`;
     }).join('');
+  }
 
-  const typeEntries = Object.entries(d.deckTypes).filter(([,v]) => v > 0);
-  const typeBars = typeEntries.length
-    ? typeEntries.sort((a,b) => b[1]-a[1]).map(([name, count]) => {
-        const max = Math.max(...Object.values(d.deckTypes), 1);
-        const pct = Math.round((count / max) * 100);
-        const colors = {'Tell-Show-Tell':'#022AC0','POV':'#06A59A','Proposal':'#730394'};
-        return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <div style="width:120px;font-size:12px;font-weight:600;color:#374151;flex-shrink:0">${escHtml(name)}</div>
-          <div style="flex:1;background:#F3F4F6;border-radius:4px;height:8px;overflow:hidden">
-            <div style="width:${pct}%;height:100%;background:${colors[name]||'#022AC0'};border-radius:4px"></div>
-          </div>
-          <div style="width:24px;font-size:12px;font-weight:700;color:#374151;text-align:right">${count}</div>
-        </div>`;
-      }).join('')
-    : '<div style="color:#9CA3AF;font-size:13px">No decks yet</div>';
+  const productBars  = barChart(Object.entries(d.products), {});
+  const typeBars     = barChart(Object.entries(d.deckTypes).filter(([,v])=>v>0), {'Tell-Show-Tell':'#022AC0','POV':'#06A59A','Proposal':'#730394'});
+  const sourceBars   = barChart(Object.entries(d.sources), {'Canvas':'#022AC0','Direct':'#6B7280'});
+  const audienceBars = barChart(Object.entries(d.audience), {'Customer meeting':'#022AC0','Internal review':'#06A59A'});
 
   const userChips = d.users.map(u =>
     `<span class="user-chip">${escHtml(u)}</span>`
   ).join('') || '<span style="color:#9CA3AF;font-size:13px">None yet</span>';
+
+  const completionRateVal = d.completionRate !== null ? d.completionRate + '%' : '—';
+  const completionColor   = d.completionRate === null ? '#9CA3AF'
+    : d.completionRate >= 70 ? '#166534'
+    : d.completionRate >= 40 ? '#92400E'
+    : '#991B1B';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -325,6 +368,7 @@ function buildDashboard(d) {
   .section{padding:28px 48px 0}
   .section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#6B7280;margin-bottom:14px}
   .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:24px 48px 0}
+  .kpis-2{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:14px 48px 0}
   .kpi{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid #E5E7EB}
   .kpi-val{font-size:30px;font-weight:700;color:#022AC0;letter-spacing:-0.03em;line-height:1}
   .kpi-label{font-size:11px;color:#6B7280;margin-top:5px;font-weight:500}
@@ -342,14 +386,19 @@ function buildDashboard(d) {
   .badge-deck_new{background:#F0FDF4;color:#166534}
   .badge-deck_open{background:#FFF7ED;color:#9A3412}
   .badge-review_end{background:#FDF4FF;color:#6B21A8}
+  .badge-page_visit{background:#F0F9FF;color:#0369A1}
+  .badge-lead_capture{background:#FFF1F2;color:#9F1239}
+  .badge-interview_start{background:#FEFCE8;color:#854D0E}
+  .badge-deck_shared{background:#F0FDF4;color:#065F46}
   .badge-type{background:#F0F4FF;color:#022AC0}
   .tag{display:inline-block;background:#EFF6FF;color:#022AC0;font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;margin:1px}
   .users{display:flex;flex-wrap:wrap;gap:6px}
   .user-chip{background:#EFF6FF;color:#022AC0;font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px}
   .footer{text-align:center;padding:32px 48px;font-size:12px;color:#9CA3AF;border-top:1px solid #E5E7EB;margin-top:28px}
   .footer a{color:#022AC0;text-decoration:none;font-weight:600}
-  @media(max-width:1000px){.kpis{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:1fr}}
-  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.section,.kpis,.grid-2,.grid-full{padding-left:20px;padding-right:20px}.hero{padding:24px 20px}}
+  .empty{color:#9CA3AF;text-align:center;padding:20px;font-size:13px}
+  @media(max-width:1000px){.kpis{grid-template-columns:repeat(3,1fr)}.kpis-2{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+  @media(max-width:640px){.kpis,.kpis-2{grid-template-columns:repeat(2,1fr)}.section,.kpis,.kpis-2,.grid-2,.grid-full{padding-left:20px;padding-right:20px}.hero{padding:24px 20px}}
 </style>
 </head>
 <body>
@@ -365,6 +414,7 @@ function buildDashboard(d) {
   </div>
 </div>
 
+<!-- KPI row 1 -->
 <div class="kpis">
   <div class="kpi"><div class="kpi-val">${d.users.length}</div><div class="kpi-label">Unique users</div></div>
   <div class="kpi"><div class="kpi-val">${d.installs}</div><div class="kpi-label">Skill installs</div></div>
@@ -373,28 +423,64 @@ function buildDashboard(d) {
   <div class="kpi"><div class="kpi-val">${d.reviews}</div><div class="kpi-label">Reviews completed</div></div>
 </div>
 
+<!-- KPI row 2 -->
+<div class="kpis-2">
+  <div class="kpi"><div class="kpi-val">${d.pageVisits}</div><div class="kpi-label">Install guide visits</div></div>
+  <div class="kpi"><div class="kpi-val">${d.leadCaptures}</div><div class="kpi-label">Leads captured</div></div>
+  <div class="kpi"><div class="kpi-val" style="color:${completionColor}">${completionRateVal}</div><div class="kpi-label">Interview → deck rate${d.completionRate === null ? ' (no data)' : ''}</div></div>
+  <div class="kpi"><div class="kpi-val">${d.deckShares}</div><div class="kpi-label">Decks shared</div></div>
+</div>
+
+<!-- Products + deck types -->
 <div class="grid-2" style="margin-top:6px">
   <div class="card">
     <div class="card-title">Products featured in decks</div>
-    ${productBars}
+    ${productBars || '<div class="empty">No decks yet</div>'}
   </div>
   <div class="card">
     <div class="card-title">Deck types</div>
-    ${typeBars}
+    ${typeBars || '<div class="empty">No decks yet</div>'}
   </div>
 </div>
 
-<div class="grid-full" style="margin-top:0">
+<!-- Sources + audience -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-title">Install guide — traffic source</div>
+    ${sourceBars || '<div class="empty">No visits yet</div>'}
+  </div>
+  <div class="card">
+    <div class="card-title">Deck audience type</div>
+    ${audienceBars || '<div class="empty">No decks yet</div>'}
+  </div>
+</div>
+
+<!-- Leads -->
+<div class="grid-full">
+  <div class="card">
+    <div class="card-title">Leads captured (${d.leads.length})</div>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Source</th><th>Date</th></tr></thead>
+      <tbody>${leadsHtml || '<tr><td colspan="5" class="empty">No leads yet</td></tr>'}</tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- Installers -->
+<div class="grid-full">
   <div class="card">
     <div class="card-title">Skill installs (${d.installers.length})</div>
     <table>
       <thead><tr><th>User</th><th>Version</th><th>Date</th></tr></thead>
-      <tbody>${installersHtml || '<tr><td colspan="3" style="color:#9CA3AF;text-align:center;padding:20px">No installs recorded yet</td></tr>'}</tbody>
+      <tbody>${installersHtml || '<tr><td colspan="3" class="empty">No installs recorded yet</td></tr>'}</tbody>
     </table>
   </div>
 </div>
 
-<div class="grid-full" style="margin-top:0">
+<!-- Decks -->
+<div class="grid-full">
   <div class="card">
     <div class="card-title">All decks created (${d.decks.length})</div>
     <div style="overflow-x:auto">
@@ -403,26 +489,29 @@ function buildDashboard(d) {
         <th>Customer &amp; story arc</th>
         <th>Industry</th>
         <th>Type</th>
+        <th>Audience</th>
         <th>Products</th>
         <th>Brand</th>
         <th>Repo</th>
         <th>Created by</th>
         <th style="text-align:center">Opens</th>
+        <th style="text-align:center">Shares</th>
         <th style="text-align:center">Reviews</th>
         <th>Date</th>
       </tr></thead>
-      <tbody>${decksHtml || '<tr><td colspan="10" style="color:#9CA3AF;text-align:center;padding:24px">No decks created yet</td></tr>'}</tbody>
+      <tbody>${decksHtml || '<tr><td colspan="12" class="empty">No decks created yet</td></tr>'}</tbody>
     </table>
     </div>
   </div>
 </div>
 
+<!-- Activity + users -->
 <div class="grid-2">
   <div class="card">
     <div class="card-title">Recent activity (last 30)</div>
     <table>
       <thead><tr><th>When</th><th>Event</th><th>User</th><th>Detail</th><th>Context</th></tr></thead>
-      <tbody>${logHtml || '<tr><td colspan="5" style="color:#9CA3AF;text-align:center;padding:20px">No activity yet</td></tr>'}</tbody>
+      <tbody>${logHtml || '<tr><td colspan="5" class="empty">No activity yet</td></tr>'}</tbody>
     </table>
   </div>
   <div class="card">
@@ -432,7 +521,7 @@ function buildDashboard(d) {
 </div>
 
 <div class="footer">
-  Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener">Miles Toolin</a>
+  Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener">Miles Toolin</a> with Claude Code
 </div>
 
 </body>
