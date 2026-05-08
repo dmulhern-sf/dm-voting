@@ -255,9 +255,10 @@
   <!-- HERO -->
   <div class="guide-hero">
     <div class="guide-hero-inner">
-      <div class="guide-eyebrow">Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;opacity:0.8;">Miles Toolin</a></div>
+      <div class="guide-eyebrow">SF Decktools · Install Guide</div>
       <h1>Build Salesforce customer decks<br/><em>in minutes, not days.</em></h1>
       <p>SF Decktools is a complete design system for building narrative-driven HTML decks — built on the official 2026 Salesforce brand guidelines. One command installs everything into Claude Code, and it enforces the rules for you automatically.</p>
+      <p style="margin-top:14px;font-size:14px;color:rgba(255,255,255,0.65);">You're reading the hosted version — <a href="https://mtoolin-sf.github.io/sf-decktools/install-guide.html" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px;">open the full rendered guide</a> to see fonts, animations, and all examples.</p>
       <div class="guide-chips">
         <span class="chip">Salesforce Brand 2026</span>
         <span class="chip">Claude Code Skill</span>
@@ -310,21 +311,21 @@
           <div class="prereq-badge">1</div>
           <div class="prereq-text">
             <strong>Claude Code CLI installed</strong>
-            <span>Install from claude.ai/code or via <code>npm i -g @anthropic-ai/claude-code</code></span>
+            <span>Install from <a href="https://claude.ai/code" target="_blank" rel="noopener" style="color:var(--sf-blue);">claude.ai/code</a> or run <code>npm i -g @anthropic-ai/claude-code</code> in your terminal. Requires an Anthropic account.</span>
           </div>
         </li>
         <li class="prereq-item">
           <div class="prereq-badge">2</div>
           <div class="prereq-text">
-            <strong>Git installed</strong>
-            <span>Required for <code>claude skills install</code> to fetch the repo</span>
+            <strong>Git <em style="font-style:normal;font-weight:400;color:var(--muted);">(or ZIP download — see step 1)</em></strong>
+            <span>Git is used by <code>claude skills install</code> to pull the repo automatically. If you don't have Git, you can download a ZIP instead — instructions in step 1 below. To check: open Terminal and type <code>git --version</code>. If it's not installed, macOS will prompt you to install Xcode Command Line Tools — click Install and wait ~2 minutes.</span>
           </div>
         </li>
         <li class="prereq-item">
           <div class="prereq-badge">3</div>
           <div class="prereq-text">
             <strong>Chrome or Edge browser</strong>
-            <span>Required for the feedback widget's file-write feature. Firefox works for presenting but can't write feedback.md directly.</span>
+            <span>Required for the feedback widget's per-slide review feature. Firefox works for presenting but cannot save the review file locally. Safari is not supported for review.</span>
           </div>
         </li>
       </ul>
@@ -342,10 +343,14 @@
           <div class="step-num">1</div>
           <div class="step-body">
             <h3>Install the Claude skill</h3>
-            <p>Run this once. It pulls the full decktools repo and registers the skill globally in Claude Code.</p>
+            <p>Run this in your terminal. It pulls the full decktools repo into <code>~/claude/decktools</code> and registers the skill globally in Claude Code.</p>
             <div class="code-block">
               <button class="code-copy" onclick="copyCode(this, 'claude skills install github.com/mtoolin/sf-decktools')">COPY</button>
               <span class="cmd">claude skills install github.com/mtoolin/sf-decktools</span>
+            </div>
+            <div style="margin-top:12px;padding:14px 18px;border-radius:8px;background:#FFF9E6;border:1px solid #F5D87A;">
+              <p style="font-size:12px;color:#7A5C00;margin:0 0 6px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">No Git? Use the ZIP instead</p>
+              <p style="font-size:12px;color:#4A3800;margin:0;line-height:1.6;">Download the repo as a ZIP from GitHub, unzip it to <code style="color:var(--sf-blue);background:#FFF3CC;padding:1px 4px;border-radius:3px;">~/claude/decktools</code>, then run <code style="color:var(--sf-blue);background:#FFF3CC;padding:1px 4px;border-radius:3px;">claude skills install ~/claude/decktools</code> pointing at the local folder. Claude Code will register it the same way.</p>
             </div>
           </div>
         </div>
@@ -353,25 +358,39 @@
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-body">
-            <h3>Open Claude Code in the decktools directory</h3>
-            <p>All deck files live here. Claude reads the design system files from this directory automatically when the skill is active.</p>
+            <h3>Open Claude Code in the decktools folder</h3>
+            <p>All deck files live here. When the skill is active, Claude automatically reads the brand rules and component library from this folder — you never have to describe the system yourself.</p>
             <div class="code-block">
               <button class="code-copy" onclick="copyCode(this, 'cd ~/claude/decktools && claude')">COPY</button>
               <span class="cmd">cd ~/claude/decktools <span class="comment">&amp;&amp;</span> claude</span>
             </div>
+            <p style="margin-top:10px;">You can also open Claude Code from your applications launcher and use <code>/cd</code> or open a new session pointed at the folder from the Claude Code UI.</p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-body">
-            <h3>Build your first deck</h3>
-            <p>Type this in Claude Code. The skill kicks in automatically — it loads every brand rule, reads the canonical template, and scaffolds a new deck for your customer.</p>
+            <h3>Preview the canonical example</h3>
+            <p>Before building anything, open <code>sf-composer.html</code> directly in Chrome — it's a fully rendered 12-slide reference deck showing every component, animation, and copy pattern. No server needed; just open the file.</p>
             <div class="code-block">
-              <button class="code-copy" onclick="copyCode(this, '/sf-decktools new')">COPY</button>
-              <span class="cmd">/sf-decktools new</span>
+              <button class="code-copy" onclick="copyCode(this, 'open ~/claude/decktools/sf-composer.html')">COPY</button>
+              <span class="cmd">open ~/claude/decktools/sf-composer.html</span>
             </div>
-            <p style="margin-top:10px;">Claude will ask: customer name, brand color, story arc, KPI numbers, and two beachhead use cases. Answer those — it builds the full deck.</p>
+            <p style="margin-top:10px;">On Windows: right-click the file in Explorer and choose <strong>Open with Chrome</strong>.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Build your first deck</h3>
+            <p>Back in Claude Code, run the skill. It loads every brand rule automatically, then asks you a set of questions to scaffold the full deck.</p>
+            <div class="code-block">
+              <button class="code-copy" onclick="copyCode(this, '/decktools new')">COPY</button>
+              <span class="cmd">/decktools new</span>
+            </div>
+            <p style="margin-top:10px;">Claude will ask: customer name, their primary color, story arc, two or three KPI numbers, and the use cases to feature. Answer those — it builds the full HTML file.</p>
           </div>
         </div>
 
@@ -443,7 +462,7 @@
           <h3>Building a new customer deck</h3>
           <ol>
             <li>Open Claude Code in <code>~/claude/decktools</code></li>
-            <li>Run <code>/sf-decktools new</code></li>
+            <li>Run <code>/decktools new</code></li>
             <li>Answer 6 questions (Claude handles the rest)</li>
             <li>Open the generated HTML file in Chrome — no build step</li>
             <li>Iterate with plain English: "make the hero copy more direct"</li>
@@ -454,7 +473,7 @@
           <h3>Editing an existing deck</h3>
           <ol>
             <li>Open Claude Code in <code>~/claude/decktools</code></li>
-            <li>Say: "edit westpac.html — change the proof section"</li>
+            <li>Say: "edit mybrand.html — change the proof section"</li>
             <li>Claude loads all style rules automatically before touching the file</li>
             <li>Review the change in Chrome, iterate</li>
           </ol>
@@ -498,13 +517,13 @@
         <h3 style="font-size:14px;font-weight:700;color:var(--sf-navy);margin:0 0 8px;">Applying feedback — author side</h3>
         <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0 0 10px;">After the reviewer sends you their feedback.md, drop it in the decktools directory and tell Claude:</p>
         <div class="code-block">
-          <button class="code-copy" onclick="copyCode(this, 'read feedback.md and apply the changes to westpac.html')">COPY</button>
-          <span class="cmd">read feedback.md and apply the changes to westpac.html</span>
+          <button class="code-copy" onclick="copyCode(this, 'read feedback.md and apply the changes to mybrand.html')">COPY</button>
+          <span class="cmd">read feedback.md and apply the changes to mybrand.html</span>
         </div>
         <p style="font-size:13px;color:var(--muted);margin:10px 0 0;">Claude reads the per-slide comment threads and applies each change — copy edits, layout changes, and design notes — then reports back what it did.</p>
       </div>
       <div style="margin-top:12px;padding:14px 18px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;">
-        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">Presenter mode: click the <strong>P button</strong> (bottom-right, next to the review icon) to hide the widget entirely during a live demo. Click again to restore review mode.</p>
+        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">Presenter mode: click the <strong>screen/play icon</strong> (in the slide controls) to hide the review widget entirely during a live demo. Click again to restore review mode.</p>
       </div>
     </div>
 
@@ -518,17 +537,75 @@
         <h3>Auto-update prompts</h3>
         <p>When the decktools skill is updated, Claude will tell you at the start of your next session:</p>
         <div class="code-block" style="background:rgba(255,255,255,0.08);border-radius:6px;padding:10px 14px;margin:0 0 12px;">
-          <span style="color:rgba(255,255,255,0.5);">sf-decktools skill v1.1 is available.</span><br/>
+          <span style="color:rgba(255,255,255,0.5);">decktools skill v1.1 is available.</span><br/>
           <span style="color:#fff;">Run </span><span style="color:var(--accent);">claude skills install github.com/mtoolin/sf-decktools</span><span style="color:#fff;"> to update.</span>
         </div>
         <p>Run that command any time to pull the latest brand rules, components, and widget improvements. Your deck files are untouched — only the skill and shared CSS/JS files update.</p>
       </div>
     </div>
 
+    <hr class="div" />
+
+    <!-- TELL SHOW TELL + BOWDEN -->
+    <div class="section">
+      <div class="section-eyebrow">Presentation craft</div>
+      <h2>The methodology behind the structure</h2>
+      <p style="font-size:14px;color:var(--body);line-height:1.6;margin:0 0 28px;max-width:660px;">SF Decktools enforces a narrative structure — not just a visual one. The section order (Why Now → Gap → Solution → Proof → Roadmap) is built on two well-tested frameworks used by the world's best enterprise presenters.</p>
+
+      <div class="workflow-cards" style="margin-bottom:24px;">
+        <div class="workflow-card highlight">
+          <h3>Tell — Show — Tell</h3>
+          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0 0 12px;">The single most important demo technique in B2B sales. Audiences don't absorb what they see — they absorb what they're told to look for.</p>
+          <ol style="margin:0;padding-left:18px;">
+            <li style="font-size:13px;color:var(--body);line-height:1.6;margin-bottom:4px;"><strong>Tell</strong> — frame the problem and set the expectation before showing anything</li>
+            <li style="font-size:13px;color:var(--body);line-height:1.6;margin-bottom:4px;"><strong>Show</strong> — demonstrate the solution in the customer's specific context</li>
+            <li style="font-size:13px;color:var(--body);line-height:1.6;"><strong>Tell</strong> — reinforce what they just saw and connect it back to the stated problem</li>
+          </ol>
+          <p style="font-size:12px;color:var(--muted);margin:12px 0 0;">Further reading: <a href="https://www.storylane.io/blog/tell-show-tell-demo" target="_blank" rel="noopener" style="color:var(--sf-blue);">Storylane — Tell Show Tell</a> · <a href="https://www.demostack.com/glossary/tell-show-tell" target="_blank" rel="noopener" style="color:var(--sf-blue);">Demostack Glossary</a></p>
+        </div>
+        <div class="workflow-card">
+          <h3>Bowden Persuasion Blueprint</h3>
+          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0 0 12px;">Michelle Bowden's framework — used by Salesforce teams globally — structures every presentation around audience analysis, message design, and deliberate delivery. Her <em>Persuasive Presentation Skills Masterclass</em> is the most widely attended program of its kind in Australia.</p>
+          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0 0 12px;">Key principle: your opening must establish the <em>cost of doing nothing</em> before you show the solution. Decktools enforces this in the Why Now and Gap sections.</p>
+          <p style="font-size:12px;color:var(--muted);margin:0;">Official course: <a href="https://michellebowden.com.au/presentation-skills-training/" target="_blank" rel="noopener" style="color:var(--sf-blue);">michellebowden.com.au</a> · Book: <em>How to Present</em> (Wiley)</p>
+        </div>
+      </div>
+
+      <div style="padding:20px 24px;border-radius:12px;background:var(--off-white);border:1px solid var(--gray-200);">
+        <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0;"><strong style="color:var(--sf-navy);">How it maps to your deck:</strong> the Why Now slide is your first Tell — it frames the urgency. The Gap slide deepens the tension. Your product demo or use case slides are the Show. Proof and Roadmap are your closing Tell — evidence that the solution delivers, and a path forward the customer can own.</p>
+      </div>
+    </div>
+
     <!-- CLOSING -->
     <div class="closing-band">
-      <h2>Your first deck in under 10 minutes</h2>
-      <p>Install the skill, answer 6 questions, open the HTML file.<br/>No design tools. No PowerPoint. No brand review cycle.</p>
+      <h2>See what's possible before you build</h2>
+      <p>After installing, open these files locally in Chrome to see the full output quality — animations, components, and copy style — before you generate your own deck.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin:0 0 28px;text-align:left;">
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Canonical example</div>
+            <div style="font-size:13px;font-weight:700;color:#fff;">sf-composer.html</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px;">Full 12-slide customer deck — structure, animations, copy style</div>
+          </div>
+          <button class="code-copy" style="flex-shrink:0;" onclick="copyCode(this, 'open ~/claude/decktools/sf-composer.html')">COPY</button>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Component library</div>
+            <div style="font-size:13px;font-weight:700;color:#fff;">style-guide-example.html</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px;">Every token, card, stat, chip, and colour variant rendered live</div>
+          </div>
+          <button class="code-copy" style="flex-shrink:0;" onclick="copyCode(this, 'open ~/claude/decktools/style-guide-example.html')">COPY</button>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:3px;">Animations</div>
+            <div style="font-size:13px;font-weight:700;color:#fff;">animation-demo.html</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px;">All 8 interactive animation patterns with live controls</div>
+          </div>
+          <button class="code-copy" style="flex-shrink:0;" onclick="copyCode(this, 'open ~/claude/decktools/animation-demo.html')">COPY</button>
+        </div>
+      </div>
       <div class="closing-steps">
         <div class="c-step primary">
           <div class="cs-num">Step 1</div>
@@ -536,22 +613,23 @@
         </div>
         <div class="c-step">
           <div class="cs-num">Step 2</div>
-          <div class="cs-text">Run /sf-decktools new</div>
+          <div class="cs-text">Browse the examples</div>
         </div>
         <div class="c-step">
           <div class="cs-num">Step 3</div>
-          <div class="cs-text">Open in Chrome</div>
+          <div class="cs-text">Run /decktools new</div>
+        </div>
+        <div class="c-step">
+          <div class="cs-num">Step 4</div>
+          <div class="cs-text">Open your deck in Chrome</div>
         </div>
       </div>
-      <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.4);">
-        Questions? Ping Matt in <strong style="color:rgba(255,255,255,0.6);">#mt-vibe-tutorials</strong>
-      </p>
     </div>
 
   </div><!-- /page-wrap -->
 
   <div style="text-align:center;padding:32px 40px;font-size:12px;color:var(--muted);border-top:1px solid var(--gray-200);margin-top:0;">
-    Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:var(--sf-blue);text-decoration:none;font-weight:600;">Miles Toolin</a>
+    Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:var(--sf-blue);text-decoration:none;font-weight:600;">Miles Toolin</a> with <a href="https://claude.ai/code" target="_blank" rel="noopener" style="color:var(--sf-blue);text-decoration:none;font-weight:600;">Claude Code</a>
   </div>
 
   <script>
