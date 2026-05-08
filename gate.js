@@ -1,88 +1,87 @@
 /* ─────────────────────────────────────────────────────────────────
-   NBA Narrative · Shared Access Gate v3
+   Decktools · Shared Access Gate v4
    ─────────────────────────────────────────────────────────────────
    HOW TO USE:
-     Add before </body> in each page:
+     Add to <body> in each gated deck:
      <script src="gate.js" data-page="Page Name Here"></script>
 
-   TRACKING SETUP:
-     See cloudflare-worker.js for full instructions.
-     Once deployed, paste your Worker URL below as workerUrl.
+   OPTIONAL ATTRIBUTES on the script tag:
+     data-page="Page Name"      — shown in tracking + email alerts
+     data-password="yourpass"   — defaults to reading body[data-password]
+     data-worker-url="https://" — Cloudflare Worker for visit logging
+     data-web3-key="..."        — web3forms key for email alerts (optional)
    ───────────────────────────────────────────────────────────────── */
 (function () {
 
   /* ── CONFIG ─────────────────────────────────────────────────── */
-  var _scriptTag = document.querySelector('script[src*="gate.js"]');
+  var tag = document.querySelector('script[src*="gate.js"]');
+  var bodyPwd = document.body && document.body.dataset && document.body.dataset.password;
   var C = {
-    password:   (_scriptTag && _scriptTag.dataset.password) ? _scriptTag.dataset.password : 'SFNBA2026!',
-    workerUrl:  'https://summer-mountain-4569.sdunlop.workers.dev',
-    web3Key:    'ec698e10-6e6a-4c3a-974e-54a7cd7d4343',
-    storeKey:   'nba_visitor_v2',
-    authKey:    'nba_auth_v2'
+    password:   (tag && tag.dataset.password)   || bodyPwd || '',
+    workerUrl:  (tag && tag.dataset.workerUrl)  || '',
+    web3Key:    (tag && tag.dataset.web3Key)    || '',
+    storeKey:   'dt_gate_visitor_v1',
+    authKey:    'dt_gate_auth_v1'
   };
+
+  if (!C.password) return; // No password configured — gate disabled
 
   /* ── INJECT GATE HTML ────────────────────────────────────────── */
   var gate = document.createElement('div');
-  gate.id = 'nba-gate';
+  gate.id = 'dt-gate';
   gate.style.cssText = [
     'display:none;position:fixed;inset:0;z-index:99999;',
-    'background:rgba(3,12,32,0.97);backdrop-filter:blur(12px);',
+    'background:rgba(0,30,91,0.97);backdrop-filter:blur(12px);',
     'align-items:center;justify-content:center;',
-    'font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;'
+    "font-family:'Salesforce Sans',-apple-system,BlinkMacSystemFont,sans-serif;"
   ].join('');
 
   gate.innerHTML = [
-    '<div style="background:#0D1B2E;border:1px solid rgba(255,255,255,0.08);',
-      'border-radius:20px;padding:48px 40px;width:100%;max-width:400px;',
+    '<div style="background:#001E5B;border:1px solid rgba(255,255,255,0.08);',
+      'border-radius:16px;padding:48px 40px;width:100%;max-width:400px;',
       'text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.5);margin:0 20px;">',
 
-      '<div style="width:48px;height:48px;border-radius:50%;',
-        'background:rgba(1,118,211,0.15);border:1px solid rgba(1,118,211,0.35);',
-        'display:flex;align-items:center;justify-content:center;',
-        'margin:0 auto 20px;font-size:20px;">🔒</div>',
+      '<img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" ',
+        'width="140" height="28" alt="Salesforce" style="margin-bottom:28px;" />',
 
-      '<div style="font-size:10px;font-weight:700;letter-spacing:0.14em;',
-        'text-transform:uppercase;color:#0D9DDA;margin-bottom:10px;">',
-        'Salesforce · NBA Narrative</div>',
+      '<h2 style="font-size:22px;font-weight:700;color:#fff;margin-bottom:8px;',
+        'letter-spacing:-0.02em;">Access this deck</h2>',
 
-      '<h2 style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;',
-        'letter-spacing:-0.02em;">Identify yourself to continue</h2>',
-
-      '<p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:28px;',
+      '<p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:28px;',
         'line-height:1.6;">Enter your details and the access password<br/>',
         'provided by your Salesforce account team.</p>',
 
-      '<form id="nba-gate-form" autocomplete="off">',
-        '<input id="nba-g-name"     type="text"     placeholder="Full Name"       required ',
-          'style="width:100%;padding:11px 14px;border-radius:10px;',
-          'border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);',
+      '<form id="dt-gate-form" autocomplete="off">',
+        '<input id="dt-g-name"     type="text"     placeholder="Full Name"       required ',
+          'style="width:100%;padding:11px 14px;border-radius:8px;',
+          'border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.07);',
           'color:#fff;font-size:13px;outline:none;font-family:inherit;',
           'box-sizing:border-box;margin-bottom:10px;" />',
 
-        '<input id="nba-g-company"  type="text"     placeholder="Company"         required ',
-          'style="width:100%;padding:11px 14px;border-radius:10px;',
-          'border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);',
+        '<input id="dt-g-company"  type="text"     placeholder="Company"         required ',
+          'style="width:100%;padding:11px 14px;border-radius:8px;',
+          'border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.07);',
           'color:#fff;font-size:13px;outline:none;font-family:inherit;',
           'box-sizing:border-box;margin-bottom:10px;" />',
 
-        '<input id="nba-g-position" type="text"     placeholder="Position / Role"  required ',
-          'style="width:100%;padding:11px 14px;border-radius:10px;',
-          'border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);',
+        '<input id="dt-g-position" type="text"     placeholder="Position / Role"  required ',
+          'style="width:100%;padding:11px 14px;border-radius:8px;',
+          'border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.07);',
           'color:#fff;font-size:13px;outline:none;font-family:inherit;',
           'box-sizing:border-box;margin-bottom:10px;" />',
 
-        '<input id="nba-g-pass"     type="password" placeholder="Password"         required ',
-          'style="width:100%;padding:11px 14px;border-radius:10px;',
-          'border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);',
+        '<input id="dt-g-pass"     type="password" placeholder="Password"         required ',
+          'style="width:100%;padding:11px 14px;border-radius:8px;',
+          'border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.07);',
           'color:#fff;font-size:13px;outline:none;font-family:inherit;',
           'box-sizing:border-box;margin-bottom:10px;" />',
 
-        '<div id="nba-g-error" style="font-size:12px;color:#f87171;',
+        '<div id="dt-g-error" style="font-size:12px;color:#f87171;',
           'margin-bottom:8px;min-height:16px;text-align:left;"></div>',
 
-        '<button type="submit" id="nba-g-btn" style="width:100%;padding:13px;',
-          'border-radius:10px;border:none;cursor:pointer;font-family:inherit;',
-          'background:linear-gradient(135deg,#0176D3,#0060a8);color:#fff;',
+        '<button type="submit" id="dt-g-btn" style="width:100%;padding:13px;',
+          'border-radius:8px;border:none;cursor:pointer;font-family:inherit;',
+          'background:linear-gradient(135deg,#022AC0,#066AFE);color:#fff;',
           'font-size:14px;font-weight:700;transition:opacity 0.2s;" ',
           'onmouseover="this.style.opacity=\'0.85\'" ',
           'onmouseout="this.style.opacity=\'1\'">',
@@ -91,7 +90,7 @@
 
       '<p style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:20px;line-height:1.5;">',
         'Your details are saved locally so you won\'t need to re-enter<br/>',
-        'them on future visits to any page in this series.</p>',
+        'them on future visits to this deck.</p>',
     '</div>'
   ].join('');
 
@@ -109,14 +108,14 @@
   document.body.style.overflow = 'hidden';
 
   /* ── FORM SUBMIT ─────────────────────────────────────────────── */
-  document.getElementById('nba-gate-form').addEventListener('submit', function (e) {
+  document.getElementById('dt-gate-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    var name     = document.getElementById('nba-g-name').value.trim();
-    var company  = document.getElementById('nba-g-company').value.trim();
-    var position = document.getElementById('nba-g-position').value.trim();
-    var password = document.getElementById('nba-g-pass').value;
-    var err      = document.getElementById('nba-g-error');
-    var btn      = document.getElementById('nba-g-btn');
+    var name     = document.getElementById('dt-g-name').value.trim();
+    var company  = document.getElementById('dt-g-company').value.trim();
+    var position = document.getElementById('dt-g-position').value.trim();
+    var password = document.getElementById('dt-g-pass').value;
+    var err      = document.getElementById('dt-g-error');
+    var btn      = document.getElementById('dt-g-btn');
 
     err.textContent = '';
 
@@ -126,8 +125,8 @@
     }
     if (password !== C.password) {
       err.textContent = 'Incorrect password. Please try again.';
-      document.getElementById('nba-g-pass').value = '';
-      document.getElementById('nba-g-pass').focus();
+      document.getElementById('dt-g-pass').value = '';
+      document.getElementById('dt-g-pass').focus();
       return;
     }
 
@@ -150,8 +149,7 @@
   }
 
   function pageName() {
-    var s = document.querySelector('script[src*="gate.js"]');
-    return (s && s.dataset && s.dataset.page) ? s.dataset.page : (document.title || location.pathname);
+    return (tag && tag.dataset && tag.dataset.page) || document.title || location.pathname;
   }
 
   function trackAccess(name, company, position, returning) {
@@ -167,28 +165,29 @@
         var data = { timestamp: time, name: name, company: company, position: position,
                      page: page, url: url, ip: ip.ip, location: loc, ua: ua,
                      returning: returning ? 'yes' : 'no' };
-        appendToGitHub(data);
+        postToWorker(data);
         if (!returning) sendEmail(name, company, position, time, ip.ip, loc, page, url, ua);
       })
       .catch(function () {
         var data = { timestamp: time, name: name, company: company, position: position,
                      page: page, url: url, ip: '-', location: '-', ua: ua,
                      returning: returning ? 'yes' : 'no' };
-        appendToGitHub(data);
+        postToWorker(data);
         if (!returning) sendEmail(name, company, position, time, '-', '-', page, url, ua);
       });
   }
 
-  function appendToGitHub(data) {
-    if (!C.workerUrl || C.workerUrl.indexOf('REPLACE') !== -1) return;
+  function postToWorker(data) {
+    if (!C.workerUrl) return;
     fetch(C.workerUrl, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(data)
-    }).catch(function () { /* fail silently — email alert already sent */ });
+    }).catch(function () {});
   }
 
   function sendEmail(name, company, position, time, ip, loc, page, url, ua) {
+    if (!C.web3Key) return;
     fetch('https://api.web3forms.com/submit', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -203,9 +202,9 @@
                     'Location: ' + loc      + '\n' +
                     'Page:     ' + url      + '\n' +
                     'Device:   ' + ua,
-        from_name:  'NBA Narrative Alert'
+        from_name:  'Decktools Gate'
       })
-    });
+    }).catch(function () {});
   }
 
 })();

@@ -13,7 +13,7 @@
   const htmlEl = document.documentElement;
   const FEEDBACK_REPO  = htmlEl.dataset.feedbackRepo  || '';   // e.g. "mtoolin/deck-westpac"
   const FEEDBACK_TOKEN = htmlEl.dataset.feedbackToken || '';   // fine-grained PAT, contents:write
-  const TRACKER_URL    = htmlEl.dataset.trackerUrl    || 'https://decktools-tracker.milestoolin.workers.dev/track';
+  const TRACKER_URL    = htmlEl.dataset.trackerUrl    || 'https://decktools-tracker.mtoolin.workers.dev/track';
   const STORAGE_KEY    = 'dt_reviewer_name';
   const SESSION_KEY    = 'dt_feedback_session';
 
@@ -419,9 +419,16 @@
   });
 
   // ── Auto-save on unload ────────────────────────────────────────────────
-  window.addEventListener('beforeunload', () => {
+  window.addEventListener('beforeunload', (e) => {
     const total = Object.values(comments).reduce((n, a) => n + a.length, 0);
-    if (total > 0 && FEEDBACK_REPO && FEEDBACK_TOKEN) saveFeedback();
+    if (total === 0) return;
+    if (FEEDBACK_REPO && FEEDBACK_TOKEN) {
+      saveFeedback(); // best-effort auto-save to GitHub
+    } else {
+      // No GitHub integration — warn before losing unsaved comments
+      e.preventDefault();
+      e.returnValue = '';
+    }
   });
 
   // ── Presenter mode ─────────────────────────────────────────────────────

@@ -56,7 +56,8 @@
 
 window.wait = (ms) => new Promise(r => setTimeout(r, ms));
 
-window.typeInto = (el, text, speed = 28) => new Promise(resolve => {
+// guard: optional makeSequence guard fn — if provided, typeInto throws 'aborted' when cancelled
+window.typeInto = (el, text, speed = 28, guard = null) => new Promise((resolve, reject) => {
   el.textContent = '';
   let i = 0, last = 0;
   const step = (now) => {
@@ -64,7 +65,16 @@ window.typeInto = (el, text, speed = 28) => new Promise(resolve => {
     const elapsed = now - last;
     const pause = /[.,!?]/.test(text[i - 1]) ? speed * 5 : speed;
     if (elapsed >= pause) { i++; el.textContent = text.slice(0, i); last = now; }
-    if (i < text.length) requestAnimationFrame(step); else resolve();
+    if (i < text.length) {
+      // Check guard abort flag via a zero-ms wait probe
+      if (guard) {
+        guard(0).then(() => requestAnimationFrame(step)).catch(reject);
+      } else {
+        requestAnimationFrame(step);
+      }
+    } else {
+      resolve();
+    }
   };
   requestAnimationFrame(step);
 });

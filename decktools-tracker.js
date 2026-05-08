@@ -159,9 +159,13 @@ async function appendLog(env, key, item, cap) {
 }
 
 async function incrementDeckStat(env, deckName, stat) {
+  // Note: KV read-modify-write is not atomic. At current traffic levels this is
+  // acceptable; migrate to Durable Objects if concurrent writes become an issue.
   const raw = await env.DT_KV.get('decks') || '[]';
   const decks = JSON.parse(raw);
-  const match = decks.find(d => d.repo && deckName && d.repo.includes(deckName.replace('.html','')));
+  const slug = deckName.replace('.html', '');
+  // Exact match: full repo path OR trailing slug segment only
+  const match = decks.find(d => d.repo && slug && (d.repo === slug || d.repo.endsWith('/' + slug)));
   if (match) {
     match[stat] = (match[stat] || 0) + 1;
     await env.DT_KV.put('decks', JSON.stringify(decks));

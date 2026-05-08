@@ -11,8 +11,8 @@ Vanilla HTML/CSS/JS — no build tool, no framework, no CMS.
 - `template.html` — starter page
 - `STYLE-GUIDE.md` — brand rules, voice, copy lengths, persuasion guardrails
 - `SLIDE-PRINCIPLES.md` — slide-specific design rules, color assignments, icon map, do/don't list
-- `gate.js` — visitor gate + localStorage persistence
-- `cloudflare-worker.js` — visit tracking → GitHub
+- `gate.js` — visitor gate + localStorage persistence (generic, reads password from `data-password` on body or script tag; optional worker + web3 email config via data attributes)
+- `VERSION` — bump whenever SKILL.md, tokens.css, or components.css change (triggers auto-update notice to skill users)
 - `assets/` — characters, graphics, icons, logos, screenshots
   - `assets/icons/2d/` — 2D full colour product icons (use in narrative pages)
   - `assets/icons/3d/` — 3D icons (campaigns/events only, NOT in narrative pages)
