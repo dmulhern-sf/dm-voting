@@ -644,7 +644,6 @@
         <input id="lc-role"  type="text"  placeholder="Role (e.g. Account Executive)" maxlength="80" style="padding:10px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;font-family:inherit;outline:none;width:100%;box-sizing:border-box;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='#E5E7EB'"/>
       </div>
       <button id="lc-submit" style="margin-top:18px;width:100%;padding:12px;background:#022AC0;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;" onmouseover="this.style.background='#066AFE'" onmouseout="this.style.background='#022AC0'">Let's go →</button>
-      <button id="lc-skip" style="margin-top:10px;width:100%;padding:8px;background:transparent;color:#9CA3AF;border:none;font-size:12px;cursor:pointer;font-family:inherit;">Skip for now</button>
     </div>
   </div>
 
@@ -690,10 +689,6 @@
       }
 
       document.getElementById('lc-submit').addEventListener('click', submit);
-      document.getElementById('lc-skip').addEventListener('click', () => {
-        localStorage.setItem('dt_lead_done', '1');
-        backdrop.style.display = 'none';
-      });
       document.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
     })();
   </script>
