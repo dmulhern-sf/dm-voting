@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" data-deck-name="Architecture Diagram 3D — Canonical">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SF Decktools — 3D Architecture Diagram</title>
+  <link rel="stylesheet" href="tokens.css"/>
+  <link rel="stylesheet" href="components.css"/>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <style>
+    :root { --accent: #04E1CB; --accent-l: #06A59A; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080D26;
+      font-family: 'Salesforce Sans', system-ui, sans-serif;
+      overflow: hidden; width: 100vw; height: 100vh;
+    }
+
+    /* ── Three.js canvas ────────────────────────────────────────── */
+    #three-canvas {
+      position: fixed; inset: 0; z-index: 1;
+    }
+
+    /* ── CSS2D label layer (Three renders this) ─────────────────── */
+    #label-renderer {
+      position: fixed; inset: 0; z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── Node labels (CSS2D objects) ────────────────────────────── */
+    .node-label-wrap {
+      pointer-events: none;
+      text-align: center;
+      transform: translateY(-48px);
+    }
+    .node-title {
+      font-size: 12px; font-weight: 700; color: #fff;
+      letter-spacing: 0.01em; white-space: nowrap;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+    }
+    .node-sub {
+      font-size: 9px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(255,255,255,0.45);
+      white-space: nowrap;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    }
+    .node-chip {
+      display: inline-block; margin-top: 3px;
+      font-size: 8px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 999px;
+      background: rgba(4,225,203,0.18); color: var(--accent);
+      border: 1px solid rgba(4,225,203,0.35);
+      white-space: nowrap;
+    }
+    .node-chip.purple { background: rgba(179,79,255,0.18); color: #C47FFF; border-color: rgba(179,79,255,0.35); }
+    .node-chip.blue   { background: rgba(6,106,254,0.2);   color: #66A3FF; border-color: rgba(6,106,254,0.4); }
+
+    /* ── Zone labels ────────────────────────────────────────────── */
+    .zone-label-wrap {
+      pointer-events: none; text-align: center;
+    }
+    .zone-text {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      white-space: nowrap;
+    }
+
+    /* ── UI overlay ─────────────────────────────────────────────── */
+    #ui-overlay {
+      position: fixed; inset: 0; z-index: 10;
+      pointer-events: none;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 32px 40px 80px;
+    }
+
+    /* header */
+    .arch-header { display: flex; align-items: flex-start; justify-content: space-between; }
+    .arch-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 6px;
+    }
+    .arch-header h2 {
+      font-size: clamp(18px, 2vw, 26px); font-weight: 700; color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .arch-legend { display: flex; gap: 18px; align-items: center; }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 600;
+    }
+    .legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* stat bar at bottom */
+    .stat-bar {
+      display: flex; gap: 20px; justify-content: center;
+      opacity: 0; transition: opacity 0.6s ease;
+    }
+    .stat-bar.visible { opacity: 1; }
+    .stat-pill {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px; padding: 8px 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .stat-val { font-size: 18px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; }
+
+    /* slide controls */
+    .slide-controls {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 10px; z-index: 20;
+    }
+    .slide-controls button {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08); color: #fff;
+      font-size: 16px; cursor: pointer; pointer-events: all;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .slide-controls button:hover { background: rgba(255,255,255,0.18); }
+    .slide-counter {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.35); min-width: 48px; text-align: center;
+    }
+    .hint {
+      position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; color: rgba(255,255,255,0.2); z-index: 20;
+      letter-spacing: 0.08em; pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="three-canvas"></canvas>
+<div id="label-renderer"></div>
+
+<!-- UI overlay -->
+<div id="ui-overlay">
+  <div class="arch-header">
+    <div>
+      <div class="arch-eyebrow">Solution Architecture</div>
+      <h2 id="arch-title">Unified Data Platform — Customer 360 to Agentforce</h2>
+    </div>
+    <div class="arch-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#066AFE"></div>Salesforce</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#04E1CB"></div>Data Flow</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#B34FFF"></div>AI Agents</div>
+    </div>
+  </div>
+  <div class="stat-bar" id="stat-bar">
+    <div class="stat-pill"><span class="stat-val">360°</span><span class="stat-label">Unified Customer Profile</span></div>
+    <div class="stat-pill"><span class="stat-val" style="color:#66A3FF">38%</span><span class="stat-label">Faster Onboarding</span></div>
+    <div class="stat-pill"><span class="stat-val" style="color:#C47FFF">4×</span><span class="stat-label">Agent Productivity Gain</span></div>
+  </div>
+</div>
+
+<div class="hint">Drag to rotate · Scroll to zoom · Arrow keys to navigate</div>
+
+<nav class="slide-controls">
+  <button id="btn-prev">&#8592;</button>
+  <span class="slide-counter" id="counter">1 / 1</span>
+  <button id="btn-next">&#8594;</button>
+</nav>
+
+<script src="feedback-widget.js"></script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+// ── Scene setup ──────────────────────────────────────────────────
+const canvas = document.getElementById('three-canvas');
+const W = window.innerWidth, H = window.innerHeight;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setSize(W, H);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x080D26, 1);
+
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(W, H);
+labelRenderer.domElement.id = 'label-renderer';
+labelRenderer.domElement.style.cssText = 'position:fixed;inset:0;z-index:2;pointer-events:none;';
+document.body.appendChild(labelRenderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x080D26, 0.045);
+
+const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 200);
+camera.position.set(0, 3, 18);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.minDistance = 8;
+controls.maxDistance = 30;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.35;
+
+// ── Lighting ──────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0x1a2060, 2));
+const dirLight = new THREE.DirectionalLight(0x4080ff, 1.5);
+dirLight.position.set(5, 10, 8);
+scene.add(dirLight);
+const rimLight = new THREE.DirectionalLight(0x04E1CB, 0.6);
+rimLight.position.set(-8, -2, -5);
+scene.add(rimLight);
+
+// ── Star field ────────────────────────────────────────────────────
+const starGeo = new THREE.BufferGeometry();
+const starVerts = [];
+for (let i = 0; i < 800; i++) {
+  starVerts.push((Math.random() - 0.5) * 120, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80);
+}
+starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.08, transparent: true, opacity: 0.4 })));
+
+// ── Helpers ───────────────────────────────────────────────────────
+function makeLabel(title, sub, chipText, chipClass) {
+  const div = document.createElement('div');
+  div.className = 'node-label-wrap';
+  div.innerHTML = `<div class="node-title">${title}</div><div class="node-sub">${sub}</div>${chipText ? `<div class="node-chip ${chipClass||''}">${chipText}</div>` : ''}`;
+  const obj = new CSS2DObject(div);
+  return obj;
+}
+
+function makeZoneLabel(text) {
+  const div = document.createElement('div');
+  div.className = 'zone-label-wrap';
+  div.innerHTML = `<div class="zone-text">${text}</div>`;
+  const obj = new CSS2DObject(div);
+  return obj;
+}
+
+// Glowing box node
+function makeNode(x, y, z, colorHex, emissiveHex, w=2.4, h=1.2, d=0.5) {
+  const geo = new THREE.BoxGeometry(w, h, d);
+  const mat = new THREE.MeshStandardMaterial({
+    color: colorHex,
+    emissive: emissiveHex,
+    emissiveIntensity: 0.35,
+    transparent: true,
+    opacity: 0.0,  // animated in
+    roughness: 0.4,
+    metalness: 0.6,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, y, z);
+  // edge outline
+  const edgeGeo = new THREE.EdgesGeometry(geo);
+  const edgeMat = new THREE.LineBasicMaterial({ color: emissiveHex, transparent: true, opacity: 0.0 });
+  const edges = new THREE.LineSegments(edgeGeo, edgeMat);
+  mesh.add(edges);
+  mesh.userData = { targetOpacity: 0.75, edgeMat, revealed: false };
+  scene.add(mesh);
+  return mesh;
+}
+
+// Glowing line between two points
+function makeLine(p1, p2, colorHex) {
+  const points = [new THREE.Vector3(...p1), new THREE.Vector3(...p2)];
+  const geo = new THREE.BufferGeometry().setFromPoints(points);
+  const mat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.0, linewidth: 1 });
+  const line = new THREE.Line(geo, mat);
+  line.userData = { targetOpacity: 0.55, revealed: false };
+  scene.add(line);
+  return line;
+}
+
+// Particle travelling along a line
+function makeParticle(colorHex) {
+  const geo = new THREE.SphereGeometry(0.09, 6, 6);
+  const mat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.userData = { t: Math.random(), speed: 0.004 + Math.random() * 0.004, active: false };
+  scene.add(mesh);
+  return mesh;
+}
+
+// ── Node layout ────────────────────────────────────────────────────
+// Customer zone x≈-7, Platform zone x≈0, Action zone x≈7
+
+const BLUE   = 0x1a3a8f;
+const BLUE_E = 0x066AFE;
+const TEAL   = 0x0a4040;
+const TEAL_E = 0x04E1CB;
+const PURP   = 0x2a0a40;
+const PURP_E = 0xB34FFF;
+const GREY   = 0x1a2040;
+const GREY_E = 0x4060a0;
+
+// customer nodes
+const nCRM  = makeNode(-7,  1.6, 0, GREY, GREY_E, 2.2, 1.0);
+const nWeb  = makeNode(-7,  0.0, 0, GREY, GREY_E, 2.2, 1.0);
+const nDW   = makeNode(-7, -1.6, 0, GREY, GREY_E, 2.2, 1.0);
+
+// integration
+const nMule = makeNode(-3.2, 0, 0, BLUE, BLUE_E, 2.4, 1.4);
+
+// data platform
+const nDC   = makeNode( 0.2, 0, 0, TEAL, TEAL_E, 2.8, 1.8);
+
+// cloud products
+const nSales   = makeNode( 4.2,  1.6, 0, BLUE, BLUE_E, 2.2, 1.0);
+const nService = makeNode( 4.2,  0.0, 0, BLUE, BLUE_E, 2.2, 1.0);
+const nMC      = makeNode( 4.2, -1.6, 0, BLUE, BLUE_E, 2.2, 1.0);
+
+// agentforce
+const nAgent = makeNode( 8.0, 0, 0, PURP, PURP_E, 2.6, 2.4);
+
+// Labels
+nCRM.add(makeLabel('CRM / ERP', 'Existing Systems', null, ''));
+nWeb.add(makeLabel('Web & Mobile', 'Clickstream Events', null, ''));
+nDW.add(makeLabel('Data Warehouse', 'Snowflake / BigQuery', null, ''));
+nMule.add(makeLabel('MuleSoft', 'API Integration', '500+ Connectors', 'blue'));
+nDC.add(makeLabel('Data Cloud', 'Unified Profile', 'Real-Time', ''));
+nSales.add(makeLabel('Sales Cloud', 'Revenue Intelligence', null, ''));
+nService.add(makeLabel('Service Cloud', 'Case Management', null, ''));
+nMC.add(makeLabel('Marketing Cloud', 'Journey Orchestration', null, ''));
+nAgent.add(makeLabel('Agentforce', 'Autonomous AI', 'Atlas Reasoning', 'purple'));
+
+// Zone labels
+const zCust = makeZoneLabel('CUSTOMER SYSTEMS');
+zCust.position.set(-7, 3.2, 0); scene.add(zCust);
+const zSF = makeZoneLabel('SALESFORCE PLATFORM');
+zSF.position.set(0.5, 3.2, 0); scene.add(zSF);
+const zAgent = makeZoneLabel('AGENTS');
+zAgent.position.set(8, 3.2, 0); scene.add(zAgent);
+
+// ── Connections ────────────────────────────────────────────────────
+const lCRM2Mule  = makeLine([-5.9,  1.6, 0], [-4.4, 0.4, 0], BLUE_E);
+const lWeb2Mule  = makeLine([-5.9,  0.0, 0], [-4.4, 0.0, 0], BLUE_E);
+const lDW2Mule   = makeLine([-5.9, -1.6, 0], [-4.4,-0.4, 0], BLUE_E);
+const lMule2DC   = makeLine([-2.0,  0.0, 0], [-1.2, 0.0, 0], TEAL_E);
+const lDC2Sales  = makeLine([ 1.6,  0.5, 0], [ 3.1, 1.6, 0], BLUE_E);
+const lDC2Svc    = makeLine([ 1.6,  0.0, 0], [ 3.1, 0.0, 0], BLUE_E);
+const lDC2MC     = makeLine([ 1.6, -0.5, 0], [ 3.1,-1.6, 0], BLUE_E);
+const lSales2Ag  = makeLine([ 5.3,  1.6, 0], [ 6.7, 0.8, 0], PURP_E);
+const lSvc2Ag    = makeLine([ 5.3,  0.0, 0], [ 6.7, 0.0, 0], PURP_E);
+const lMC2Ag     = makeLine([ 5.3, -1.6, 0], [ 6.7,-0.8, 0], PURP_E);
+
+// ── Particles ──────────────────────────────────────────────────────
+const particles = [
+  { p: makeParticle(0x04E1CB), from: [-2.0, 0.0, 0], to: [-1.2, 0.0, 0] },
+  { p: makeParticle(0x066AFE), from: [ 1.6, 0.5, 0], to: [ 3.1, 1.6, 0] },
+  { p: makeParticle(0x066AFE), from: [ 1.6, 0.0, 0], to: [ 3.1, 0.0, 0] },
+  { p: makeParticle(0xB34FFF), from: [ 5.3, 1.6, 0], to: [ 6.7, 0.8, 0] },
+  { p: makeParticle(0xB34FFF), from: [ 5.3, 0.0, 0], to: [ 6.7, 0.0, 0] },
+];
+particles.forEach(({ p }, i) => { p.userData.t = i * 0.2; });
+
+// ── Reveal sequence ────────────────────────────────────────────────
+const revealSequence = [
+  { objs: [nCRM, nWeb, nDW],                              delay: 600  },
+  { objs: [lCRM2Mule, lWeb2Mule, lDW2Mule],              delay: 1100 },
+  { objs: [nMule],                                         delay: 1300 },
+  { objs: [lMule2DC],                                      delay: 1800 },
+  { objs: [nDC],                                           delay: 2000 },
+  { objs: [lDC2Sales, lDC2Svc, lDC2MC],                  delay: 2500 },
+  { objs: [nSales, nService, nMC],                        delay: 2700 },
+  { objs: [lSales2Ag, lSvc2Ag, lMC2Ag],                  delay: 3200 },
+  { objs: [nAgent],                                        delay: 3400 },
+];
+
+let particlesActive = false;
+revealSequence.forEach(({ objs, delay }) => {
+  setTimeout(() => {
+    objs.forEach(o => { o.userData.revealed = true; });
+    if (delay >= 3400) {
+      particlesActive = true;
+      setTimeout(() => {
+        document.getElementById('stat-bar').classList.add('visible');
+      }, 600);
+    }
+  }, delay);
+});
+
+// ── Animation loop ─────────────────────────────────────────────────
+const clock = new THREE.Clock();
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+renderer.setAnimationLoop(() => {
+  const dt = clock.getDelta();
+  controls.update();
+
+  // Fade in revealed objects
+  scene.traverse(obj => {
+    if (!obj.userData) return;
+    const { revealed, targetOpacity, edgeMat } = obj.userData;
+    if (revealed && obj.material) {
+      obj.material.opacity = lerp(obj.material.opacity, targetOpacity, 0.06);
+      if (edgeMat) edgeMat.opacity = lerp(edgeMat.opacity, 0.8, 0.06);
+    }
+  });
+
+  // Move particles
+  if (particlesActive) {
+    particles.forEach(({ p, from, to }) => {
+      p.userData.t += p.userData.speed;
+      if (p.userData.t > 1) p.userData.t = 0;
+      const t = p.userData.t;
+      p.position.set(
+        lerp(from[0], to[0], t),
+        lerp(from[1], to[1], t),
+        lerp(from[2], to[2], t)
+      );
+      // fade in/out at endpoints
+      const fade = t < 0.15 ? t / 0.15 : t > 0.85 ? (1 - t) / 0.15 : 1;
+      p.material.opacity = fade * 0.9;
+    });
+  }
+
+  // Gentle node bob
+  const t = clock.getElapsedTime();
+  [nDC, nAgent, nMule].forEach((n, i) => {
+    n.position.y = n.position.y + Math.sin(t * 0.8 + i) * 0.0008;
+  });
+
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
+});
+
+// ── Resize ─────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  const w = window.innerWidth, h = window.innerHeight;
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  labelRenderer.setSize(w, h);
+});
+
+// ── Keyboard nav ───────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    controls.autoRotate = !controls.autoRotate;
+  }
+});
+
+// stop autorotate on drag
+controls.addEventListener('start', () => { controls.autoRotate = false; });
+</script>
+
+</body>
+</html>

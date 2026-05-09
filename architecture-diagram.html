@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" data-deck-name="Architecture Diagram — Canonical Example">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Decktools — Architecture Diagram</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <style>
+    :root {
+      --accent: #04E1CB;
+      --accent-l: #06A59A;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--sf-navy, #001E5B);
+      font-family: 'Salesforce Sans', system-ui, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ── Slide deck shell ──────────────────────────────────────── */
+    .slide-deck { width: 100vw; height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute; inset: 0;
+      display: none; flex-direction: column;
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .slide.active { display: flex; }
+    .slide.visible { opacity: 1; }
+
+    /* ── Slide controls ────────────────────────────────────────── */
+    .slide-controls {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 10px; z-index: 100;
+    }
+    .slide-controls button {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .slide-controls button:hover { background: rgba(255,255,255,0.18); }
+    .slide-counter {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.4); min-width: 48px; text-align: center;
+    }
+
+    /* ── Slide 1 — Title ───────────────────────────────────────── */
+    .slide-title {
+      background: var(--grad-evening, linear-gradient(135deg,#001E5B 0%,#022AC0 60%,#066AFE 100%));
+      justify-content: center; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .slide-title::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #022AC0, var(--accent), #00B3FF);
+    }
+    .title-inner { text-align: center; z-index: 2; padding: 40px; }
+    .title-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 16px;
+      opacity: 0; transform: translateY(10px);
+      transition: all 0.5s ease 0.1s;
+    }
+    .title-inner h1 {
+      font-size: clamp(32px, 4vw, 52px); font-weight: 700; color: #fff;
+      line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 16px;
+      opacity: 0; transform: translateY(14px);
+      transition: all 0.5s ease 0.25s;
+    }
+    .title-inner h1 em { font-style: normal; color: var(--accent); }
+    .title-inner p {
+      font-size: 16px; color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto;
+      line-height: 1.6;
+      opacity: 0; transform: translateY(10px);
+      transition: all 0.5s ease 0.4s;
+    }
+    .slide.visible .title-eyebrow,
+    .slide.visible .title-inner h1,
+    .slide.visible .title-inner p {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* floating grid bg */
+    .bg-grid {
+      position: absolute; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(rgba(0,179,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,179,255,0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ── Slide 2 — Data Cloud ingestion ────────────────────────── */
+    .slide-arch {
+      background: #0A0F2E;
+      padding: 40px 56px 80px;
+    }
+    .arch-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .arch-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 6px;
+    }
+    .arch-header h2 {
+      font-size: clamp(20px, 2.2vw, 28px); font-weight: 700; color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .arch-legend { display: flex; gap: 20px; align-items: center; padding-top: 4px; }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 600;
+    }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ── Diagram canvas ────────────────────────────────────────── */
+    .diagram-wrap {
+      flex: 1; position: relative;
+    }
+    .diagram-svg {
+      width: 100%; height: 100%;
+    }
+
+    /* ── Node styles ───────────────────────────────────────────── */
+    .node {
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform-origin: center;
+    }
+    .node.revealed { opacity: 1; }
+
+    .node-card {
+      fill: rgba(255,255,255,0.05);
+      stroke: rgba(255,255,255,0.12);
+      stroke-width: 1;
+      rx: 12; ry: 12;
+    }
+    .node-card.sf { stroke: rgba(6,106,254,0.5); fill: rgba(6,106,254,0.08); }
+    .node-card.data { stroke: rgba(4,225,203,0.5); fill: rgba(4,225,203,0.06); }
+    .node-card.action { stroke: rgba(115,3,148,0.4); fill: rgba(115,3,148,0.06); }
+    .node-card.customer { stroke: rgba(255,255,255,0.15); fill: rgba(255,255,255,0.03); }
+
+    .node-label {
+      fill: #fff; font-family: 'Salesforce Sans', system-ui, sans-serif;
+      font-weight: 700; font-size: 13px;
+      dominant-baseline: middle; text-anchor: middle;
+    }
+    .node-sublabel {
+      fill: rgba(255,255,255,0.45); font-family: 'Salesforce Sans', system-ui, sans-serif;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+      dominant-baseline: middle; text-anchor: middle;
+    }
+
+    /* ── Connection lines ──────────────────────────────────────── */
+    .conn {
+      fill: none; stroke-width: 1.5;
+      stroke-dasharray: 6 4;
+      stroke-dashoffset: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .conn.revealed { opacity: 1; }
+    .conn.active {
+      animation: dash-flow 1.6s linear infinite;
+    }
+    .conn.sf-line { stroke: rgba(6,106,254,0.6); }
+    .conn.data-line { stroke: rgba(4,225,203,0.6); }
+    .conn.action-line { stroke: rgba(179,79,255,0.6); }
+    .conn.neutral { stroke: rgba(255,255,255,0.2); stroke-dasharray: none; }
+
+    @keyframes dash-flow {
+      from { stroke-dashoffset: 20; }
+      to   { stroke-dashoffset: 0; }
+    }
+
+    /* data packet dots travelling along paths */
+    .packet { fill: var(--accent); opacity: 0; }
+    .packet.active { animation: packet-fade 2s ease-in-out infinite; }
+    @keyframes packet-fade {
+      0%, 100% { opacity: 0; }
+      20%, 80%  { opacity: 1; }
+    }
+
+    /* pulse ring on active nodes */
+    .pulse-ring {
+      fill: none; stroke-width: 1.5;
+      opacity: 0;
+      transform-origin: center;
+    }
+    .pulse-ring.active {
+      animation: pulse-out 2s ease-out infinite;
+    }
+    @keyframes pulse-out {
+      0%   { opacity: 0.7; r: 28px; }
+      100% { opacity: 0;   r: 44px; }
+    }
+
+    /* ── Slide 3 — Agentforce action diagram ───────────────────── */
+    .slide-agentforce { background: #080D26; padding: 40px 56px 80px; }
+
+    /* ── Zone bands (customer / SF platform / action) ──────────── */
+    .zone-label {
+      fill: none; opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .zone-label.revealed { opacity: 1; }
+    .zone-text {
+      font-family: 'Salesforce Sans', system-ui, sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+
+    /* ── Slide nav eyebrow ─────────────────────────────────────── */
+    .slide-nav-bar {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    }
+    .slide-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5);
+    }
+    .slide-topic {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ── Iconify node icons ────────────────────────────────────── */
+    .node-icon { font-size: 22px; }
+
+    /* ── Stat callouts ─────────────────────────────────────────── */
+    .stat-callout {
+      opacity: 0; transition: opacity 0.5s ease;
+    }
+    .stat-callout.revealed { opacity: 1; }
+    .stat-val {
+      font-family: 'Salesforce Sans', system-ui, sans-serif;
+      font-size: 22px; font-weight: 700;
+      dominant-baseline: middle; text-anchor: middle;
+    }
+    .stat-label {
+      font-family: 'Salesforce Sans', system-ui, sans-serif;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      fill: rgba(255,255,255,0.45);
+      dominant-baseline: middle; text-anchor: middle;
+    }
+  </style>
+</head>
+<body>
+
+<div class="slide-deck" id="deck">
+
+  <!-- ── Slide 1: Title ──────────────────────────────────────── -->
+  <div class="slide slide-title" data-section="Architecture">
+    <div class="bg-grid"></div>
+    <div class="title-inner">
+      <div class="title-eyebrow">SF Decktools · Architecture Diagrams</div>
+      <h1>Solution architecture<br/><em>that tells a story.</em></h1>
+      <p>Animated, browser-native architecture diagrams. Accurate topology, Salesforce brand tokens, live data-flow animations — zero dependencies beyond a CDN icon script.</p>
+    </div>
+  </div>
+
+  <!-- ── Slide 2: Data Cloud Ingestion Architecture ──────────── -->
+  <div class="slide slide-arch" data-section="Data Platform">
+
+    <div class="arch-header">
+      <div>
+        <div class="arch-eyebrow">Solution Architecture</div>
+        <h2>Unified Data Platform — Ingestion to Action</h2>
+      </div>
+      <div class="arch-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#066AFE"></div>Salesforce Layer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Data Flow</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#B34FFF"></div>AI / Action</div>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg class="diagram-svg" viewBox="0 0 1100 480" preserveAspectRatio="xMidYMid meet" id="arch-svg">
+
+        <!-- ── Zone bands ──────────────────────────────────── -->
+        <!-- Customer Systems zone -->
+        <rect x="10" y="10" width="200" height="460" rx="12"
+          fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <text x="110" y="36" class="zone-text" fill="rgba(255,255,255,0.25)" text-anchor="middle"
+          font-family="'Salesforce Sans',system-ui" font-size="10" font-weight="700" letter-spacing="0.1em">CUSTOMER SYSTEMS</text>
+
+        <!-- Salesforce Platform zone -->
+        <rect x="230" y="10" width="640" height="460" rx="12"
+          fill="rgba(6,106,254,0.03)" stroke="rgba(6,106,254,0.15)" stroke-width="1"/>
+        <text x="550" y="36" class="zone-text" fill="rgba(6,106,254,0.5)" text-anchor="middle"
+          font-family="'Salesforce Sans',system-ui" font-size="10" font-weight="700" letter-spacing="0.1em">SALESFORCE PLATFORM</text>
+
+        <!-- Action zone -->
+        <rect x="890" y="10" width="200" height="460" rx="12"
+          fill="rgba(115,3,148,0.04)" stroke="rgba(179,79,255,0.2)" stroke-width="1"/>
+        <text x="990" y="36" class="zone-text" fill="rgba(179,79,255,0.5)" text-anchor="middle"
+          font-family="'Salesforce Sans',system-ui" font-size="10" font-weight="700" letter-spacing="0.1em">AGENTS / ACTIONS</text>
+
+        <!-- ── Connection lines ────────────────────────────── -->
+
+        <!-- CRM → MuleSoft -->
+        <path id="conn-crm-mule" class="conn sf-line" d="M 200 120 L 280 120"/>
+        <!-- ERP → MuleSoft -->
+        <path id="conn-erp-mule" class="conn sf-line" d="M 200 240 L 280 240 L 280 180"/>
+        <!-- Web → MuleSoft -->
+        <path id="conn-web-mule" class="conn sf-line" d="M 200 360 L 280 360 L 280 180"/>
+
+        <!-- MuleSoft → Data Cloud -->
+        <path id="conn-mule-dc" class="conn data-line" d="M 400 180 L 490 180"/>
+
+        <!-- Data Cloud → Sales Cloud -->
+        <path id="conn-dc-sales" class="conn sf-line" d="M 610 130 L 700 100"/>
+        <!-- Data Cloud → Service Cloud -->
+        <path id="conn-dc-service" class="conn sf-line" d="M 610 180 L 700 180"/>
+        <!-- Data Cloud → Marketing Cloud -->
+        <path id="conn-dc-mc" class="conn sf-line" d="M 610 230 L 700 260"/>
+
+        <!-- Sales → Agentforce -->
+        <path id="conn-sales-agent" class="conn action-line" d="M 820 100 L 890 160"/>
+        <!-- Service → Agentforce -->
+        <path id="conn-service-agent" class="conn action-line" d="M 820 180 L 890 220"/>
+        <!-- MC → Agentforce -->
+        <path id="conn-mc-agent" class="conn action-line" d="M 820 260 L 890 300"/>
+
+        <!-- ── NODES ───────────────────────────────────────── -->
+
+        <!-- CRM Source -->
+        <g class="node" id="node-crm">
+          <rect class="node-card customer" x="20" y="85" width="170" height="70" rx="10" ry="10"/>
+          <text x="105" y="114" class="node-label" font-size="12">CRM / ERP</text>
+          <text x="105" y="132" class="node-sublabel">Existing Systems</text>
+        </g>
+
+        <!-- Web / App Source -->
+        <g class="node" id="node-web">
+          <rect class="node-card customer" x="20" y="205" width="170" height="70" rx="10" ry="10"/>
+          <text x="105" y="234" class="node-label" font-size="12">Web &amp; Mobile</text>
+          <text x="105" y="252" class="node-sublabel">Events / Clickstream</text>
+        </g>
+
+        <!-- Data Warehouse Source -->
+        <g class="node" id="node-dw">
+          <rect class="node-card customer" x="20" y="325" width="170" height="70" rx="10" ry="10"/>
+          <text x="105" y="354" class="node-label" font-size="12">Data Warehouse</text>
+          <text x="105" y="372" class="node-sublabel">Snowflake / BigQuery</text>
+        </g>
+
+        <!-- MuleSoft -->
+        <g class="node" id="node-mule">
+          <rect class="node-card sf" x="240" y="130" width="150" height="100" rx="12" ry="12"/>
+          <!-- pulse ring -->
+          <circle class="pulse-ring" id="pulse-mule" cx="315" cy="180" r="28" stroke="rgba(6,106,254,0.4)"/>
+          <text x="315" y="168" class="node-label">MuleSoft</text>
+          <text x="315" y="186" class="node-sublabel">API Integration</text>
+          <text x="315" y="210" class="node-sublabel" style="fill:rgba(4,225,203,0.6);font-size:9px">500+ Connectors</text>
+        </g>
+
+        <!-- Data Cloud -->
+        <g class="node" id="node-dc">
+          <rect class="node-card data" x="490" y="120" width="160" height="120" rx="12" ry="12"/>
+          <circle class="pulse-ring" id="pulse-dc" cx="570" cy="180" r="32" stroke="rgba(4,225,203,0.4)"/>
+          <text x="570" y="162" class="node-label">Data Cloud</text>
+          <text x="570" y="180" class="node-sublabel">Unified Profile</text>
+          <text x="570" y="220" class="node-sublabel" style="fill:rgba(4,225,203,0.7);font-size:9px">REAL-TIME SEGMENTATION</text>
+        </g>
+
+        <!-- Sales Cloud -->
+        <g class="node" id="node-sales">
+          <rect class="node-card sf" x="700" y="60" width="120" height="80" rx="10" ry="10"/>
+          <text x="760" y="96" class="node-label" font-size="12">Sales Cloud</text>
+          <text x="760" y="114" class="node-sublabel">Revenue Intel</text>
+        </g>
+
+        <!-- Service Cloud -->
+        <g class="node" id="node-service">
+          <rect class="node-card sf" x="700" y="155" width="120" height="80" rx="10" ry="10"/>
+          <text x="760" y="191" class="node-label" font-size="12">Service Cloud</text>
+          <text x="760" y="209" class="node-sublabel">Case Management</text>
+        </g>
+
+        <!-- Marketing Cloud -->
+        <g class="node" id="node-mc">
+          <rect class="node-card sf" x="700" y="250" width="120" height="80" rx="10" ry="10"/>
+          <text x="760" y="283" class="node-label" font-size="12">Marketing Cloud</text>
+          <text x="760" y="301" class="node-sublabel">Journey Builder</text>
+        </g>
+
+        <!-- Agentforce -->
+        <g class="node" id="node-agent">
+          <rect class="node-card action" x="900" y="130" width="170" height="200" rx="12" ry="12"/>
+          <circle class="pulse-ring" id="pulse-agent" cx="985" cy="230" r="36" stroke="rgba(179,79,255,0.5)"/>
+          <text x="985" y="185" class="node-label" font-size="14">Agentforce</text>
+          <text x="985" y="205" class="node-sublabel">Autonomous AI</text>
+
+          <!-- mini action chips -->
+          <rect x="920" y="225" width="130" height="22" rx="6" fill="rgba(179,79,255,0.15)" stroke="rgba(179,79,255,0.3)" stroke-width="1"/>
+          <text x="985" y="237" class="node-sublabel" style="fill:rgba(255,255,255,0.7);font-size:9px">Sales Development Agent</text>
+          <rect x="920" y="255" width="130" height="22" rx="6" fill="rgba(179,79,255,0.15)" stroke="rgba(179,79,255,0.3)" stroke-width="1"/>
+          <text x="985" y="267" class="node-sublabel" style="fill:rgba(255,255,255,0.7);font-size:9px">Service Resolution Agent</text>
+          <rect x="920" y="285" width="130" height="22" rx="6" fill="rgba(179,79,255,0.15)" stroke="rgba(179,79,255,0.3)" stroke-width="1"/>
+          <text x="985" y="297" class="node-sublabel" style="fill:rgba(255,255,255,0.7);font-size:9px">Campaign Orchestration</text>
+        </g>
+
+        <!-- ── Moving data packets ─────────────────────────── -->
+        <circle class="packet" r="4" id="pkt1"><animateMotion dur="2.4s" repeatCount="indefinite" begin="1s"><mpath href="#conn-mule-dc"/></animateMotion></circle>
+        <circle class="packet" r="3" id="pkt2" style="fill:#066AFE"><animateMotion dur="2.8s" repeatCount="indefinite" begin="0.6s"><mpath href="#conn-dc-sales"/></animateMotion></circle>
+        <circle class="packet" r="3" id="pkt3" style="fill:#066AFE"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.4s"><mpath href="#conn-dc-service"/></animateMotion></circle>
+        <circle class="packet" r="3" id="pkt4" style="fill:#B34FFF"><animateMotion dur="2.2s" repeatCount="indefinite" begin="0.8s"><mpath href="#conn-sales-agent"/></animateMotion></circle>
+        <circle class="packet" r="3" id="pkt5" style="fill:#B34FFF"><animateMotion dur="2.5s" repeatCount="indefinite" begin="1.2s"><mpath href="#conn-service-agent"/></animateMotion></circle>
+
+        <!-- ── Stat callouts ───────────────────────────────── -->
+        <g class="stat-callout" id="stat1">
+          <rect x="240" y="375" width="150" height="70" rx="10" fill="rgba(4,225,203,0.08)" stroke="rgba(4,225,203,0.25)" stroke-width="1"/>
+          <text x="315" y="402" class="stat-val" fill="var(--accent)">360°</text>
+          <text x="315" y="418" class="stat-label">Customer Profile</text>
+          <text x="315" y="434" class="stat-label">Unified in Real Time</text>
+        </g>
+        <g class="stat-callout" id="stat2">
+          <rect x="490" y="375" width="160" height="70" rx="10" fill="rgba(6,106,254,0.08)" stroke="rgba(6,106,254,0.25)" stroke-width="1"/>
+          <text x="570" y="402" class="stat-val" fill="#66A3FF">38%</text>
+          <text x="570" y="418" class="stat-label">Faster Onboarding</text>
+          <text x="570" y="434" class="stat-label">Avg. across customers</text>
+        </g>
+        <g class="stat-callout" id="stat3">
+          <rect x="900" y="375" width="170" height="70" rx="10" fill="rgba(179,79,255,0.08)" stroke="rgba(179,79,255,0.25)" stroke-width="1"/>
+          <text x="985" y="402" class="stat-val" fill="#B34FFF">4× ROI</text>
+          <text x="985" y="418" class="stat-label">Agent-Assisted</text>
+          <text x="985" y="434" class="stat-label">Productivity Gain</text>
+        </g>
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- ── Slide 3: Agentforce Action Loop ─────────────────────── -->
+  <div class="slide slide-agentforce" data-section="Agentforce">
+
+    <div class="arch-header">
+      <div>
+        <div class="arch-eyebrow">Agentforce Architecture</div>
+        <h2>The Autonomous Action Loop</h2>
+      </div>
+      <div class="arch-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#B34FFF"></div>Agent Layer</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Data Grounding</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#066AFE"></div>Trust / Guard</div>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg class="diagram-svg" viewBox="0 0 1100 460" preserveAspectRatio="xMidYMid meet" id="agent-svg">
+
+        <!-- Central agent hub -->
+        <g class="node" id="ag-hub">
+          <circle cx="550" cy="230" r="80" fill="rgba(115,3,148,0.12)" stroke="rgba(179,79,255,0.4)" stroke-width="1.5"/>
+          <circle cx="550" cy="230" r="60" fill="rgba(115,3,148,0.18)" stroke="rgba(179,79,255,0.3)" stroke-width="1"/>
+          <circle class="pulse-ring active" cx="550" cy="230" r="80" stroke="rgba(179,79,255,0.3)"/>
+          <text x="550" y="220" class="node-label" font-size="15">Agentforce</text>
+          <text x="550" y="240" class="node-sublabel" style="fill:rgba(255,255,255,0.5)">Atlas Reasoning</text>
+        </g>
+
+        <!-- Orbit nodes -->
+        <!-- Data Cloud (top) -->
+        <g class="node" id="ag-dc">
+          <rect class="node-card data" x="440" y="40" width="220" height="70" rx="10" ry="10"/>
+          <text x="550" y="71" class="node-label" font-size="13">Data Cloud</text>
+          <text x="550" y="89" class="node-sublabel">Grounded on Unified Profile</text>
+        </g>
+
+        <!-- Trust Layer (right) -->
+        <g class="node" id="ag-trust">
+          <rect class="node-card sf" x="780" y="155" width="200" height="150" rx="10" ry="10"/>
+          <text x="880" y="205" class="node-label" font-size="13">Einstein Trust</text>
+          <text x="880" y="223" class="node-sublabel">Layer</text>
+          <rect x="800" y="245" width="160" height="20" rx="5" fill="rgba(6,106,254,0.15)" stroke="rgba(6,106,254,0.3)" stroke-width="1"/>
+          <text x="880" y="256" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.6)">Zero Data Retention</text>
+          <rect x="800" y="271" width="160" height="20" rx="5" fill="rgba(6,106,254,0.15)" stroke="rgba(6,106,254,0.3)" stroke-width="1"/>
+          <text x="880" y="282" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.6)">Toxicity Detection</text>
+        </g>
+
+        <!-- Actions (bottom) -->
+        <g class="node" id="ag-actions">
+          <rect class="node-card action" x="370" y="350" width="360" height="80" rx="10" ry="10"/>
+          <text x="550" y="380" class="node-label" font-size="13">Agent Actions</text>
+          <!-- action chips -->
+          <rect x="385" y="393" width="90" height="20" rx="5" fill="rgba(179,79,255,0.2)" stroke="rgba(179,79,255,0.4)" stroke-width="1"/>
+          <text x="430" y="404" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.7)">Flow Actions</text>
+          <rect x="485" y="393" width="90" height="20" rx="5" fill="rgba(179,79,255,0.2)" stroke="rgba(179,79,255,0.4)" stroke-width="1"/>
+          <text x="530" y="404" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.7)">Apex Actions</text>
+          <rect x="585" y="393" width="135" height="20" rx="5" fill="rgba(179,79,255,0.2)" stroke="rgba(179,79,255,0.4)" stroke-width="1"/>
+          <text x="652" y="404" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.7)">External API Calls</text>
+        </g>
+
+        <!-- User / Channel (left) -->
+        <g class="node" id="ag-user">
+          <rect class="node-card customer" x="120" y="155" width="200" height="150" rx="10" ry="10"/>
+          <text x="220" y="205" class="node-label" font-size="13">Channels</text>
+          <rect x="140" y="225" width="160" height="20" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <text x="220" y="236" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.6)">Slack / Teams</text>
+          <rect x="140" y="251" width="160" height="20" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <text x="220" y="262" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.6)">Web / Mobile / Email</text>
+          <rect x="140" y="277" width="160" height="20" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <text x="220" y="288" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.6)">Salesforce App</text>
+        </g>
+
+        <!-- Connections -->
+        <path class="conn data-line revealed active" d="M 550 150 L 550 110"/>
+        <path class="conn action-line revealed active" d="M 550 310 L 550 350"/>
+        <path class="conn sf-line revealed active" d="M 630 210 L 780 210"/>
+        <path class="conn neutral revealed" d="M 320 230 L 470 230"/>
+
+        <!-- Packets on agent loop -->
+        <circle r="4" style="fill:var(--accent);opacity:0">
+          <animateMotion dur="3s" repeatCount="indefinite" begin="0s">
+            <mpath href="#agent-loop"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite" begin="0s"/>
+        </circle>
+
+        <!-- Invisible loop path for packet travel -->
+        <path id="agent-loop" d="M 550 150 L 630 210 L 550 310 L 470 230 Z" fill="none" stroke="none"/>
+
+      </svg>
+    </div>
+
+  </div>
+
+</div><!-- /deck -->
+
+<!-- Slide controls -->
+<nav class="slide-controls">
+  <button id="btn-prev" onclick="navigate(-1)">&#8592;</button>
+  <span class="slide-counter" id="counter">1 / 3</span>
+  <button id="btn-next" onclick="navigate(1)">&#8594;</button>
+</nav>
+
+<script src="feedback-widget.js"></script>
+
+<script>
+  // ── Slide engine ──────────────────────────────────────────────
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+
+  function showSlide(idx) {
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'visible');
+      if (i === idx) {
+        s.classList.add('active');
+        requestAnimationFrame(() => requestAnimationFrame(() => s.classList.add('visible')));
+      }
+    });
+    document.getElementById('counter').textContent = `${idx + 1} / ${slides.length}`;
+
+    // Trigger reveal sequence for arch slides
+    if (idx === 1) revealArchSlide();
+    if (idx === 2) revealAgentSlide();
+  }
+
+  function navigate(dir) {
+    current = Math.max(0, Math.min(slides.length - 1, current + dir));
+    showSlide(current);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+  });
+
+  // ── Arch slide reveal sequence ────────────────────────────────
+  function revealArchSlide() {
+    const order = [
+      { ids: ['node-crm','node-web','node-dw'], delay: 100 },
+      { ids: ['conn-crm-mule','conn-erp-mule','conn-web-mule'], delay: 500 },
+      { ids: ['node-mule'], delay: 700 },
+      { ids: ['conn-mule-dc'], delay: 1100 },
+      { ids: ['node-dc'], delay: 1300 },
+      { ids: ['conn-dc-sales','conn-dc-service','conn-dc-mc'], delay: 1700 },
+      { ids: ['node-sales','node-service','node-mc'], delay: 1900 },
+      { ids: ['conn-sales-agent','conn-service-agent','conn-mc-agent'], delay: 2300 },
+      { ids: ['node-agent'], delay: 2500 },
+      { ids: ['stat1','stat2','stat3'], delay: 3000 },
+    ];
+
+    order.forEach(({ ids, delay }) => {
+      setTimeout(() => {
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.classList.add('revealed');
+            // activate pulses and flow lines
+            if (id.startsWith('pulse') || id.startsWith('conn')) el.classList.add('active');
+          }
+        });
+        // activate packets after connections revealed
+        document.querySelectorAll('.packet').forEach(p => p.classList.add('active'));
+        // activate pulse rings
+        document.querySelectorAll('.pulse-ring').forEach(p => p.classList.add('active'));
+      }, delay);
+    });
+  }
+
+  // ── Agentforce slide reveal ───────────────────────────────────
+  function revealAgentSlide() {
+    const order = [
+      { ids: ['ag-user'],    delay: 100 },
+      { ids: ['ag-dc'],      delay: 400 },
+      { ids: ['ag-trust'],   delay: 700 },
+      { ids: ['ag-actions'], delay: 1000 },
+      { ids: ['ag-hub'],     delay: 1400 },
+    ];
+    order.forEach(({ ids, delay }) => {
+      setTimeout(() => {
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('revealed');
+        });
+      }, delay);
+    });
+  }
+
+  // Init
+  showSlide(0);
+</script>
+
+</body>
+</html>

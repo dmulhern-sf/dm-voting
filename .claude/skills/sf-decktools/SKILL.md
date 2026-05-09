@@ -200,6 +200,68 @@ POST https://decktools-tracker.mtoolin.workers.dev/track
 
 ---
 
+## /decktools arch — 3D Architecture Diagram Interview
+
+When the user runs `/decktools arch`, run this focused interview using **AskUserQuestion** — one question at a time.
+
+### Architecture interview sequence
+
+**1. Diagram title**
+What is this architecture showing? (e.g. "Unified Data Platform", "Agentforce Service Resolution", "MuleSoft Integration Hub")
+
+**2. Zones / layers**
+How many horizontal zones does the architecture have? Ask the user to name each zone left-to-right.
+Default: `Customer Systems | Salesforce Platform | Agents / Actions`
+
+**3. Nodes per zone**
+For each zone, what are the nodes (products/systems)? For each node collect:
+- Display name (e.g. "Data Cloud")
+- Sublabel (e.g. "Unified Profile")
+- Chip label (optional — e.g. "Real-Time") and colour (teal / blue / purple)
+
+**4. Connections**
+Which nodes connect to which? For each connection note direction (left→right assumed) and colour (blue = SF, teal = data flow, purple = AI/agent).
+
+**5. Key stats — 3 numbers**
+Three stats to show in the bottom stat bar. For each: value, label (e.g. "38% / Faster Onboarding").
+
+**6. Customer accent colour**
+What is the customer's primary brand hex? Used for `--accent` on the diagram.
+
+### After the arch interview
+
+1. Read `~/claude/decktools/architecture-diagram-3d.html` as the canonical reference
+2. Generate a new Three.js architecture diagram HTML file (`arch-{slug}.html`) by:
+   - Replacing all node positions, labels, and colours with the interview answers
+   - Updating zone labels
+   - Updating the stat bar values
+   - Setting `--accent` to the customer brand hex
+   - Keeping the Three.js engine, OrbitControls, CSS2DRenderer, star field, and reveal sequence intact
+3. Save the file to `~/claude/decktools/arch-{slug}.html`
+4. Open it in the browser for review
+
+### Injecting the arch diagram into a narrative deck
+
+When `/decktools new` is running AND the user selects "Architecture Diagram" as one of their animation choices (question 13), Claude must:
+
+1. Run the `/decktools arch` interview inline (questions 1–6 above) before building the deck
+2. Generate the `arch-{slug}.html` file as a standalone file
+3. In the main deck HTML, add a dedicated architecture slide that **iframes** the 3D diagram:
+
+```html
+<div class="slide" data-section="Architecture">
+  <iframe
+    src="arch-{slug}.html"
+    style="width:100%;height:100%;border:none;display:block;"
+    title="Solution Architecture Diagram"
+  ></iframe>
+</div>
+```
+
+This keeps the Three.js scene isolated from the deck's CSS/JS while letting it live as a native slide in the deck flow. The iframe src must be a relative path so it works both locally and on GitHub Pages.
+
+---
+
 ## Canvas Build Guide — Translating interview answers to slides
 
 Work slide by slide in the order below. The canonical reference is `sf-composer.html` — match its structure exactly unless the interview answer demands a deviation.
