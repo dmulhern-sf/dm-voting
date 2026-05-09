@@ -1,7 +1,7 @@
 /*!
  * Decktools Feedback Widget v1.1
  * Drop <script src="feedback-widget.js"></script> into any decktools deck.
- * Requires data-feedback-repo and data-feedback-token on <html> tag.
+ * Requires data-feedback-repo on <html> tag.
  * Presenter mode: P button in slide-controls nav bar.
  */
 (function () {
@@ -12,8 +12,8 @@
   // ── Config — read from <html> attributes ──────────────────────────────
   const htmlEl = document.documentElement;
   const FEEDBACK_REPO  = htmlEl.dataset.feedbackRepo  || '';   // e.g. "mtoolin/deck-westpac"
-  const FEEDBACK_TOKEN = htmlEl.dataset.feedbackToken || '';   // fine-grained PAT, contents:write
   const TRACKER_URL    = htmlEl.dataset.trackerUrl    || 'https://decktools-tracker.mtoolin.workers.dev/track';
+  const FEEDBACK_PROXY = 'https://decktools-tracker.mtoolin.workers.dev/feedback';
   const STORAGE_KEY    = 'dt_reviewer_name';
   const SESSION_KEY    = 'dt_feedback_session';
 
@@ -65,45 +65,26 @@
     readActive();
   }
 
-  // ── GitHub API ─────────────────────────────────────────────────────────
+  // ── Feedback proxy ─────────────────────────────────────────────────────
   async function commitFeedback() {
-    if (!FEEDBACK_REPO || !FEEDBACK_TOKEN) return 'clipboard';
+    if (!FEEDBACK_REPO) return 'clipboard';
 
     const md = buildMarkdown();
     const content = btoa(unescape(encodeURIComponent(md)));
-    const url = `https://api.github.com/repos/${FEEDBACK_REPO}/contents/feedback.md`;
 
     try {
-      // Get current SHA if file exists
-      if (!feedbackSha) {
-        const getRes = await fetch(url, {
-          headers: { Authorization: `token ${FEEDBACK_TOKEN}`, Accept: 'application/vnd.github+json' }
-        });
-        if (getRes.ok) {
-          const data = await getRes.json();
-          feedbackSha = data.sha;
-        }
-      }
-
-      const body = {
-        message: `Update feedback — ${deckName} — ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`,
-        content
-      };
+      const body = { repo: FEEDBACK_REPO, deck: deckName, content };
       if (feedbackSha) body.sha = feedbackSha;
 
-      const res = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          Authorization: `token ${FEEDBACK_TOKEN}`,
-          Accept: 'application/vnd.github+json',
-          'Content-Type': 'application/json'
-        },
+      const res = await fetch(FEEDBACK_PROXY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        feedbackSha = data.content.sha;
+      const data = await res.json();
+      if (data.ok) {
+        feedbackSha = data.sha;
         return true;
       }
       return 'clipboard';
@@ -392,7 +373,7 @@
     commentInput.value = '';
     renderThread();
 
-    if (FEEDBACK_REPO && FEEDBACK_TOKEN) {
+    if (FEEDBACK_REPO) {
       setStatus('Saving…');
       const result = await saveFeedback();
       setStatus(result === true ? 'Saved to GitHub' : 'Saved (clipboard fallback)', 2000);
@@ -422,8 +403,8 @@
   window.addEventListener('beforeunload', (e) => {
     const total = Object.values(comments).reduce((n, a) => n + a.length, 0);
     if (total === 0) return;
-    if (FEEDBACK_REPO && FEEDBACK_TOKEN) {
-      saveFeedback(); // best-effort auto-save to GitHub
+    if (FEEDBACK_REPO) {
+      saveFeedback(); // best-effort auto-save via proxy
     } else {
       // No GitHub integration — warn before losing unsaved comments
       e.preventDefault();

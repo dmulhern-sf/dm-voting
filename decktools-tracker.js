@@ -28,10 +28,54 @@ export default {
       return new Response(null, { status: 204, headers: CORS });
     }
 
+    // ── POST /feedback ───────────────────────────────────────────
+    if (request.method === 'POST' && url.pathname === '/feedback') {
+      try {
+        const body = await request.json();
+        const { repo, deck, content, sha } = body;
+        const ghBody = { message: `feedback: ${deck}`, content };
+        if (sha) ghBody.sha = sha;
+        const ghRes = await fetch(
+          `https://api.github.com/repos/${repo}/contents/feedback.md`,
+          {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${env.GITHUB_TOKEN}`,
+              'Content-Type': 'application/json',
+              'User-Agent': 'decktools-tracker',
+            },
+            body: JSON.stringify(ghBody),
+          }
+        );
+        if (!ghRes.ok) {
+          const errText = await ghRes.text();
+          return new Response(JSON.stringify({ ok: false, error: errText }), {
+            status: ghRes.status, headers: { ...CORS, 'Content-Type': 'application/json' },
+          });
+        }
+        const ghData = await ghRes.json();
+        return new Response(JSON.stringify({ ok: true, sha: ghData.content?.sha }), {
+          headers: { ...CORS, 'Content-Type': 'application/json' },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ ok: false, error: err.message }), {
+          status: 500, headers: { ...CORS, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     // ── POST /track ──────────────────────────────────────────────
     if (request.method === 'POST' && url.pathname === '/track') {
       try {
         const event = await request.json();
+
+        const ALLOWED_EVENTS = ['deck_new', 'install', 'deck_open', 'review_end', 'page_visit', 'lead_capture', 'interview_start', 'deck_shared'];
+        if (!ALLOWED_EVENTS.includes(event.event)) {
+          return new Response(JSON.stringify({ ok: false, error: 'unknown event' }), {
+            status: 400, headers: { ...CORS, 'Content-Type': 'application/json' },
+          });
+        }
+
         event.ts = event.ts || new Date().toISOString();
         const day = event.ts.slice(0, 10);
 
@@ -76,7 +120,7 @@ export default {
             deck_type:     event.deck_type     || '—',
             audience_type: event.audience_type || '—',
             products:      event.products      || [],
-            accent:        event.accent        || '',
+            accent:        /^#[0-9a-fA-F]{3,8}$|^rgb/.test(event.accent || '') ? event.accent : '',
             story_arc:     event.story_arc     || '',
             repo:          event.repo          || '',
             user:          event.user          || '—',
@@ -426,7 +470,7 @@ function buildDashboard(d) {
 <!-- KPI row 2 -->
 <div class="kpis-2">
   <div class="kpi"><div class="kpi-val">${d.pageVisits}</div><div class="kpi-label">Install guide visits</div></div>
-  <div class="kpi"><div class="kpi-val">${d.leadCaptures}</div><div class="kpi-label">Leads captured</div></div>
+  <div class="kpi"><div class="kpi-val">${d.leadCaptures}</div><div class="kpi-label">Visit captures</div></div>
   <div class="kpi"><div class="kpi-val" style="color:${completionColor}">${completionRateVal}</div><div class="kpi-label">Interview → deck rate${d.completionRate === null ? ' (no data)' : ''}</div></div>
   <div class="kpi"><div class="kpi-val">${d.deckShares}</div><div class="kpi-label">Decks shared</div></div>
 </div>
@@ -458,7 +502,7 @@ function buildDashboard(d) {
 <!-- Leads -->
 <div class="grid-full">
   <div class="card">
-    <div class="card-title">Leads captured (${d.leads.length})</div>
+    <div class="card-title">Visit captures (${d.leads.length})</div>
     <div style="overflow-x:auto">
     <table>
       <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Source</th><th>Date</th></tr></thead>
