@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="refresh" content="2; url=install-guide.html"/>
+  <title>SF Decktools</title>
+  <style>
+    :root { --accent: #04E1CB; --sf-blue: #066AFE; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #080D26;
+      font-family: 'Salesforce Sans', system-ui, sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh; color: #fff;
+    }
+    .wrap { text-align: center; }
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+    }
+    h1 { font-size: clamp(28px, 4vw, 48px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+    p { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 32px; }
+    a {
+      display: inline-block;
+      padding: 12px 28px; border-radius: 8px;
+      background: var(--sf-blue); color: #fff;
+      font-size: 14px; font-weight: 700; text-decoration: none;
+      transition: background 0.15s;
+    }
+    a:hover { background: #044bcc; }
+    .loader {
+      margin-top: 32px;
+      width: 180px; height: 3px;
+      background: rgba(255,255,255,0.08); border-radius: 999px;
+      overflow: hidden;
+    }
+    .loader-bar {
+      height: 100%; width: 0%; background: var(--accent); border-radius: 999px;
+      animation: fill 2s linear forwards;
+    }
+    @keyframes fill { to { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Salesforce Narrative Deck System</div>
+    <h1>SF Decktools</h1>
+    <p>Redirecting to the install guide…</p>
+    <a href="install-guide.html">Go now →</a>
+    <div class="loader"><div class="loader-bar"></div></div>
+  </div>
+</body>
+</html>
