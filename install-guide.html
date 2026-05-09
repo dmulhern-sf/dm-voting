@@ -546,6 +546,39 @@
 
     <hr class="div" />
 
+    <!-- OWNERSHIP & HOSTING -->
+    <div class="section">
+      <div class="section-eyebrow">Your deck, your responsibility</div>
+      <h2>Hosting &amp; ownership</h2>
+      <p style="font-size:14px;color:var(--body);line-height:1.6;margin:0 0 24px;max-width:660px;">Decktools gives you the design system and the skill — it does not host your decks. Every deck you build is yours to own, deploy, and share.</p>
+
+      <div class="workflow-cards">
+        <div class="workflow-card">
+          <h3>How it works</h3>
+          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0;">When you run <code>/decktools new</code>, Claude creates a repo under <strong>your</strong> GitHub account and pushes the HTML there. The decktools repo (<code>mtoolin-sf/sf-decktools</code>) is never touched — it's the source of the skill and design system only. Your deck repos are completely separate.</p>
+        </div>
+        <div class="workflow-card">
+          <h3>Hosting your deck</h3>
+          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0 0 10px;">The easiest option is GitHub Pages — it's free and serves the HTML instantly:</p>
+          <ol style="margin:0;padding-left:18px;font-size:13px;color:var(--body);line-height:1.8;">
+            <li>Go to your deck repo on GitHub → Settings → Pages</li>
+            <li>Source: <strong>Deploy from a branch</strong>, branch: <code>main</code>, folder: <code>/ (root)</code></li>
+            <li>GitHub gives you a public URL within ~60 seconds</li>
+          </ol>
+        </div>
+        <div class="workflow-card">
+          <h3>Your responsibility</h3>
+          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0;">Once pushed to your repo, you are responsible for the content, access controls, and any customer data in the deck. Set your repo to <strong>private</strong> if the deck contains confidential information, and share the GitHub Pages link only with intended recipients. Decktools has no visibility into your deck repos and cannot access or modify them.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding:14px 18px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;">
+        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">The <code>mtoolin-sf/sf-decktools</code> repo is read-only for all users. Nobody outside the maintainer can push to it — your install is a local clone on your own machine.</p>
+      </div>
+    </div>
+
+    <hr class="div" />
+
     <!-- TELL SHOW TELL + BOWDEN -->
     <div class="section">
       <div class="section-eyebrow">Presentation craft</div>
