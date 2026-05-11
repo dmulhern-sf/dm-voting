@@ -1,13 +1,13 @@
-# Salesforce Narrative Design Kit
+# SF Decktools
 
-Shared design system for building Salesforce customer-facing storytelling pages.
+Shared design system for building Salesforce customer-facing storytelling pages and slides.
 Based on **Salesforce Brand Guidelines 2026**. Drop this folder into any static site
 and build a narrative page in under an hour — no build tool, no framework, no CMS.
 
 ## What's in the box
 
 ```
-design-kit/
+decktools/
 ├── tokens.css            ← colours, fonts, radii, shadows
 ├── components.css        ← every reusable block (nav, hero, cards, stack…)
 ├── template.html         ← blank starter — edit copy, swap logo, done
@@ -27,7 +27,7 @@ design-kit/
 
 ## Quick start
 
-1. Copy `design-kit/` into your new project (or clone this folder).
+1. Copy `decktools/` into your new project (or clone this repo).
 2. Open `template.html`, save as `your-page.html`.
 3. Replace the placeholder strings:
    - `{{Customer}}`, `{{Story Title}}`, `{{Subtitle}}`, `{{Page Name Here}}`
