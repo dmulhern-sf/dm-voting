@@ -1,259 +1,418 @@
 <!DOCTYPE html>
-<html lang="en" data-deck-name="Architecture Diagram — Enterprise">
+<html lang="en" data-theme="dark" data-deck-name="Architecture Diagram — Enterprise">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SF Decktools — Enterprise Architecture</title>
-  <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="components.css" />
+  <link rel="stylesheet" href="tokens.css"/>
+  <link rel="stylesheet" href="components.css"/>
   <style>
+    /* ── Theme tokens ──────────────────────────────────────────── */
     :root {
-      --accent: #04E1CB;
-      --accent-l: #06A59A;
+      --bg-main:          #0A0F2E;
+      --bg-arch:          #080D26;
+      --bg-title-from:    #001E5B;
+      --bg-title-to:      #066AFE;
+      --text-h:           #ffffff;
+      --text-sub:         rgba(255,255,255,0.45);
+      --text-muted:       rgba(255,255,255,0.22);
+      --text-eyebrow:     #04E1CB;
+      --legend-fg:        rgba(255,255,255,0.4);
+      --hint-fg:          rgba(255,255,255,0.2);
+      --btn-bg:           rgba(255,255,255,0.08);
+      --btn-bd:           rgba(255,255,255,0.2);
+      --btn-hover:        rgba(255,255,255,0.18);
+      --stat-bg:          rgba(255,255,255,0.06);
+      --stat-bd:          rgba(255,255,255,0.1);
+
+      /* SVG node fills */
+      --nf-base:          rgba(255,255,255,0.05);
+      --ns-base:          rgba(255,255,255,0.12);
+      --nf-sf:            rgba(6,106,254,0.08);
+      --ns-sf:            rgba(6,106,254,0.5);
+      --nf-data:          rgba(4,225,203,0.06);
+      --ns-data:          rgba(4,225,203,0.5);
+      --nf-action:        rgba(115,3,148,0.06);
+      --ns-action:        rgba(179,79,255,0.45);
+      --nf-infra:         rgba(255,153,0,0.05);
+      --ns-infra:         rgba(255,153,0,0.35);
+
+      /* Zone band fills */
+      --zf-source:        rgba(255,255,255,0.02);
+      --zs-source:        rgba(255,255,255,0.07);
+      --zt-source:        rgba(255,255,255,0.22);
+      --zf-sf:            rgba(6,106,254,0.03);
+      --zs-sf:            rgba(6,106,254,0.14);
+      --zt-sf:            rgba(6,106,254,0.45);
+      --zf-agent:         rgba(115,3,148,0.04);
+      --zs-agent:         rgba(179,79,255,0.18);
+      --zt-agent:         rgba(179,79,255,0.45);
+      --zf-aws:           rgba(255,153,0,0.04);
+      --zs-aws:           rgba(255,153,0,0.2);
+      --zt-aws:           rgba(255,153,0,0.7);
+
+      /* Conn lines */
+      --cl-data:          rgba(4,225,203,0.6);
+      --cl-sf:            rgba(6,106,254,0.6);
+      --cl-action:        rgba(179,79,255,0.6);
+      --cl-neutral:       rgba(255,255,255,0.2);
+      --cl-aws:           rgba(255,153,0,0.5);
+
+      /* Stage zone fills (flow slide) */
+      --sf-ingest:        rgba(4,225,203,0.03);
+      --ss-ingest:        rgba(4,225,203,0.14);
+      --st-ingest:        rgba(4,225,203,0.5);
+      --sf-harm:          rgba(6,106,254,0.03);
+      --ss-harm:          rgba(6,106,254,0.14);
+      --st-harm:          rgba(6,106,254,0.45);
+      --sf-analyse:       rgba(115,3,148,0.03);
+      --ss-analyse:       rgba(115,3,148,0.14);
+      --st-analyse:       rgba(115,3,148,0.45);
+      --sf-activate:      rgba(255,153,0,0.03);
+      --ss-activate:      rgba(255,153,0,0.14);
+      --st-activate:      rgba(255,153,0,0.5);
+
+      /* Stat callout fills */
+      --sf-stat-teal:     rgba(4,225,203,0.08);
+      --ss-stat-teal:     rgba(4,225,203,0.25);
+      --sv-stat-teal:     #04E1CB;
+      --sf-stat-blue:     rgba(6,106,254,0.08);
+      --ss-stat-blue:     rgba(6,106,254,0.25);
+      --sv-stat-blue:     #66A3FF;
+      --sf-stat-purp:     rgba(179,79,255,0.08);
+      --ss-stat-purp:     rgba(179,79,255,0.25);
+      --sv-stat-purp:     #B34FFF;
+      --sf-stat-aws:      rgba(255,153,0,0.08);
+      --ss-stat-aws:      rgba(255,153,0,0.2);
+      --sv-stat-aws:      #FF9900;
+
+      --chip-teal-bg:     rgba(4,225,203,0.12);
+      --chip-teal-bd:     rgba(4,225,203,0.3);
+      --chip-teal-fg:     rgba(255,255,255,0.65);
+      --chip-purp-bg:     rgba(179,79,255,0.15);
+      --chip-purp-bd:     rgba(179,79,255,0.3);
+      --chip-blue-bg:     rgba(6,106,254,0.15);
+      --chip-blue-bd:     rgba(6,106,254,0.3);
+
+      /* grid overlay */
+      --grid-line:        rgba(0,179,255,0.06);
+
+      /* Title bg */
+      --title-p:          rgba(255,255,255,0.65);
+      --title-bar:        linear-gradient(90deg,#022AC0,#04E1CB,#00B3FF);
+      --eyebrow-c:        #04E1CB;
     }
 
+    [data-theme="light"] {
+      --bg-main:          #F0F4FF;
+      --bg-arch:          #EEF2FA;
+      --bg-title-from:    #0050C8;
+      --bg-title-to:      #4AA3FF;
+      --text-h:           #0D1B3E;
+      --text-sub:         rgba(13,27,62,0.55);
+      --text-muted:       rgba(13,27,62,0.35);
+      --text-eyebrow:     #0058D1;
+      --legend-fg:        rgba(13,27,62,0.5);
+      --hint-fg:          rgba(13,27,62,0.3);
+      --btn-bg:           rgba(13,27,62,0.07);
+      --btn-bd:           rgba(13,27,62,0.18);
+      --btn-hover:        rgba(13,27,62,0.13);
+      --stat-bg:          rgba(255,255,255,0.7);
+      --stat-bd:          rgba(13,27,62,0.12);
+
+      --nf-base:          rgba(255,255,255,0.85);
+      --ns-base:          rgba(13,27,62,0.14);
+      --nf-sf:            rgba(6,106,254,0.07);
+      --ns-sf:            rgba(6,106,254,0.4);
+      --nf-data:          rgba(0,140,128,0.07);
+      --ns-data:          rgba(0,140,128,0.45);
+      --nf-action:        rgba(100,20,140,0.06);
+      --ns-action:        rgba(140,60,200,0.4);
+      --nf-infra:         rgba(200,100,0,0.05);
+      --ns-infra:         rgba(200,100,0,0.35);
+
+      --zf-source:        rgba(13,27,62,0.03);
+      --zs-source:        rgba(13,27,62,0.1);
+      --zt-source:        rgba(13,27,62,0.35);
+      --zf-sf:            rgba(6,106,254,0.04);
+      --zs-sf:            rgba(6,106,254,0.18);
+      --zt-sf:            rgba(6,106,254,0.6);
+      --zf-agent:         rgba(100,20,140,0.04);
+      --zs-agent:         rgba(140,60,200,0.22);
+      --zt-agent:         rgba(140,60,200,0.6);
+      --zf-aws:           rgba(200,100,0,0.04);
+      --zs-aws:           rgba(200,100,0,0.22);
+      --zt-aws:           rgba(180,80,0,0.7);
+
+      --cl-data:          rgba(0,140,128,0.65);
+      --cl-sf:            rgba(6,106,254,0.55);
+      --cl-action:        rgba(140,60,200,0.6);
+      --cl-neutral:       rgba(13,27,62,0.18);
+      --cl-aws:           rgba(200,100,0,0.5);
+
+      --sf-ingest:        rgba(0,140,128,0.04);
+      --ss-ingest:        rgba(0,140,128,0.18);
+      --st-ingest:        rgba(0,140,128,0.65);
+      --sf-harm:          rgba(6,106,254,0.04);
+      --ss-harm:          rgba(6,106,254,0.18);
+      --st-harm:          rgba(6,106,254,0.6);
+      --sf-analyse:       rgba(100,20,140,0.04);
+      --ss-analyse:       rgba(140,60,200,0.16);
+      --st-analyse:       rgba(140,60,200,0.6);
+      --sf-activate:      rgba(200,100,0,0.04);
+      --ss-activate:      rgba(200,100,0,0.18);
+      --st-activate:      rgba(180,80,0,0.6);
+
+      --sf-stat-teal:     rgba(0,140,128,0.07);
+      --ss-stat-teal:     rgba(0,140,128,0.3);
+      --sv-stat-teal:     #006B62;
+      --sf-stat-blue:     rgba(6,106,254,0.07);
+      --ss-stat-blue:     rgba(6,106,254,0.3);
+      --sv-stat-blue:     #0052CC;
+      --sf-stat-purp:     rgba(140,60,200,0.07);
+      --ss-stat-purp:     rgba(140,60,200,0.3);
+      --sv-stat-purp:     #7B22B0;
+      --sf-stat-aws:      rgba(200,100,0,0.07);
+      --ss-stat-aws:      rgba(200,100,0,0.25);
+      --sv-stat-aws:      #B05000;
+
+      --chip-teal-bg:     rgba(0,140,128,0.1);
+      --chip-teal-bd:     rgba(0,140,128,0.28);
+      --chip-teal-fg:     rgba(13,27,62,0.75);
+      --chip-purp-bg:     rgba(140,60,200,0.1);
+      --chip-purp-bd:     rgba(140,60,200,0.28);
+      --chip-blue-bg:     rgba(6,106,254,0.1);
+      --chip-blue-bd:     rgba(6,106,254,0.28);
+
+      --grid-line:        rgba(6,106,254,0.05);
+      --title-p:          rgba(255,255,255,0.8);
+      --title-bar:        linear-gradient(90deg,#0040A8,#04E1CB,#0099FF);
+      --eyebrow-c:        rgba(255,255,255,0.85);
+    }
+
+    /* ── Base ──────────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Salesforce Sans', system-ui, sans-serif; overflow: hidden; }
 
-    body {
-      background: var(--sf-navy, #001E5B);
-      font-family: 'Salesforce Sans', system-ui, sans-serif;
-      overflow: hidden;
-    }
-
-    /* ── Slide deck shell ──────────────────────────────────────── */
+    /* ── Slide engine ───────────────────────────────────────────── */
     .slide-deck { width: 100vw; height: 100vh; position: relative; }
-
     .slide {
-      position: absolute; inset: 0;
-      display: none; flex-direction: column;
-      opacity: 0; transition: opacity 0.4s ease;
+      position: absolute; inset: 0; display: none; flex-direction: column;
+      opacity: 0; transition: opacity 0.45s ease;
     }
-    .slide.active { display: flex; }
+    .slide.active  { display: flex; }
     .slide.visible { opacity: 1; }
 
-    /* ── Slide nav — bottom-center ─────────────────────────────── */
+    /* ── Controls ──────────────────────────────────────────────── */
     .slide-controls {
       position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
       display: flex; align-items: center; gap: 10px; z-index: 100;
     }
-    .slide-controls button {
+    .slide-controls button, .icon-btn {
       width: 36px; height: 36px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08);
-      color: #fff; font-size: 16px; cursor: pointer;
+      border: 1px solid var(--btn-bd); background: var(--btn-bg);
+      color: var(--text-h); font-size: 16px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.15s;
     }
-    .slide-controls button:hover { background: rgba(255,255,255,0.18); }
+    .slide-controls button:hover, .icon-btn:hover { background: var(--btn-hover); }
     .slide-counter {
       font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.4); min-width: 48px; text-align: center;
+      color: var(--legend-fg); min-width: 48px; text-align: center;
     }
+    .icon-btn { position: fixed; bottom: 28px; z-index: 100; }
+    #btn-present { right: 24px; }
+    #btn-theme   { right: 68px; }
 
-    /* ── Presenter mode button — bottom-right ──────────────────── */
-    #btn-present {
-      position: fixed; bottom: 28px; right: 24px; z-index: 100;
-      width: 36px; height: 36px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.6); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, color 0.15s;
-    }
-    #btn-present:hover { background: rgba(255,255,255,0.18); color: #fff; }
-
-    /* ── Slide 1 — Title ───────────────────────────────────────── */
+    /* ── Title slide ────────────────────────────────────────────── */
     .slide-title {
-      background: var(--grad-evening, linear-gradient(135deg,#001E5B 0%,#022AC0 60%,#066AFE 100%));
-      justify-content: center; align-items: center;
-      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, var(--bg-title-from) 0%, #022AC0 55%, var(--bg-title-to) 100%);
+      justify-content: center; align-items: center; position: relative; overflow: hidden;
     }
     .slide-title::after {
-      content: '';
-      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, #022AC0, var(--accent), #00B3FF);
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--title-bar);
+    }
+    .bg-grid {
+      position: absolute; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 48px 48px;
     }
     .title-inner { text-align: center; z-index: 2; padding: 40px; }
     .title-eyebrow {
       font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 16px;
-      opacity: 0; transform: translateY(10px);
-      transition: all 0.5s ease 0.1s;
+      color: var(--eyebrow-c); margin-bottom: 16px;
+      opacity: 0; transform: translateY(10px); transition: all 0.5s ease 0.1s;
     }
     .title-inner h1 {
-      font-size: clamp(32px, 4vw, 52px); font-weight: 700; color: #fff;
+      font-size: clamp(30px, 3.8vw, 52px); font-weight: 700; color: #fff;
       line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 16px;
-      opacity: 0; transform: translateY(14px);
-      transition: all 0.5s ease 0.25s;
+      opacity: 0; transform: translateY(14px); transition: all 0.55s ease 0.25s;
     }
-    .title-inner h1 em { font-style: normal; color: var(--accent); }
+    .title-inner h1 em { font-style: normal; color: #04E1CB; }
     .title-inner p {
-      font-size: 16px; color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto;
-      line-height: 1.6;
-      opacity: 0; transform: translateY(10px);
-      transition: all 0.5s ease 0.4s;
+      font-size: 16px; color: var(--title-p); max-width: 560px; margin: 0 auto; line-height: 1.6;
+      opacity: 0; transform: translateY(10px); transition: all 0.5s ease 0.4s;
     }
+    .title-logos {
+      display: flex; align-items: center; justify-content: center; gap: 32px;
+      margin-top: 40px; flex-wrap: wrap;
+      opacity: 0; transform: translateY(10px); transition: all 0.5s ease 0.55s;
+    }
+    .title-logos img { height: 28px; width: auto; }
     .slide.visible .title-eyebrow,
     .slide.visible .title-inner h1,
-    .slide.visible .title-inner p {
-      opacity: 1; transform: translateY(0);
-    }
-
-    .title-logos {
-      display: flex; align-items: center; justify-content: center;
-      gap: 32px; margin-top: 40px; flex-wrap: wrap;
-      opacity: 0; transform: translateY(10px);
-      transition: all 0.5s ease 0.55s;
-    }
+    .slide.visible .title-inner p,
     .slide.visible .title-logos { opacity: 1; transform: translateY(0); }
-    .title-logos img { height: 28px; width: auto; }
 
-    /* floating grid bg */
-    .bg-grid {
-      position: absolute; inset: 0; z-index: 1;
-      background-image:
-        linear-gradient(rgba(0,179,255,0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,179,255,0.06) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-
-    /* ── Slide 2 & 3 — arch slides ─────────────────────────────── */
+    /* ── Arch slides ────────────────────────────────────────────── */
     .slide-arch {
-      background: #0A0F2E;
-      padding: 32px 48px 80px;
+      background: var(--bg-main);
+      padding: 28px 44px 76px;
     }
+    .slide-agentforce { background: var(--bg-arch); padding: 28px 44px 76px; }
+
     .arch-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 24px;
+      display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;
     }
     .arch-eyebrow {
       font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 6px;
+      color: var(--text-eyebrow); margin-bottom: 5px;
     }
     .arch-header h2 {
-      font-size: clamp(18px, 2vw, 26px); font-weight: 700; color: #fff;
+      font-size: clamp(16px, 1.85vw, 24px); font-weight: 700; color: var(--text-h);
       letter-spacing: -0.02em;
     }
-    .arch-legend { display: flex; gap: 20px; align-items: center; padding-top: 4px; }
-    .legend-item {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 600;
-    }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .arch-legend { display: flex; gap: 18px; align-items: center; padding-top: 4px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--legend-fg); font-weight: 600; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-    /* ── Diagram canvas ────────────────────────────────────────── */
-    .diagram-wrap { flex: 1; position: relative; }
-    .diagram-svg { width: 100%; height: 100%; }
+    .diagram-wrap { flex: 1; position: relative; min-height: 0; }
+    .diagram-svg  { width: 100%; height: 100%; }
 
-    /* ── Node styles ───────────────────────────────────────────── */
-    .node {
-      opacity: 0;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-    .node.revealed { opacity: 1; }
+    /* ── SVG element styles (CSS vars work here) ────────────────── */
+    .node { opacity: 0; transition: opacity 0.45s ease, transform 0.45s ease; }
+    .node.revealed { opacity: 1; transform: none !important; }
 
-    .node-card {
-      fill: rgba(255,255,255,0.05);
-      stroke: rgba(255,255,255,0.12);
-      stroke-width: 1;
-    }
-    .node-card.sf   { stroke: rgba(6,106,254,0.5);   fill: rgba(6,106,254,0.08); }
-    .node-card.data { stroke: rgba(4,225,203,0.5);   fill: rgba(4,225,203,0.06); }
-    .node-card.action { stroke: rgba(115,3,148,0.4); fill: rgba(115,3,148,0.06); }
-    .node-card.customer { stroke: rgba(255,255,255,0.15); fill: rgba(255,255,255,0.03); }
-    .node-card.infra { stroke: rgba(255,153,0,0.4); fill: rgba(255,153,0,0.05); }
+    /* Node cards */
+    .nc       { fill: var(--nf-base);   stroke: var(--ns-base);   stroke-width: 1; }
+    .nc.sf    { fill: var(--nf-sf);     stroke: var(--ns-sf); }
+    .nc.data  { fill: var(--nf-data);   stroke: var(--ns-data); }
+    .nc.act   { fill: var(--nf-action); stroke: var(--ns-action); }
+    .nc.infra { fill: var(--nf-infra);  stroke: var(--ns-infra); }
 
-    .node-label {
-      fill: #fff; font-family: 'Salesforce Sans', system-ui, sans-serif;
-      font-weight: 700; font-size: 12px;
-      dominant-baseline: middle; text-anchor: middle;
-    }
-    .node-sublabel {
-      fill: rgba(255,255,255,0.45); font-family: 'Salesforce Sans', system-ui, sans-serif;
-      font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-      dominant-baseline: middle; text-anchor: middle;
-    }
+    /* Zone bands */
+    .zb-src  { fill: var(--zf-source);  stroke: var(--zs-source);  stroke-width: 1; }
+    .zb-sf   { fill: var(--zf-sf);      stroke: var(--zs-sf);      stroke-width: 1; }
+    .zb-ag   { fill: var(--zf-agent);   stroke: var(--zs-agent);   stroke-width: 1; }
+    .zb-aws  { fill: var(--zf-aws);     stroke: var(--zs-aws);     stroke-width: 1; }
+    .zt-src  { fill: var(--zt-source); }
+    .zt-sf   { fill: var(--zt-sf); }
+    .zt-ag   { fill: var(--zt-agent); }
+    .zt-aws  { fill: var(--zt-aws); }
 
-    /* ── Connection lines ──────────────────────────────────────── */
+    /* Stage zones */
+    .zb-ing  { fill: var(--sf-ingest);   stroke: var(--ss-ingest);   stroke-width: 1; }
+    .zt-ing  { fill: var(--st-ingest); }
+    .zb-hrm  { fill: var(--sf-harm);     stroke: var(--ss-harm);     stroke-width: 1; }
+    .zt-hrm  { fill: var(--st-harm); }
+    .zb-anl  { fill: var(--sf-analyse);  stroke: var(--ss-analyse);  stroke-width: 1; }
+    .zt-anl  { fill: var(--st-analyse); }
+    .zb-act  { fill: var(--sf-activate); stroke: var(--ss-activate); stroke-width: 1; }
+    .zt-act  { fill: var(--st-activate); }
+
+    /* Stat boxes */
+    .sb-teal { fill: var(--sf-stat-teal); stroke: var(--ss-stat-teal); stroke-width: 1; }
+    .sb-blue { fill: var(--sf-stat-blue); stroke: var(--ss-stat-blue); stroke-width: 1; }
+    .sb-purp { fill: var(--sf-stat-purp); stroke: var(--ss-stat-purp); stroke-width: 1; }
+    .sb-aws  { fill: var(--sf-stat-aws);  stroke: var(--ss-stat-aws);  stroke-width: 1; }
+    .sv-teal { fill: var(--sv-stat-teal); }
+    .sv-blue { fill: var(--sv-stat-blue); }
+    .sv-purp { fill: var(--sv-stat-purp); }
+    .sv-aws  { fill: var(--sv-stat-aws); }
+
+    /* Chip badges inside nodes */
+    .ch-teal { fill: var(--chip-teal-bg); stroke: var(--chip-teal-bd); stroke-width: 1; }
+    .ch-purp { fill: var(--chip-purp-bg); stroke: var(--chip-purp-bd); stroke-width: 1; }
+    .ch-blue { fill: var(--chip-blue-bg); stroke: var(--chip-blue-bd); stroke-width: 1; }
+    .ch-fg   { fill: var(--chip-teal-fg); }
+
+    /* Labels */
+    .nl  { font-family:'Salesforce Sans',system-ui; font-weight:700; font-size:12px;
+           fill: var(--text-h); dominant-baseline:middle; text-anchor:middle; }
+    .nsl { font-family:'Salesforce Sans',system-ui; font-weight:600; font-size:9px;
+           letter-spacing:0.04em; text-transform:uppercase;
+           fill: var(--text-sub); dominant-baseline:middle; text-anchor:middle; }
+    .zl  { font-family:'Salesforce Sans',system-ui; font-weight:700; font-size:9px;
+           letter-spacing:0.12em; dominant-baseline:middle; text-anchor:middle; }
+    .stat-val   { font-family:'Salesforce Sans',system-ui; font-size:20px; font-weight:700;
+                  dominant-baseline:middle; text-anchor:middle; }
+    .stat-label { font-family:'Salesforce Sans',system-ui; font-size:9px; font-weight:600;
+                  letter-spacing:0.06em; text-transform:uppercase;
+                  fill: var(--text-sub); dominant-baseline:middle; text-anchor:middle; }
+
+    /* ── Connections ────────────────────────────────────────────── */
     .conn {
-      fill: none; stroke-width: 1.5;
-      stroke-dasharray: 6 4;
-      stroke-dashoffset: 0;
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      fill: none; stroke-width: 1.5; stroke-dasharray: 6 4;
+      opacity: 0; transition: opacity 0.4s ease;
     }
     .conn.revealed { opacity: 1; }
-    .conn.active { animation: dash-flow 1.6s linear infinite; }
-    .conn.sf-line     { stroke: rgba(6,106,254,0.6); }
-    .conn.data-line   { stroke: rgba(4,225,203,0.6); }
-    .conn.action-line { stroke: rgba(179,79,255,0.6); }
-    .conn.aws-line    { stroke: rgba(255,153,0,0.5); }
-    .conn.neutral     { stroke: rgba(255,255,255,0.2); stroke-dasharray: none; }
+    .conn.flowing  { animation: dash-flow 1.6s linear infinite; }
 
-    @keyframes dash-flow {
-      from { stroke-dashoffset: 20; }
-      to   { stroke-dashoffset: 0; }
-    }
+    /* Draw-in animation for connection reveal */
+    .conn.draw { stroke-dashoffset: 200; animation: draw-in 0.6s ease forwards, dash-flow 1.6s linear 0.6s infinite; }
 
-    .packet { fill: var(--accent); opacity: 0; }
-    .packet.active { animation: packet-fade 2s ease-in-out infinite; }
-    @keyframes packet-fade {
-      0%, 100% { opacity: 0; }
-      20%, 80%  { opacity: 1; }
-    }
+    @keyframes draw-in   { from { stroke-dashoffset: 200; opacity:0; } to { stroke-dashoffset: 0; opacity:1; } }
+    @keyframes dash-flow { from { stroke-dashoffset: 20; }              to { stroke-dashoffset: 0; } }
 
-    .pulse-ring {
-      fill: none; stroke-width: 1.5;
-      opacity: 0;
-      transform-origin: center;
-    }
-    .pulse-ring.active { animation: pulse-out 2s ease-out infinite; }
-    @keyframes pulse-out {
-      0%   { opacity: 0.7; r: 28px; }
-      100% { opacity: 0;   r: 44px; }
-    }
+    .conn.cl-data   { stroke: var(--cl-data); }
+    .conn.cl-sf     { stroke: var(--cl-sf); }
+    .conn.cl-action { stroke: var(--cl-action); }
+    .conn.cl-neutral{ stroke: var(--cl-neutral); stroke-dasharray: none; }
+    .conn.cl-aws    { stroke: var(--cl-aws); }
 
-    /* ── Stat callouts ─────────────────────────────────────────── */
-    .stat-callout {
-      opacity: 0; transition: opacity 0.5s ease;
-    }
-    .stat-callout.revealed { opacity: 1; }
-    .stat-val {
-      font-family: 'Salesforce Sans', system-ui, sans-serif;
-      font-size: 20px; font-weight: 700;
-      dominant-baseline: middle; text-anchor: middle;
-    }
-    .stat-label {
-      font-family: 'Salesforce Sans', system-ui, sans-serif;
-      font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-      fill: rgba(255,255,255,0.45);
-      dominant-baseline: middle; text-anchor: middle;
-    }
+    /* Arrowhead */
+    marker#arrow-data   path { fill: var(--cl-data); }
+    marker#arrow-sf     path { fill: var(--cl-sf); }
+    marker#arrow-action path { fill: var(--cl-action); }
 
-    /* ── Slide 4 — agent layer ─────────────────────────────────── */
-    .slide-agentforce { background: #080D26; padding: 32px 48px 80px; }
+    .packet { fill: #04E1CB; opacity: 0; }
+    @keyframes pkt-anim { 0%,100%{opacity:0} 15%,85%{opacity:1} }
+
+    .pulse-ring { fill:none; stroke-width:1.5; opacity:0; transform-origin:center; }
+    .pulse-ring.active { animation: pulse-out 2.4s ease-out infinite; }
+    @keyframes pulse-out { 0%{opacity:.65} 100%{opacity:0;r:52px} }
+
+    .stat-callout { opacity:0; transition: opacity 0.5s ease; }
+    .stat-callout.revealed { opacity:1; }
+
+    /* node enter from below */
+    .node { transform: translateY(8px); }
+
+    /* ── Slide 4 agent hub orbit path ──────────────────────────── */
+    #agent-orbit { fill:none; stroke:none; }
   </style>
 </head>
 <body>
-
 <div class="slide-deck" id="deck">
 
-  <!-- ── Slide 1: Title ──────────────────────────────────────── -->
+  <!-- ══ SLIDE 1: Title ════════════════════════════════════════ -->
   <div class="slide slide-title" data-section="Overview">
     <div class="bg-grid"></div>
     <div class="title-inner">
       <div class="title-eyebrow">Enterprise Architecture · Salesforce Platform</div>
       <h1>From SAP to Action —<br/><em>a unified data architecture.</em></h1>
-      <p>SAP and ERP source data flows through Salesforce Data Cloud into Agentforce, Marketing Cloud, and Slack — all grounded on AWS infrastructure and protected by the Einstein Trust Layer.</p>
+      <p>SAP and ERP source data flows through Salesforce Data Cloud into Agentforce, Marketing Cloud, and Slack — grounded on AWS and protected by the Einstein Trust Layer.</p>
       <div class="title-logos">
-        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" width="140" height="28" alt="Salesforce" />
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" height="28" alt="Salesforce"/>
       </div>
     </div>
   </div>
 
-  <!-- ── Slide 2: Overview — end-to-end flow ─────────────────── -->
+  <!-- ══ SLIDE 2: Overview — end-to-end flow ═══════════════════ -->
   <div class="slide slide-arch" data-section="Data Platform">
-
     <div class="arch-header">
       <div>
         <div class="arch-eyebrow">Solution Architecture · Overview</div>
@@ -266,354 +425,250 @@
         <div class="legend-item"><div class="legend-dot" style="background:#FF9900"></div>AWS Infra</div>
       </div>
     </div>
-
     <div class="diagram-wrap">
-      <svg class="diagram-svg" viewBox="0 0 1100 480" preserveAspectRatio="xMidYMid meet" id="arch-svg">
+      <svg class="diagram-svg" viewBox="0 0 1100 490" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <marker id="arrow-data"   markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="var(--cl-data)"/></marker>
+          <marker id="arrow-sf"     markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="var(--cl-sf)"/></marker>
+          <marker id="arrow-action" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L0,7 L7,3.5 Z" fill="var(--cl-action)"/></marker>
+        </defs>
 
-        <!-- ── AWS infrastructure layer (background band) ──── -->
-        <rect class="node" id="aws-band" x="8" y="420" width="1084" height="52" rx="8"
-          fill="rgba(255,153,0,0.04)" stroke="rgba(255,153,0,0.2)" stroke-width="1"/>
-        <!-- AWS logo inline SVG text -->
-        <text class="node" id="aws-label" x="54" y="448"
-          font-family="'Salesforce Sans',system-ui" font-size="11" font-weight="700"
-          letter-spacing="0.1em" text-transform="uppercase" fill="rgba(255,153,0,0.7)">AWS</text>
-        <text class="node" id="aws-sublabel" x="54" y="462"
-          font-family="'Salesforce Sans',system-ui" font-size="8" font-weight="600"
-          letter-spacing="0.08em" text-transform="uppercase" fill="rgba(255,153,0,0.4)">CLOUD INFRASTRUCTURE</text>
+        <!-- AWS band -->
+        <rect class="node zb-aws" id="aws-band" x="8" y="428" width="1084" height="52" rx="8"/>
+        <text class="node zl zt-aws" id="aws-label" x="90" y="455" font-size="13" font-weight="900">AWS</text>
+        <text class="node zl zt-aws" id="aws-sub"   x="90" y="470" font-size="8" opacity="0.7">CLOUD INFRASTRUCTURE</text>
 
-        <!-- ── Zone bands ──────────────────────────────────── -->
-        <!-- Source Systems -->
-        <rect x="8" y="8" width="198" height="408" rx="10"
-          fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <text x="107" y="32" font-family="'Salesforce Sans',system-ui" font-size="9" font-weight="700"
-          letter-spacing="0.12em" fill="rgba(255,255,255,0.22)" text-anchor="middle">SOURCE SYSTEMS</text>
+        <!-- Zone bands -->
+        <rect class="zb-src" x="8"   y="8" width="196" height="412" rx="10"/>
+        <text class="zl zt-src" x="106" y="29">SOURCE SYSTEMS</text>
 
-        <!-- Salesforce Platform -->
-        <rect x="222" y="8" width="656" height="408" rx="10"
-          fill="rgba(6,106,254,0.03)" stroke="rgba(6,106,254,0.14)" stroke-width="1"/>
-        <text x="550" y="32" font-family="'Salesforce Sans',system-ui" font-size="9" font-weight="700"
-          letter-spacing="0.12em" fill="rgba(6,106,254,0.45)" text-anchor="middle">SALESFORCE PLATFORM</text>
+        <rect class="zb-sf" x="218"  y="8" width="658" height="412" rx="10"/>
+        <text class="zl zt-sf"  x="547" y="29">SALESFORCE PLATFORM</text>
 
-        <!-- Channels / Output -->
-        <rect x="894" y="8" width="198" height="408" rx="10"
-          fill="rgba(115,3,148,0.04)" stroke="rgba(179,79,255,0.18)" stroke-width="1"/>
-        <text x="993" y="32" font-family="'Salesforce Sans',system-ui" font-size="9" font-weight="700"
-          letter-spacing="0.12em" fill="rgba(179,79,255,0.45)" text-anchor="middle">AGENTS / CHANNELS</text>
+        <rect class="zb-ag" x="890"  y="8" width="202" height="412" rx="10"/>
+        <text class="zl zt-ag"  x="991" y="29">AGENTS / CHANNELS</text>
 
-        <!-- ── Connection lines ────────────────────────────── -->
-        <path id="conn-sap-dc"   class="conn data-line"   d="M 206 130 L 276 130"/>
-        <path id="conn-erp-dc"   class="conn data-line"   d="M 206 240 L 276 200"/>
-        <path id="conn-web-dc"   class="conn data-line"   d="M 206 350 L 276 270"/>
-        <path id="conn-dc-sales" class="conn sf-line"     d="M 496 130 L 560 105"/>
-        <path id="conn-dc-svc"   class="conn sf-line"     d="M 496 190 L 560 190"/>
-        <path id="conn-dc-mktg"  class="conn sf-line"     d="M 496 250 L 560 275"/>
-        <path id="conn-sales-ag" class="conn action-line" d="M 720 105 L 894 170"/>
-        <path id="conn-svc-ag"   class="conn action-line" d="M 720 190 L 894 230"/>
-        <path id="conn-mktg-ag"  class="conn action-line" d="M 720 275 L 894 295"/>
+        <!-- Connections -->
+        <path id="c-sap-dc"   class="conn cl-data"   d="M 202 135 C 230 135 240 200 268 200" marker-end="url(#arrow-data)"/>
+        <path id="c-erp-dc"   class="conn cl-data"   d="M 202 242 L 268 220" marker-end="url(#arrow-data)"/>
+        <path id="c-web-dc"   class="conn cl-data"   d="M 202 352 C 230 352 240 240 268 240" marker-end="url(#arrow-data)"/>
+        <path id="c-dc-sales" class="conn cl-sf"     d="M 498 175 C 530 175 530 110 560 110" marker-end="url(#arrow-sf)"/>
+        <path id="c-dc-svc"   class="conn cl-sf"     d="M 498 210 L 560 210" marker-end="url(#arrow-sf)"/>
+        <path id="c-dc-mktg"  class="conn cl-sf"     d="M 498 240 C 530 240 530 305 560 305" marker-end="url(#arrow-sf)"/>
+        <path id="c-s-ag"     class="conn cl-action" d="M 722 110 C 800 110 820 175 892 185" marker-end="url(#arrow-action)"/>
+        <path id="c-sv-ag"    class="conn cl-action" d="M 722 210 L 892 220" marker-end="url(#arrow-action)"/>
+        <path id="c-m-ag"     class="conn cl-action" d="M 722 305 C 800 305 820 255 892 255" marker-end="url(#arrow-action)"/>
 
-        <!-- ── SOURCE NODES ────────────────────────────────── -->
-
-        <!-- SAP -->
-        <g class="node" id="node-sap">
-          <rect class="node-card customer" x="18" y="94" width="170" height="72" rx="10"/>
-          <!-- SAP logo as styled text -->
-          <text x="75" y="123" font-family="'Salesforce Sans',system-ui" font-size="18" font-weight="700"
-            fill="#0070F0" dominant-baseline="middle" text-anchor="middle">SAP</text>
-          <text x="75" y="148" class="node-sublabel">S/4HANA · ERP</text>
+        <!-- SOURCE nodes -->
+        <g class="node" id="n-sap" style="transform:translateY(8px)">
+          <rect class="nc" x="18" y="98" width="170" height="74" rx="10"/>
+          <text x="75"  y="129" font-family="'Salesforce Sans',system-ui" font-size="20" font-weight="900" fill="#0070F0" dominant-baseline="middle" text-anchor="middle">SAP</text>
+          <text x="103" y="155" class="nsl">S/4HANA · ERP</text>
+        </g>
+        <g class="node" id="n-erp" style="transform:translateY(8px)">
+          <rect class="nc" x="18" y="206" width="170" height="74" rx="10"/>
+          <text x="103" y="234" class="nl">CRM / DW</text>
+          <text x="103" y="253" class="nsl">Snowflake · Existing</text>
+        </g>
+        <g class="node" id="n-web" style="transform:translateY(8px)">
+          <rect class="nc" x="18" y="314" width="170" height="74" rx="10"/>
+          <text x="103" y="342" class="nl">Web &amp; Mobile</text>
+          <text x="103" y="361" class="nsl">Events · Clickstream</text>
         </g>
 
-        <!-- CRM / Data Warehouse -->
-        <g class="node" id="node-erp">
-          <rect class="node-card customer" x="18" y="204" width="170" height="72" rx="10"/>
-          <text x="103" y="233" class="node-label">CRM / DW</text>
-          <text x="103" y="251" class="node-sublabel">Snowflake · Existing</text>
+        <!-- DATA CLOUD -->
+        <g class="node" id="n-dc" style="transform:translateY(8px)">
+          <rect class="nc data" x="228" y="110" width="262" height="220" rx="14"/>
+          <circle class="pulse-ring" id="pulse-dc" cx="359" cy="218" r="36" stroke="var(--ns-data)"/>
+          <image href="assets/icons/icon-data360.png" x="335" y="122" width="48" height="48"/>
+          <text x="359" y="183" class="nl" font-size="14">Data Cloud</text>
+          <text x="359" y="201" class="nsl">Unified Customer Profile</text>
+          <rect class="ch-teal" x="246" y="266" width="118" height="22" rx="5"/>
+          <text x="305" y="278" class="nsl ch-fg" font-size="8">REAL-TIME SEGMENTS</text>
+          <rect class="ch-teal" x="372" y="266" width="98" height="22" rx="5"/>
+          <text x="421" y="278" class="nsl ch-fg" font-size="8">DATA ACTIONS</text>
         </g>
 
-        <!-- Web / Mobile -->
-        <g class="node" id="node-web">
-          <rect class="node-card customer" x="18" y="314" width="170" height="72" rx="10"/>
-          <text x="103" y="343" class="node-label">Web &amp; Mobile</text>
-          <text x="103" y="361" class="node-sublabel">Events · Clickstream</text>
+        <!-- SF CLOUDS -->
+        <g class="node" id="n-sales" style="transform:translateY(8px)">
+          <rect class="nc sf" x="560" y="74" width="160" height="72" rx="10"/>
+          <image href="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" x="568" y="82" width="22" height="22"/>
+          <text x="690" y="101" class="nl" font-size="11" text-anchor="end">Sales Cloud</text>
+          <text x="690" y="120" class="nsl" text-anchor="end">Revenue Intelligence</text>
+        </g>
+        <g class="node" id="n-svc" style="transform:translateY(8px)">
+          <rect class="nc sf" x="560" y="172" width="160" height="72" rx="10"/>
+          <image href="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" x="568" y="180" width="22" height="22"/>
+          <text x="690" y="199" class="nl" font-size="11" text-anchor="end">Service Cloud</text>
+          <text x="690" y="218" class="nsl" text-anchor="end">Case Management</text>
+        </g>
+        <g class="node" id="n-mktg" style="transform:translateY(8px)">
+          <rect class="nc sf" x="560" y="268" width="160" height="72" rx="10"/>
+          <image href="assets/icons/icon-marketing.png" x="566" y="276" width="22" height="22"/>
+          <text x="690" y="295" class="nl" font-size="11" text-anchor="end">Marketing Cloud</text>
+          <text x="690" y="314" class="nsl" text-anchor="end">Journey Orchestration</text>
         </g>
 
-        <!-- ── DATA CLOUD (center) ─────────────────────────── -->
-        <g class="node" id="node-dc">
-          <rect class="node-card data" x="232" y="100" width="256" height="220" rx="14"/>
-          <circle class="pulse-ring" id="pulse-dc" cx="360" cy="210" r="36" stroke="rgba(4,225,203,0.4)"/>
-          <!-- Data Cloud icon -->
-          <image href="assets/icons/icon-data360.png" x="336" y="118" width="48" height="48"/>
-          <text x="360" y="188" class="node-label" font-size="14">Data Cloud</text>
-          <text x="360" y="206" class="node-sublabel">Unified Customer Profile</text>
-          <rect x="252" y="258" width="112" height="20" rx="5" fill="rgba(4,225,203,0.12)" stroke="rgba(4,225,203,0.3)" stroke-width="1"/>
-          <text x="308" y="269" class="node-sublabel" style="fill:rgba(255,255,255,0.65);font-size:8px">REAL-TIME SEGMENTS</text>
-          <rect x="372" y="258" width="96" height="20" rx="5" fill="rgba(4,225,203,0.12)" stroke="rgba(4,225,203,0.3)" stroke-width="1"/>
-          <text x="420" y="269" class="node-sublabel" style="fill:rgba(255,255,255,0.65);font-size:8px">DATA ACTIONS</text>
+        <!-- AGENTFORCE + SLACK -->
+        <g class="node" id="n-agent" style="transform:translateY(8px)">
+          <rect class="nc act" x="900" y="108" width="182" height="168" rx="12"/>
+          <circle class="pulse-ring" id="pulse-ag" cx="991" cy="202" r="34" stroke="var(--ns-action)"/>
+          <image href="assets/icons/icon-agentforce.png" x="967" y="122" width="48" height="48"/>
+          <text x="991" y="182" class="nl" font-size="13">Agentforce</text>
+          <text x="991" y="199" class="nsl">Autonomous AI</text>
+          <rect class="ch-purp" x="918" y="217" width="148" height="20" rx="5"/>
+          <text x="992" y="228" class="nsl ch-fg" font-size="8">ATLAS REASONING ENGINE</text>
+          <rect class="ch-purp" x="918" y="244" width="148" height="20" rx="5"/>
+          <text x="992" y="255" class="nsl ch-fg" font-size="8">EINSTEIN TRUST LAYER</text>
+        </g>
+        <g class="node" id="n-slack" style="transform:translateY(8px)">
+          <rect class="nc" x="900" y="296" width="182" height="72" rx="10"/>
+          <image href="assets/icons/icon-slack.png" x="908" y="306" width="26" height="26"/>
+          <text x="991" y="315" class="nl" font-size="11">Slack</text>
+          <text x="991" y="334" class="nsl">Agent Notifications</text>
         </g>
 
-        <!-- ── SF CLOUD PRODUCTS ───────────────────────────── -->
+        <!-- Packets -->
+        <circle class="packet" r="4"><animateMotion dur="2.2s" repeatCount="indefinite" begin="0.4s"><mpath href="#c-sap-dc"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="2.2s" repeatCount="indefinite" begin="0.4s"/></circle>
+        <circle class="packet" r="3"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.2s"><mpath href="#c-dc-sales"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="2.6s" repeatCount="indefinite" begin="1.2s"/></circle>
+        <circle class="packet" r="3"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.9s"><mpath href="#c-dc-mktg"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="2.4s" repeatCount="indefinite" begin="0.9s"/></circle>
+        <circle class="packet" r="3" style="fill:var(--cl-action)"><animateMotion dur="2.0s" repeatCount="indefinite" begin="1.6s"><mpath href="#c-s-ag"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="2.0s" repeatCount="indefinite" begin="1.6s"/></circle>
+        <circle class="packet" r="3" style="fill:var(--cl-action)"><animateMotion dur="2.3s" repeatCount="indefinite" begin="0.3s"><mpath href="#c-m-ag"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="2.3s" repeatCount="indefinite" begin="0.3s"/></circle>
 
-        <!-- Sales Cloud -->
-        <g class="node" id="node-sales">
-          <rect class="node-card sf" x="560" y="68" width="160" height="74" rx="10"/>
-          <!-- Salesforce cloud mark -->
-          <image href="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" x="568" y="76" width="22" height="22"/>
-          <text x="690" y="97" class="node-label" font-size="11" text-anchor="end">Sales Cloud</text>
-          <text x="690" y="115" class="node-sublabel" text-anchor="end">Revenue Intelligence</text>
-        </g>
-
-        <!-- Service Cloud -->
-        <g class="node" id="node-svc">
-          <rect class="node-card sf" x="560" y="154" width="160" height="74" rx="10"/>
-          <image href="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" x="568" y="162" width="22" height="22"/>
-          <text x="690" y="183" class="node-label" font-size="11" text-anchor="end">Service Cloud</text>
-          <text x="690" y="201" class="node-sublabel" text-anchor="end">Case Management</text>
-        </g>
-
-        <!-- Marketing Cloud -->
-        <g class="node" id="node-mktg">
-          <rect class="node-card sf" x="560" y="240" width="160" height="74" rx="10"/>
-          <image href="assets/icons/icon-marketing.png" x="566" y="250" width="22" height="22"/>
-          <text x="690" y="269" class="node-label" font-size="11" text-anchor="end">Marketing Cloud</text>
-          <text x="690" y="287" class="node-sublabel" text-anchor="end">Journey Orchestration</text>
-        </g>
-
-        <!-- ── AGENTFORCE + SLACK ──────────────────────────── -->
-
-        <!-- Agentforce -->
-        <g class="node" id="node-agent">
-          <rect class="node-card action" x="904" y="100" width="178" height="170" rx="12"/>
-          <circle class="pulse-ring" id="pulse-agent" cx="993" cy="200" r="34" stroke="rgba(179,79,255,0.5)"/>
-          <!-- Agentforce icon -->
-          <image href="assets/icons/icon-agentforce.png" x="969" y="116" width="48" height="48"/>
-          <text x="993" y="180" class="node-label" font-size="13">Agentforce</text>
-          <text x="993" y="197" class="node-sublabel">Autonomous AI</text>
-          <rect x="920" y="215" width="140" height="18" rx="5" fill="rgba(179,79,255,0.15)" stroke="rgba(179,79,255,0.3)" stroke-width="1"/>
-          <text x="990" y="225" class="node-sublabel" style="fill:rgba(255,255,255,0.65);font-size:8px">ATLAS REASONING ENGINE</text>
-          <rect x="920" y="240" width="140" height="18" rx="5" fill="rgba(179,79,255,0.15)" stroke="rgba(179,79,255,0.3)" stroke-width="1"/>
-          <text x="990" y="250" class="node-sublabel" style="fill:rgba(255,255,255,0.65);font-size:8px">EINSTEIN TRUST LAYER</text>
-        </g>
-
-        <!-- Slack -->
-        <g class="node" id="node-slack">
-          <rect class="node-card customer" x="904" y="290" width="178" height="72" rx="10"/>
-          <image href="assets/icons/icon-slack.png" x="912" y="300" width="28" height="28"/>
-          <text x="993" y="313" class="node-label" font-size="12">Slack</text>
-          <text x="993" y="331" class="node-sublabel">Agent Notifications</text>
-        </g>
-
-        <!-- ── MOVING PACKETS ──────────────────────────────── -->
-        <circle class="packet" r="4" id="pkt1"><animateMotion dur="2.2s" repeatCount="indefinite" begin="0.5s"><mpath href="#conn-sap-dc"/></animateMotion></circle>
-        <circle class="packet" r="3" id="pkt2"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.2s"><mpath href="#conn-dc-sales"/></animateMotion></circle>
-        <circle class="packet" r="3" id="pkt3"><animateMotion dur="2.4s" repeatCount="indefinite" begin="0.8s"><mpath href="#conn-dc-mktg"/></animateMotion></circle>
-        <circle class="packet" r="3" id="pkt4" style="fill:#B34FFF"><animateMotion dur="2.0s" repeatCount="indefinite" begin="1.5s"><mpath href="#conn-sales-ag"/></animateMotion></circle>
-        <circle class="packet" r="3" id="pkt5" style="fill:#B34FFF"><animateMotion dur="2.3s" repeatCount="indefinite" begin="0.3s"><mpath href="#conn-mktg-ag"/></animateMotion></circle>
-
-        <!-- ── STAT CALLOUTS ───────────────────────────────── -->
-        <g class="stat-callout" id="stat1">
-          <rect x="232" y="356" width="120" height="56" rx="8" fill="rgba(4,225,203,0.08)" stroke="rgba(4,225,203,0.25)" stroke-width="1"/>
-          <text x="292" y="376" class="stat-val" fill="var(--accent)">360°</text>
-          <text x="292" y="393" class="stat-label">Unified Profile</text>
-        </g>
-        <g class="stat-callout" id="stat2">
-          <rect x="368" y="356" width="120" height="56" rx="8" fill="rgba(6,106,254,0.08)" stroke="rgba(6,106,254,0.25)" stroke-width="1"/>
-          <text x="428" y="376" class="stat-val" fill="#66A3FF">38%</text>
-          <text x="428" y="393" class="stat-label">Faster Onboarding</text>
-        </g>
-        <g class="stat-callout" id="stat3">
-          <rect x="904" y="356" width="178" height="56" rx="8" fill="rgba(179,79,255,0.08)" stroke="rgba(179,79,255,0.25)" stroke-width="1"/>
-          <text x="993" y="376" class="stat-val" fill="#B34FFF">4× ROI</text>
-          <text x="993" y="393" class="stat-label">Agent Productivity</text>
-        </g>
-
+        <!-- Stats -->
+        <g class="stat-callout" id="s1"><rect class="sb-teal" x="228" y="360" width="124" height="58" rx="8"/><text x="290" y="380" class="stat-val sv-teal">360°</text><text x="290" y="400" class="stat-label">Unified Profile</text></g>
+        <g class="stat-callout" id="s2"><rect class="sb-blue" x="362" y="360" width="124" height="58" rx="8"/><text x="424" y="380" class="stat-val sv-blue">38%</text><text x="424" y="400" class="stat-label">Faster Onboarding</text></g>
+        <g class="stat-callout" id="s3"><rect class="sb-purp" x="900" y="360" width="182" height="58" rx="8"/><text x="991" y="380" class="stat-val sv-purp">4× ROI</text><text x="991" y="400" class="stat-label">Agent Productivity</text></g>
       </svg>
     </div>
   </div>
 
-  <!-- ── Slide 3: Data Flow Detail ─────────────────────────────── -->
+  <!-- ══ SLIDE 3: Data Flow Detail ══════════════════════════════ -->
   <div class="slide slide-arch" data-section="Data Flow">
-
     <div class="arch-header">
       <div>
         <div class="arch-eyebrow">Architecture Detail · Data Flow</div>
-        <h2>Ingestion → Harmonisation → Activation</h2>
+        <h2>Ingestion → Harmonisation → Analysis → Activation</h2>
       </div>
       <div class="arch-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#04E1CB"></div>Ingestion</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#04E1CB"></div>Ingest</div>
         <div class="legend-item"><div class="legend-dot" style="background:#066AFE"></div>Harmonise</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#B34FFF"></div>Activate</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#B34FFF"></div>Analyse</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FF9900"></div>Activate</div>
       </div>
     </div>
-
     <div class="diagram-wrap">
-      <svg class="diagram-svg" viewBox="0 0 1100 460" preserveAspectRatio="xMidYMid meet" id="flow-svg">
+      <svg class="diagram-svg" viewBox="0 0 1100 460" preserveAspectRatio="xMidYMid meet">
 
-        <!-- ── Horizontal pipeline bands ──────────────────── -->
-        <!-- Stage 1: Ingest -->
-        <rect x="8"   y="60" width="238" height="360" rx="10"
-          fill="rgba(4,225,203,0.03)" stroke="rgba(4,225,203,0.14)" stroke-width="1"/>
-        <text x="127" y="84" font-family="'Salesforce Sans',system-ui" font-size="9" font-weight="700"
-          letter-spacing="0.12em" fill="rgba(4,225,203,0.5)" text-anchor="middle">01 · INGEST</text>
+        <!-- Stage zones -->
+        <rect class="zb-ing" x="8"   y="54" width="238" height="368" rx="10"/>
+        <text class="zl zt-ing" x="127" y="76">01 · INGEST</text>
+        <rect class="zb-hrm" x="258" y="54" width="238" height="368" rx="10"/>
+        <text class="zl zt-hrm" x="377" y="76">02 · HARMONISE</text>
+        <rect class="zb-anl" x="508" y="54" width="238" height="368" rx="10"/>
+        <text class="zl zt-anl" x="627" y="76">03 · ANALYSE</text>
+        <rect class="zb-act" x="758" y="54" width="334" height="368" rx="10"/>
+        <text class="zl zt-act" x="925" y="76">04 · ACTIVATE</text>
 
-        <!-- Stage 2: Harmonise -->
-        <rect x="258" y="60" width="238" height="360" rx="10"
-          fill="rgba(6,106,254,0.03)" stroke="rgba(6,106,254,0.14)" stroke-width="1"/>
-        <text x="377" y="84" font-family="'Salesforce Sans',system-ui" font-size="9" font-weight="700"
-          letter-spacing="0.12em" fill="rgba(6,106,254,0.45)" text-anchor="middle">02 · HARMONISE</text>
+        <!-- Stage connectors -->
+        <path id="fl-a" class="conn cl-data"   d="M 246 230 L 258 230" marker-end="url(#arrow-data)"/>
+        <path id="fl-b" class="conn cl-sf"     d="M 496 230 L 508 230" marker-end="url(#arrow-sf)"/>
+        <path id="fl-c" class="conn cl-action" d="M 746 230 L 758 230" marker-end="url(#arrow-action)"/>
 
-        <!-- Stage 3: Analyse -->
-        <rect x="508" y="60" width="238" height="360" rx="10"
-          fill="rgba(115,3,148,0.03)" stroke="rgba(115,3,148,0.14)" stroke-width="1"/>
-        <text x="627" y="84" font-family="'Salesforce Sans',system-ui" font-size="9" font-weight="700"
-          letter-spacing="0.12em" fill="rgba(115,3,148,0.45)" text-anchor="middle">03 · ANALYSE</text>
-
-        <!-- Stage 4: Activate -->
-        <rect x="758" y="60" width="334" height="360" rx="10"
-          fill="rgba(255,153,0,0.03)" stroke="rgba(255,153,0,0.14)" stroke-width="1"/>
-        <text x="925" y="84" font-family="'Salesforce Sans',system-ui" font-size="9" font-weight="700"
-          letter-spacing="0.12em" fill="rgba(255,153,0,0.5)" text-anchor="middle">04 · ACTIVATE</text>
-
-        <!-- ── Stage connections ────────────────────────── -->
-        <path id="fl-in-harm"   class="conn data-line"   d="M 246 230 L 258 230"/>
-        <path id="fl-harm-an"   class="conn sf-line"     d="M 496 230 L 508 230"/>
-        <path id="fl-an-act"    class="conn action-line" d="M 746 230 L 758 230"/>
-
-        <!-- ── INGEST NODES ────────────────────────────── -->
-
-        <!-- SAP Connector -->
+        <!-- INGEST -->
         <g class="node" id="fl-sap">
-          <rect class="node-card customer" x="20" y="110" width="210" height="64" rx="10"/>
-          <text x="70" y="136" font-family="'Salesforce Sans',system-ui" font-size="16" font-weight="700"
-            fill="#0070F0" dominant-baseline="middle" text-anchor="middle">SAP</text>
-          <text x="145" y="136" class="node-label" font-size="11" text-anchor="middle">S/4HANA Connector</text>
-          <text x="125" y="156" class="node-sublabel">Native certified integration</text>
+          <rect class="nc" x="20" y="105" width="212" height="64" rx="10"/>
+          <text x="70" y="130" font-family="'Salesforce Sans',system-ui" font-size="18" font-weight="900" fill="#0070F0" dominant-baseline="middle" text-anchor="middle">SAP</text>
+          <text x="145" y="130" class="nl" font-size="11" text-anchor="middle">S/4HANA Connector</text>
+          <text x="126" y="150" class="nsl">Native certified integration</text>
         </g>
-
-        <!-- MuleSoft -->
         <g class="node" id="fl-mule">
-          <rect class="node-card sf" x="20" y="196" width="210" height="64" rx="10"/>
-          <text x="125" y="221" class="node-label">MuleSoft</text>
-          <text x="125" y="239" class="node-sublabel">500+ Connectors</text>
+          <rect class="nc sf" x="20" y="196" width="212" height="64" rx="10"/>
+          <text x="126" y="224" class="nl">MuleSoft</text>
+          <text x="126" y="243" class="nsl">500+ Connectors</text>
         </g>
-
-        <!-- Streaming / CDC -->
         <g class="node" id="fl-stream">
-          <rect class="node-card data" x="20" y="282" width="210" height="64" rx="10"/>
-          <text x="125" y="307" class="node-label">Real-Time CDC</text>
-          <text x="125" y="325" class="node-sublabel">Change Data Capture</text>
+          <rect class="nc data" x="20" y="287" width="212" height="64" rx="10"/>
+          <text x="126" y="315" class="nl">Real-Time CDC</text>
+          <text x="126" y="334" class="nsl">Change Data Capture</text>
         </g>
 
-        <!-- ── HARMONISE NODES ─────────────────────────── -->
-
-        <!-- Data Streams -->
+        <!-- HARMONISE -->
         <g class="node" id="fl-streams">
-          <rect class="node-card data" x="270" y="110" width="210" height="64" rx="10"/>
-          <text x="375" y="135" class="node-label">Data Streams</text>
-          <text x="375" y="153" class="node-sublabel">Schema Mapping</text>
+          <rect class="nc data" x="270" y="105" width="212" height="64" rx="10"/>
+          <text x="376" y="130" class="nl">Data Streams</text>
+          <text x="376" y="150" class="nsl">Schema Mapping</text>
         </g>
-
-        <!-- Identity Resolution -->
         <g class="node" id="fl-identity">
-          <rect class="node-card data" x="270" y="196" width="210" height="64" rx="10"/>
-          <text x="375" y="221" class="node-label">Identity Resolution</text>
-          <text x="375" y="239" class="node-sublabel">Unified Individual</text>
+          <rect class="nc data" x="270" y="196" width="212" height="64" rx="10"/>
+          <text x="376" y="224" class="nl">Identity Resolution</text>
+          <text x="376" y="243" class="nsl">Unified Individual</text>
         </g>
-
-        <!-- Data Lake -->
         <g class="node" id="fl-lake">
-          <rect class="node-card sf" x="270" y="282" width="210" height="64" rx="10"/>
-          <text x="375" y="307" class="node-label">Data Lake</text>
-          <text x="375" y="325" class="node-sublabel">Zero-Copy Federation</text>
+          <rect class="nc sf" x="270" y="287" width="212" height="64" rx="10"/>
+          <text x="376" y="315" class="nl">Data Lake</text>
+          <text x="376" y="334" class="nsl">Zero-Copy Federation</text>
         </g>
 
-        <!-- ── ANALYSE NODES ───────────────────────────── -->
-
-        <!-- Calculated Insights -->
+        <!-- ANALYSE -->
         <g class="node" id="fl-insights">
-          <rect class="node-card sf" x="520" y="110" width="210" height="64" rx="10"/>
-          <text x="625" y="135" class="node-label">Calculated Insights</text>
-          <text x="625" y="153" class="node-sublabel">SAQL · Predictive AI</text>
+          <rect class="nc sf" x="520" y="105" width="212" height="64" rx="10"/>
+          <text x="626" y="130" class="nl">Calculated Insights</text>
+          <text x="626" y="150" class="nsl">SAQL · Predictive AI</text>
         </g>
-
-        <!-- Segment Builder -->
         <g class="node" id="fl-segment">
-          <rect class="node-card sf" x="520" y="196" width="210" height="64" rx="10"/>
-          <text x="625" y="221" class="node-label">Segment Builder</text>
-          <text x="625" y="239" class="node-sublabel">Real-Time Audiences</text>
+          <rect class="nc sf" x="520" y="196" width="212" height="64" rx="10"/>
+          <text x="626" y="224" class="nl">Segment Builder</text>
+          <text x="626" y="243" class="nsl">Real-Time Audiences</text>
         </g>
-
-        <!-- Einstein -->
         <g class="node" id="fl-einstein">
-          <rect class="node-card action" x="520" y="282" width="210" height="64" rx="10"/>
-          <text x="625" y="307" class="node-label">Einstein AI</text>
-          <text x="625" y="325" class="node-sublabel">Next-Best-Action</text>
+          <rect class="nc act" x="520" y="287" width="212" height="64" rx="10"/>
+          <text x="626" y="315" class="nl">Einstein AI</text>
+          <text x="626" y="334" class="nsl">Next-Best-Action</text>
         </g>
 
-        <!-- ── ACTIVATE NODES ──────────────────────────── -->
-
-        <!-- Agentforce -->
+        <!-- ACTIVATE -->
         <g class="node" id="fl-agent">
-          <rect class="node-card action" x="770" y="96" width="152" height="72" rx="10"/>
-          <image href="assets/icons/icon-agentforce.png" x="778" y="104" width="28" height="28"/>
-          <text x="874" y="118" class="node-label" font-size="11" text-anchor="end">Agentforce</text>
-          <text x="874" y="136" class="node-sublabel" text-anchor="end">Autonomous Agents</text>
+          <rect class="nc act" x="772" y="90" width="152" height="72" rx="10"/>
+          <image href="assets/icons/icon-agentforce.png" x="780" y="98" width="28" height="28"/>
+          <text x="876" y="116" class="nl" font-size="11" text-anchor="end">Agentforce</text>
+          <text x="876" y="136" class="nsl" text-anchor="end">Autonomous Agents</text>
         </g>
-
-        <!-- Marketing Cloud -->
         <g class="node" id="fl-mktg">
-          <rect class="node-card sf" x="770" y="184" width="152" height="72" rx="10"/>
-          <image href="assets/icons/icon-marketing.png" x="778" y="194" width="26" height="26"/>
-          <text x="874" y="208" class="node-label" font-size="11" text-anchor="end">Marketing Cloud</text>
-          <text x="874" y="226" class="node-sublabel" text-anchor="end">Journey Activation</text>
+          <rect class="nc sf" x="772" y="178" width="152" height="72" rx="10"/>
+          <image href="assets/icons/icon-marketing.png" x="780" y="188" width="26" height="26"/>
+          <text x="876" y="207" class="nl" font-size="11" text-anchor="end">Marketing Cloud</text>
+          <text x="876" y="227" class="nsl" text-anchor="end">Journey Activation</text>
         </g>
-
-        <!-- Slack -->
         <g class="node" id="fl-slack">
-          <rect class="node-card customer" x="770" y="272" width="152" height="72" rx="10"/>
-          <image href="assets/icons/icon-slack.png" x="778" y="282" width="26" height="26"/>
-          <text x="874" y="296" class="node-label" font-size="11" text-anchor="end">Slack</text>
-          <text x="874" y="314" class="node-sublabel" text-anchor="end">Agent Notifications</text>
+          <rect class="nc" x="772" y="266" width="152" height="72" rx="10"/>
+          <image href="assets/icons/icon-slack.png" x="780" y="276" width="26" height="26"/>
+          <text x="876" y="295" class="nl" font-size="11" text-anchor="end">Slack</text>
+          <text x="876" y="315" class="nsl" text-anchor="end">Agent Notifications</text>
         </g>
-
-        <!-- Platform (omnibus) -->
         <g class="node" id="fl-platform">
-          <rect class="node-card sf" x="934" y="140" width="152" height="198" rx="10"/>
-          <image href="assets/icons/icon-platform.png" x="994" y="152" width="32" height="32"/>
-          <text x="1010" y="200" class="node-label" font-size="11">Salesforce</text>
-          <text x="1010" y="218" class="node-label" font-size="11">Platform</text>
-          <text x="1010" y="236" class="node-sublabel">Sales · Service · CRM</text>
-          <!-- SF logo -->
-          <image href="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" x="986" y="264" width="48" height="28"/>
+          <rect class="nc sf" x="936" y="132" width="150" height="200" rx="10"/>
+          <image href="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" x="988" y="260" width="46" height="28"/>
+          <text x="1011" y="192" class="nl" font-size="11">Salesforce</text>
+          <text x="1011" y="212" class="nl" font-size="11">Platform</text>
+          <text x="1011" y="232" class="nsl">Sales · Service · CRM</text>
         </g>
 
-        <!-- Inner connections in activate zone -->
-        <path id="fl-ag-pl"   class="conn action-line" d="M 922 132 L 934 190"/>
-        <path id="fl-mk-pl"   class="conn sf-line"     d="M 922 220 L 934 240"/>
-        <path id="fl-sl-pl"   class="conn neutral"     d="M 922 308 L 934 290"/>
+        <!-- Activate inner connections -->
+        <path id="fl-ag-pl" class="conn cl-action" d="M 924 126 L 936 182"/>
+        <path id="fl-mk-pl" class="conn cl-sf"     d="M 924 214 L 936 232"/>
+        <path id="fl-sl-pl" class="conn cl-neutral" d="M 924 302 L 936 284"/>
 
-        <!-- Stat bottom row -->
-        <g class="stat-callout" id="fstat1">
-          <rect x="20" y="368" width="210" height="42" rx="7" fill="rgba(4,225,203,0.08)" stroke="rgba(4,225,203,0.2)" stroke-width="1"/>
-          <text x="125" y="383" class="stat-val" font-size="15" fill="var(--accent)">150TB+</text>
-          <text x="125" y="399" class="stat-label">Daily Data Volume</text>
-        </g>
-        <g class="stat-callout" id="fstat2">
-          <rect x="270" y="368" width="210" height="42" rx="7" fill="rgba(6,106,254,0.08)" stroke="rgba(6,106,254,0.2)" stroke-width="1"/>
-          <text x="375" y="383" class="stat-val" font-size="15" fill="#66A3FF">&lt;200ms</text>
-          <text x="375" y="399" class="stat-label">Profile Update Latency</text>
-        </g>
-        <g class="stat-callout" id="fstat3">
-          <rect x="758" y="368" width="334" height="42" rx="7" fill="rgba(255,153,0,0.08)" stroke="rgba(255,153,0,0.2)" stroke-width="1"/>
-          <text x="925" y="383" class="stat-val" font-size="15" fill="#FF9900">4× ROI</text>
-          <text x="925" y="399" class="stat-label">Agent-Assisted Productivity</text>
-        </g>
-
+        <!-- Stats -->
+        <g class="stat-callout" id="fst1"><rect class="sb-teal" x="20"  y="370" width="212" height="40" rx="7"/><text x="126" y="383" class="stat-val" font-size="14" fill="var(--sv-stat-teal)">150TB+</text><text x="126" y="401" class="stat-label">Daily Data Volume</text></g>
+        <g class="stat-callout" id="fst2"><rect class="sb-blue" x="270" y="370" width="212" height="40" rx="7"/><text x="376" y="383" class="stat-val" font-size="14" fill="var(--sv-stat-blue)">&lt;200ms</text><text x="376" y="401" class="stat-label">Profile Update Latency</text></g>
+        <g class="stat-callout" id="fst3"><rect class="sb-aws"  x="758" y="370" width="334" height="40" rx="7"/><text x="925" y="383" class="stat-val" font-size="14" fill="var(--sv-stat-aws)">4× ROI</text><text x="925" y="401" class="stat-label">Agent-Assisted Productivity</text></g>
       </svg>
     </div>
   </div>
 
-  <!-- ── Slide 4: Agentforce Action Layer ──────────────────────── -->
+  <!-- ══ SLIDE 4: Agentforce Layer ════════════════════════════════ -->
   <div class="slide slide-agentforce" data-section="Agentforce">
-
     <div class="arch-header">
       <div>
         <div class="arch-eyebrow">Agent Layer · Architecture</div>
@@ -625,226 +680,220 @@
         <div class="legend-item"><div class="legend-dot" style="background:#066AFE"></div>Trust / Guard</div>
       </div>
     </div>
-
     <div class="diagram-wrap">
-      <svg class="diagram-svg" viewBox="0 0 1100 460" preserveAspectRatio="xMidYMid meet" id="agent-svg">
+      <svg class="diagram-svg" viewBox="0 0 1100 460" preserveAspectRatio="xMidYMid meet">
 
-        <!-- Central agent hub -->
+        <!-- Hub -->
         <g class="node" id="ag-hub">
-          <circle cx="550" cy="218" r="88" fill="rgba(115,3,148,0.12)" stroke="rgba(179,79,255,0.4)" stroke-width="1.5"/>
-          <circle cx="550" cy="218" r="64" fill="rgba(115,3,148,0.18)" stroke="rgba(179,79,255,0.3)" stroke-width="1"/>
-          <circle class="pulse-ring active" cx="550" cy="218" r="88" stroke="rgba(179,79,255,0.3)"/>
-          <!-- Agentforce icon centered -->
-          <image href="assets/icons/icon-agentforce.png" x="524" y="178" width="52" height="52"/>
-          <text x="550" y="244" class="node-label" font-size="14">Agentforce</text>
-          <text x="550" y="262" class="node-sublabel" style="fill:rgba(255,255,255,0.5)">Atlas Reasoning</text>
+          <circle cx="550" cy="222" r="92"  fill="var(--nf-action)" stroke="var(--ns-action)" stroke-width="1.5"/>
+          <circle cx="550" cy="222" r="66"  fill="var(--nf-action)" stroke="var(--ns-action)" stroke-width="1"/>
+          <circle class="pulse-ring active" cx="550" cy="222" r="92" stroke="var(--ns-action)"/>
+          <image href="assets/icons/icon-agentforce.png" x="524" y="182" width="52" height="52"/>
+          <text x="550" y="248" class="nl" font-size="14">Agentforce</text>
+          <text x="550" y="266" class="nsl">Atlas Reasoning</text>
         </g>
 
         <!-- Data Cloud (top) -->
         <g class="node" id="ag-dc">
-          <rect class="node-card data" x="420" y="32" width="260" height="72" rx="10"/>
-          <image href="assets/icons/icon-data360.png" x="430" y="42" width="32" height="32"/>
-          <text x="660" y="62" class="node-label" font-size="12" text-anchor="end">Data Cloud</text>
-          <text x="660" y="80" class="node-sublabel" text-anchor="end">Grounded on Unified Profile</text>
+          <rect class="nc data" x="420" y="28" width="260" height="74" rx="10"/>
+          <image href="assets/icons/icon-data360.png" x="430" y="38" width="32" height="32"/>
+          <text x="662" y="58"  class="nl"  font-size="12" text-anchor="end">Data Cloud</text>
+          <text x="662" y="78"  class="nsl" text-anchor="end">Grounded on Unified Profile</text>
         </g>
 
         <!-- Einstein Trust Layer (right) -->
         <g class="node" id="ag-trust">
-          <rect class="node-card sf" x="780" y="136" width="220" height="166" rx="10"/>
-          <text x="890" y="176" class="node-label" font-size="13">Einstein Trust</text>
-          <text x="890" y="194" class="node-sublabel">Layer</text>
-          <rect x="800" y="210" width="180" height="22" rx="5" fill="rgba(6,106,254,0.15)" stroke="rgba(6,106,254,0.3)" stroke-width="1"/>
-          <text x="890" y="222" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.65)">Zero Data Retention · LLM</text>
-          <rect x="800" y="240" width="180" height="22" rx="5" fill="rgba(6,106,254,0.15)" stroke="rgba(6,106,254,0.3)" stroke-width="1"/>
-          <text x="890" y="252" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.65)">Toxicity &amp; Bias Detection</text>
-          <rect x="800" y="270" width="180" height="22" rx="5" fill="rgba(6,106,254,0.15)" stroke="rgba(6,106,254,0.3)" stroke-width="1"/>
-          <text x="890" y="282" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.65)">Audit Trail · Compliance</text>
+          <rect class="nc sf" x="782" y="130" width="226" height="174" rx="10"/>
+          <text x="895" y="170" class="nl" font-size="13">Einstein Trust</text>
+          <text x="895" y="190" class="nsl">Layer</text>
+          <rect class="ch-blue" x="800" y="208" width="190" height="22" rx="5"/>
+          <text x="895" y="220" class="nsl ch-fg" font-size="9">Zero Data Retention · LLM</text>
+          <rect class="ch-blue" x="800" y="238" width="190" height="22" rx="5"/>
+          <text x="895" y="250" class="nsl ch-fg" font-size="9">Toxicity &amp; Bias Detection</text>
+          <rect class="ch-blue" x="800" y="268" width="190" height="22" rx="5"/>
+          <text x="895" y="280" class="nsl ch-fg" font-size="9">Audit Trail · Compliance</text>
         </g>
 
         <!-- Agent Actions (bottom) -->
         <g class="node" id="ag-actions">
-          <rect class="node-card action" x="350" y="360" width="400" height="80" rx="10"/>
-          <text x="550" y="388" class="node-label" font-size="13">Agent Actions</text>
-          <rect x="366" y="402" width="100" height="22" rx="5" fill="rgba(179,79,255,0.2)" stroke="rgba(179,79,255,0.4)" stroke-width="1"/>
-          <text x="416" y="414" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.7)">Flow Actions</text>
-          <rect x="476" y="402" width="100" height="22" rx="5" fill="rgba(179,79,255,0.2)" stroke="rgba(179,79,255,0.4)" stroke-width="1"/>
-          <text x="526" y="414" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.7)">Apex Actions</text>
-          <rect x="586" y="402" width="148" height="22" rx="5" fill="rgba(179,79,255,0.2)" stroke="rgba(179,79,255,0.4)" stroke-width="1"/>
-          <text x="660" y="414" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.7)">External API Calls</text>
+          <rect class="nc act" x="348" y="362" width="404" height="82" rx="10"/>
+          <text x="550" y="388" class="nl" font-size="13">Agent Actions</text>
+          <rect class="ch-purp" x="364" y="400" width="104" height="22" rx="5"/>
+          <text x="416" y="412" class="nsl ch-fg" font-size="9">Flow Actions</text>
+          <rect class="ch-purp" x="478" y="400" width="104" height="22" rx="5"/>
+          <text x="530" y="412" class="nsl ch-fg" font-size="9">Apex Actions</text>
+          <rect class="ch-purp" x="592" y="400" width="148" height="22" rx="5"/>
+          <text x="666" y="412" class="nsl ch-fg" font-size="9">External API Calls</text>
         </g>
 
         <!-- Channels (left) -->
         <g class="node" id="ag-channels">
-          <rect class="node-card customer" x="100" y="136" width="220" height="166" rx="10"/>
-          <text x="210" y="176" class="node-label" font-size="13">Channels</text>
-          <rect x="120" y="196" width="180" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-          <!-- Slack icon -->
-          <image href="assets/icons/icon-slack.png" x="128" y="200" width="14" height="14"/>
-          <text x="225" y="208" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.65)">Slack · Teams</text>
-          <rect x="120" y="226" width="180" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-          <text x="210" y="238" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.65)">Web · Mobile · Email</text>
-          <rect x="120" y="256" width="180" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-          <text x="210" y="268" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.65)">Salesforce App</text>
-          <rect x="120" y="286" width="180" height="22" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-          <!-- SAP text badge -->
-          <text x="155" y="298" font-family="'Salesforce Sans',system-ui" font-size="10" font-weight="700"
-            fill="#0070F0" dominant-baseline="middle" text-anchor="middle">SAP</text>
-          <text x="225" y="298" class="node-sublabel" style="font-size:9px;fill:rgba(255,255,255,0.65)">ERP Integration</text>
+          <rect class="nc" x="92" y="130" width="226" height="174" rx="10"/>
+          <text x="205" y="170" class="nl" font-size="13">Channels</text>
+          <rect class="nc" x="110" y="190" width="190" height="22" rx="5"/>
+          <image href="assets/icons/icon-slack.png" x="118" y="194" width="14" height="14"/>
+          <text x="225" y="202" class="nsl" font-size="9">Slack · Teams</text>
+          <rect class="nc" x="110" y="220" width="190" height="22" rx="5"/>
+          <text x="205" y="232" class="nsl" font-size="9">Web · Mobile · Email</text>
+          <rect class="nc" x="110" y="250" width="190" height="22" rx="5"/>
+          <text x="205" y="262" class="nsl" font-size="9">Salesforce App</text>
+          <rect class="nc" x="110" y="280" width="190" height="22" rx="5"/>
+          <text x="145" y="292" font-family="'Salesforce Sans',system-ui" font-size="10" font-weight="900" fill="#0070F0" dominant-baseline="middle" text-anchor="middle">SAP</text>
+          <text x="225" y="292" class="nsl" font-size="9">ERP Integration</text>
         </g>
 
         <!-- Connections -->
-        <path class="conn data-line revealed active"   d="M 550 130 L 550 104"/>
-        <path class="conn action-line revealed active" d="M 550 306 L 550 360"/>
-        <path class="conn sf-line revealed active"     d="M 638 218 L 780 218"/>
-        <path class="conn neutral revealed"            d="M 320 218 L 462 218"/>
+        <path class="conn cl-data   revealed flowing" d="M 550 130 L 550 102"/>
+        <path class="conn cl-action revealed flowing" d="M 550 314 L 550 362"/>
+        <path class="conn cl-sf     revealed flowing" d="M 642 222 L 782 222"/>
+        <path class="conn cl-neutral revealed"        d="M 318 222 L 458 222"/>
 
         <!-- Orbit packets -->
-        <circle r="4" style="fill:var(--accent);opacity:0">
-          <animateMotion dur="3.2s" repeatCount="indefinite" begin="0s">
-            <mpath href="#agent-orbit"/>
-          </animateMotion>
-          <animate attributeName="opacity" values="0;1;1;0" dur="3.2s" repeatCount="indefinite" begin="0s"/>
+        <path id="agent-orbit" d="M 550 130 L 642 222 L 550 314 L 458 222 Z"/>
+        <circle r="4" style="fill:var(--cl-data);opacity:0">
+          <animateMotion dur="3.4s" repeatCount="indefinite" begin="0s"><mpath href="#agent-orbit"/></animateMotion>
+          <animate attributeName="opacity" values="0;1;1;0" dur="3.4s" repeatCount="indefinite" begin="0s"/>
         </circle>
-        <path id="agent-orbit" d="M 550 130 L 638 218 L 550 306 L 462 218 Z" fill="none" stroke="none"/>
-
+        <circle r="3" style="fill:var(--cl-action);opacity:0">
+          <animateMotion dur="3.4s" repeatCount="indefinite" begin="1.7s"><mpath href="#agent-orbit"/></animateMotion>
+          <animate attributeName="opacity" values="0;1;1;0" dur="3.4s" repeatCount="indefinite" begin="1.7s"/>
+        </circle>
       </svg>
     </div>
-
   </div>
 
 </div><!-- /deck -->
 
-<!-- Slide nav — bottom-center -->
+<!-- Bottom controls -->
 <nav class="slide-controls">
   <button id="btn-prev" onclick="navigate(-1)">&#8592;</button>
   <span class="slide-counter" id="counter">1 / 4</span>
   <button id="btn-next" onclick="navigate(1)">&#8594;</button>
 </nav>
 
-<!-- Presenter mode — bottom-right -->
-<button id="btn-present" title="Presenter mode" onclick="togglePresenter()">
+<button id="btn-theme" class="icon-btn" title="Toggle light/dark" onclick="toggleTheme()">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+</button>
+<button id="btn-present" class="icon-btn" title="Presenter mode" onclick="togglePresenter()">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="2" y="3" width="20" height="14" rx="2"/>
-    <path d="M8 21h8M12 17v4"/>
+    <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
   </svg>
 </button>
 
 <script src="feedback-widget.js"></script>
-
 <script>
-  // ── Slide engine ──────────────────────────────────────────────
-  const slides = Array.from(document.querySelectorAll('.slide'));
-  let current = 0;
+// ── Theme ─────────────────────────────────────────────────────────
+let isDark = true;
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+}
 
-  function showSlide(idx) {
-    slides.forEach((s, i) => {
-      s.classList.remove('active', 'visible');
-      if (i === idx) {
-        s.classList.add('active');
-        requestAnimationFrame(() => requestAnimationFrame(() => s.classList.add('visible')));
-      }
-    });
-    document.getElementById('counter').textContent = `${idx + 1} / ${slides.length}`;
-    if (idx === 1) revealOverviewSlide();
-    if (idx === 2) revealFlowSlide();
-    if (idx === 3) revealAgentSlide();
-  }
+// ── Slide engine ──────────────────────────────────────────────────
+const slides = Array.from(document.querySelectorAll('.slide'));
+let current = 0;
+// track which slides have been revealed so we don't double-trigger
+const revealed = new Set();
 
-  function navigate(dir) {
-    current = Math.max(0, Math.min(slides.length - 1, current + dir));
-    showSlide(current);
-  }
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
-  });
-
-  // ── Presenter mode ────────────────────────────────────────────
-  let presenting = false;
-  function togglePresenter() {
-    presenting = !presenting;
-    const btn = document.getElementById('btn-present');
-    if (presenting) {
-      document.body.setAttribute('data-present', '');
-      btn.style.background = 'rgba(6,106,254,0.5)';
-      btn.style.borderColor = 'rgba(6,106,254,0.8)';
-      btn.style.color = '#fff';
-      btn.title = 'Exit presenter mode';
-    } else {
-      document.body.removeAttribute('data-present');
-      btn.style.background = '';
-      btn.style.borderColor = '';
-      btn.style.color = '';
-      btn.title = 'Presenter mode';
+function showSlide(idx) {
+  slides.forEach((s, i) => {
+    s.classList.remove('active', 'visible');
+    if (i === idx) {
+      s.classList.add('active');
+      requestAnimationFrame(() => requestAnimationFrame(() => s.classList.add('visible')));
     }
-    // Hide feedback widget in presenter mode
-    const fab = document.getElementById('dt-fab');
-    if (fab) fab.style.display = presenting ? 'none' : '';
+  });
+  document.getElementById('counter').textContent = `${idx + 1} / ${slides.length}`;
+  if (!revealed.has(idx)) {
+    revealed.add(idx);
+    if (idx === 1) revealOverview();
+    if (idx === 2) revealFlow();
+    if (idx === 3) revealAgent();
   }
+}
 
-  // ── Reveal sequences ──────────────────────────────────────────
-  function revealIds(ids, delay) {
-    setTimeout(() => {
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.classList.add('revealed');
-          if (id.startsWith('conn') || id.startsWith('fl-in') || id.startsWith('fl-harm') || id.startsWith('fl-an')) {
-            el.classList.add('active');
-          }
-        }
-      });
-    }, delay);
-  }
+function navigate(dir) {
+  current = Math.max(0, Math.min(slides.length - 1, current + dir));
+  showSlide(current);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navigate(-1);
+});
 
-  function revealOverviewSlide() {
-    const steps = [
-      { ids: ['node-sap','node-erp','node-web'], delay: 100 },
-      { ids: ['conn-sap-dc','conn-erp-dc','conn-web-dc'], delay: 500 },
-      { ids: ['node-dc','aws-band','aws-label','aws-sublabel'], delay: 700 },
-      { ids: ['conn-dc-sales','conn-dc-svc','conn-dc-mktg'], delay: 1200 },
-      { ids: ['node-sales','node-svc','node-mktg'], delay: 1400 },
-      { ids: ['conn-sales-ag','conn-svc-ag','conn-mktg-ag'], delay: 1900 },
-      { ids: ['node-agent','node-slack'], delay: 2100 },
-      { ids: ['stat1','stat2','stat3'], delay: 2700 },
-    ];
-    steps.forEach(({ ids, delay }) => revealIds(ids, delay));
-    setTimeout(() => {
-      document.querySelectorAll('.packet').forEach(p => p.classList.add('active'));
-      document.querySelectorAll('.pulse-ring').forEach(p => p.classList.add('active'));
-    }, 2200);
-  }
+// ── Reveal helpers ────────────────────────────────────────────────
+function show(ids, delay, cls = []) {
+  setTimeout(() => ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add('revealed', ...cls);
+  }), delay);
+}
 
-  function revealFlowSlide() {
-    const steps = [
-      { ids: ['fl-sap','fl-mule','fl-stream'], delay: 100 },
-      { ids: ['fl-in-harm'], delay: 500 },
-      { ids: ['fl-streams','fl-identity','fl-lake'], delay: 700 },
-      { ids: ['fl-harm-an'], delay: 1100 },
-      { ids: ['fl-insights','fl-segment','fl-einstein'], delay: 1300 },
-      { ids: ['fl-an-act'], delay: 1700 },
-      { ids: ['fl-agent','fl-mktg','fl-slack','fl-platform'], delay: 1900 },
-      { ids: ['fl-ag-pl','fl-mk-pl','fl-sl-pl'], delay: 2300 },
-      { ids: ['fstat1','fstat2','fstat3'], delay: 2800 },
-    ];
-    steps.forEach(({ ids, delay }) => revealIds(ids, delay));
-  }
+function showConn(ids, delay) {
+  setTimeout(() => ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add('revealed', 'draw', 'flowing');
+  }), delay);
+}
 
-  function revealAgentSlide() {
-    const steps = [
-      { ids: ['ag-channels'],  delay: 100 },
-      { ids: ['ag-dc'],        delay: 400 },
-      { ids: ['ag-trust'],     delay: 700 },
-      { ids: ['ag-actions'],   delay: 1000 },
-      { ids: ['ag-hub'],       delay: 1400 },
-    ];
-    steps.forEach(({ ids, delay }) => revealIds(ids, delay));
-  }
+// ── Slide 2: Overview ─────────────────────────────────────────────
+function revealOverview() {
+  show(['n-sap','n-erp','n-web'],            100);
+  showConn(['c-sap-dc','c-erp-dc','c-web-dc'], 500);
+  show(['n-dc','aws-band','aws-label','aws-sub'], 750);
+  showConn(['c-dc-sales','c-dc-svc','c-dc-mktg'], 1250);
+  show(['n-sales','n-svc','n-mktg'],         1450);
+  showConn(['c-s-ag','c-sv-ag','c-m-ag'],    1950);
+  show(['n-agent','n-slack'],                2150);
+  setTimeout(() => {
+    document.querySelectorAll('#arch-svg .pulse-ring').forEach(r => r.classList.add('active'));
+  }, 2500);
+  show(['s1','s2','s3'],                     2800);
+}
 
-  // Init
-  showSlide(0);
+// ── Slide 3: Flow ─────────────────────────────────────────────────
+function revealFlow() {
+  show(['fl-sap','fl-mule','fl-stream'],     100);
+  showConn(['fl-a'],                         500);
+  show(['fl-streams','fl-identity','fl-lake'], 700);
+  showConn(['fl-b'],                         1100);
+  show(['fl-insights','fl-segment','fl-einstein'], 1300);
+  showConn(['fl-c'],                         1700);
+  show(['fl-agent','fl-mktg','fl-slack','fl-platform'], 1900);
+  showConn(['fl-ag-pl','fl-mk-pl','fl-sl-pl'], 2300);
+  show(['fst1','fst2','fst3'],              2800);
+}
+
+// ── Slide 4: Agent layer ──────────────────────────────────────────
+function revealAgent() {
+  show(['ag-channels'], 100);
+  show(['ag-dc'],       400);
+  show(['ag-trust'],    700);
+  show(['ag-actions'],  1000);
+  show(['ag-hub'],      1400);
+}
+
+// ── Presenter mode ─────────────────────────────────────────────────
+let presenting = false;
+function togglePresenter() {
+  presenting = !presenting;
+  const btn = document.getElementById('btn-present');
+  btn.style.background  = presenting ? 'rgba(6,106,254,0.5)' : '';
+  btn.style.borderColor = presenting ? 'rgba(6,106,254,0.8)' : '';
+  btn.style.color       = presenting ? '#fff' : '';
+  const fab = document.getElementById('dt-fab');
+  if (fab) fab.style.display = presenting ? 'none' : '';
+}
+
+showSlide(0);
 </script>
-
 </body>
 </html>

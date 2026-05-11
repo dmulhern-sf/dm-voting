@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-deck-name="Architecture Diagram 3D — Enterprise">
+<html lang="en" data-theme="dark" data-deck-name="Architecture Diagram 3D — Enterprise">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -17,84 +17,105 @@
   </script>
 
   <style>
-    :root { --accent: #04E1CB; --accent-l: #06A59A; }
+    :root {
+      --accent:          #04E1CB;
+      --text:            #ffffff;
+      --text-sub:        rgba(255,255,255,0.45);
+      --chip-teal-bg:    rgba(4,225,203,0.18);
+      --chip-teal-fg:    #04E1CB;
+      --chip-teal-bd:    rgba(4,225,203,0.35);
+      --chip-purp-bg:    rgba(179,79,255,0.18);
+      --chip-purp-fg:    #C47FFF;
+      --chip-purp-bd:    rgba(179,79,255,0.35);
+      --chip-blue-bg:    rgba(6,106,254,0.2);
+      --chip-blue-fg:    #66A3FF;
+      --chip-blue-bd:    rgba(6,106,254,0.4);
+      --stat-bg:         rgba(255,255,255,0.06);
+      --stat-bd:         rgba(255,255,255,0.1);
+      --btn-bg:          rgba(255,255,255,0.08);
+      --btn-bd:          rgba(255,255,255,0.2);
+      --btn-hover:       rgba(255,255,255,0.18);
+      --legend-fg:       rgba(255,255,255,0.4);
+      --hint-fg:         rgba(255,255,255,0.2);
+    }
+
+    [data-theme="light"] {
+      --accent:          #0058D1;
+      --text:            #0D1B3E;
+      --text-sub:        rgba(13,27,62,0.5);
+      --chip-teal-bg:    rgba(0,88,209,0.1);
+      --chip-teal-fg:    #0058D1;
+      --chip-teal-bd:    rgba(0,88,209,0.3);
+      --chip-purp-bg:    rgba(130,50,200,0.1);
+      --chip-purp-fg:    #6B22B0;
+      --chip-purp-bd:    rgba(130,50,200,0.3);
+      --chip-blue-bg:    rgba(6,106,254,0.1);
+      --chip-blue-fg:    #0050D0;
+      --chip-blue-bd:    rgba(6,106,254,0.3);
+      --stat-bg:         rgba(13,27,62,0.06);
+      --stat-bd:         rgba(13,27,62,0.14);
+      --btn-bg:          rgba(13,27,62,0.07);
+      --btn-bd:          rgba(13,27,62,0.18);
+      --btn-hover:       rgba(13,27,62,0.14);
+      --legend-fg:       rgba(13,27,62,0.5);
+      --hint-fg:         rgba(13,27,62,0.28);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #080D26;
       font-family: 'Salesforce Sans', system-ui, sans-serif;
       overflow: hidden; width: 100vw; height: 100vh;
     }
 
-    /* ── Three.js canvas ──────────────────────────────────────── */
     #three-canvas { position: fixed; inset: 0; z-index: 1; }
-    #label-renderer { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
 
-    /* ── Node labels (CSS2D) ──────────────────────────────────── */
-    .node-label-wrap {
-      pointer-events: none; text-align: center;
-      transform: translateY(-52px);
-    }
+    /* ── Node labels (CSS2D) — no translateY, positioned in 3D ── */
+    .node-label-wrap { pointer-events: none; text-align: center; }
     .node-title {
-      font-size: 12px; font-weight: 700; color: #fff;
+      font-size: 12px; font-weight: 700; color: var(--text);
       letter-spacing: 0.01em; white-space: nowrap;
-      text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+      text-shadow: 0 1px 8px rgba(0,0,0,0.55);
     }
     .node-sub {
-      font-size: 9px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: rgba(255,255,255,0.45);
-      white-space: nowrap; text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+      font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-sub); white-space: nowrap;
+      text-shadow: 0 1px 5px rgba(0,0,0,0.5);
     }
     .node-chip {
       display: inline-block; margin-top: 3px;
       font-size: 8px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 2px 7px; border-radius: 999px;
-      background: rgba(4,225,203,0.18); color: var(--accent);
-      border: 1px solid rgba(4,225,203,0.35); white-space: nowrap;
+      padding: 2px 7px; border-radius: 999px; white-space: nowrap;
     }
-    .node-chip.purple { background: rgba(179,79,255,0.18); color: #C47FFF; border-color: rgba(179,79,255,0.35); }
-    .node-chip.blue   { background: rgba(6,106,254,0.2);   color: #66A3FF; border-color: rgba(6,106,254,0.4); }
-    .node-chip.orange { background: rgba(255,153,0,0.18);  color: #FF9900; border-color: rgba(255,153,0,0.35); }
-    .node-chip.sap    { background: rgba(0,112,240,0.2);   color: #66AAFF; border-color: rgba(0,112,240,0.4); }
+    .node-chip.teal   { background: var(--chip-teal-bg); color: var(--chip-teal-fg); border: 1px solid var(--chip-teal-bd); }
+    .node-chip.purple { background: var(--chip-purp-bg); color: var(--chip-purp-fg); border: 1px solid var(--chip-purp-bd); }
+    .node-chip.blue   { background: var(--chip-blue-bg); color: var(--chip-blue-fg); border: 1px solid var(--chip-blue-bd); }
 
-    /* ── Node logo images ─────────────────────────────────────── */
     .node-icon-img {
-      display: block; margin: 0 auto 4px;
-      width: 28px; height: 28px; object-fit: contain;
-      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+      display: block; margin: 0 auto 3px;
+      width: 26px; height: 26px; object-fit: contain;
+      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.45));
     }
     .node-logo-sf {
-      display: block; margin: 0 auto 4px;
-      width: 90px; height: auto; object-fit: contain;
-      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+      display: block; margin: 0 auto 3px;
+      width: 78px; height: auto; object-fit: contain;
+      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.45));
     }
-
-    /* ── SAP logo (text-based) ────────────────────────────────── */
     .sap-text {
       font-size: 18px; font-weight: 900; color: #0070F0;
-      letter-spacing: -0.03em; line-height: 1;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.7);
-      margin-bottom: 2px;
-    }
-    /* AWS logo (text-based) */
-    .aws-text {
-      font-size: 14px; font-weight: 900; color: #FF9900;
-      letter-spacing: 0.02em; line-height: 1;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.7);
-      margin-bottom: 2px;
+      letter-spacing: -0.03em; line-height: 1; margin-bottom: 2px;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.6);
     }
 
-    /* ── Zone labels ──────────────────────────────────────────── */
     .zone-label-wrap { pointer-events: none; text-align: center; }
     .zone-text {
       font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(255,255,255,0.2); white-space: nowrap;
+      white-space: nowrap;
     }
 
-    /* ── UI overlay ───────────────────────────────────────────── */
+    /* ── UI overlay ─────────────────────────────────────────────── */
     #ui-overlay {
-      position: fixed; inset: 0; z-index: 10;
-      pointer-events: none;
+      position: fixed; inset: 0; z-index: 10; pointer-events: none;
       display: flex; flex-direction: column; justify-content: space-between;
       padding: 28px 36px 80px;
     }
@@ -105,94 +126,69 @@
       color: var(--accent); margin-bottom: 6px;
     }
     .arch-header h2 {
-      font-size: clamp(16px, 1.8vw, 24px); font-weight: 700; color: #fff;
+      font-size: clamp(15px, 1.7vw, 22px); font-weight: 700; color: var(--text);
       letter-spacing: -0.02em;
     }
     .arch-legend { display: flex; gap: 16px; align-items: center; }
-    .legend-item {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 600;
-    }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--legend-fg); font-weight: 600; }
     .legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-    /* stat bar */
     .stat-bar {
       display: flex; gap: 16px; justify-content: center;
       opacity: 0; transition: opacity 0.6s ease;
     }
     .stat-bar.visible { opacity: 1; }
     .stat-pill {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--stat-bg); border: 1px solid var(--stat-bd);
       border-radius: 999px; padding: 7px 18px;
       display: flex; align-items: center; gap: 10px;
     }
-    .stat-val  { font-size: 16px; font-weight: 700; color: var(--accent); }
-    .stat-label { font-size: 10px; color: rgba(255,255,255,0.5); font-weight: 600; }
+    .stat-val   { font-size: 16px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 10px; color: var(--text-sub); font-weight: 600; }
 
-    /* ── Slide nav — bottom-center ────────────────────────────── */
+    /* ── Controls ───────────────────────────────────────────────── */
     .slide-controls {
       position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
       display: flex; align-items: center; gap: 10px; z-index: 20;
     }
     .slide-controls button {
       width: 36px; height: 36px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08); color: #fff;
+      border: 1px solid var(--btn-bd); background: var(--btn-bg); color: var(--text);
       font-size: 16px; cursor: pointer; pointer-events: all;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.15s;
     }
-    .slide-controls button:hover { background: rgba(255,255,255,0.18); }
-    .slide-counter {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.35); min-width: 48px; text-align: center;
-    }
+    .slide-controls button:hover { background: var(--btn-hover); }
+    .slide-counter { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--legend-fg); min-width: 48px; text-align: center; }
 
-    /* ── Presenter mode — bottom-right ────────────────────────── */
-    #btn-present {
-      position: fixed; bottom: 28px; right: 24px; z-index: 20;
+    .icon-btn {
+      position: fixed; bottom: 28px; z-index: 20;
       width: 36px; height: 36px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.6); cursor: pointer; pointer-events: all;
+      border: 1px solid var(--btn-bd); background: var(--btn-bg);
+      color: var(--legend-fg); cursor: pointer; pointer-events: all;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.15s, color 0.15s;
     }
-    #btn-present:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .icon-btn:hover { background: var(--btn-hover); color: var(--text); }
+    #btn-present { right: 24px; }
+    #btn-theme   { right: 68px; }
 
     .hint {
       position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%);
-      font-size: 10px; color: rgba(255,255,255,0.2); z-index: 20;
-      letter-spacing: 0.08em; pointer-events: none;
+      font-size: 10px; color: var(--hint-fg); z-index: 20;
+      letter-spacing: 0.08em; pointer-events: none; white-space: nowrap;
     }
-
-    /* ── Slide view panels ────────────────────────────────────── */
-    .slide-views {
-      display: flex; gap: 8px; align-items: center; justify-content: center;
-      pointer-events: all;
-    }
-    .view-btn {
-      font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 4px 10px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4);
-      cursor: pointer; transition: all 0.15s;
-    }
-    .view-btn:hover, .view-btn.active { background: rgba(6,106,254,0.3); color: #fff; border-color: rgba(6,106,254,0.5); }
   </style>
 </head>
 <body>
 
 <canvas id="three-canvas"></canvas>
-<div id="label-renderer"></div>
 
-<!-- UI overlay — header + stat bar -->
 <div id="ui-overlay">
   <div class="arch-header">
     <div>
       <div class="arch-eyebrow">Solution Architecture · 3D View</div>
-      <h2 id="arch-title">SAP → Data Cloud → Agentforce — Enterprise Stack</h2>
+      <h2>SAP → Data Cloud → Agentforce — Enterprise Stack</h2>
     </div>
     <div class="arch-legend">
       <div class="legend-item"><div class="legend-dot" style="background:#066AFE"></div>Salesforce</div>
@@ -202,36 +198,32 @@
     </div>
   </div>
   <div class="stat-bar" id="stat-bar">
-    <div class="stat-pill">
-      <span class="stat-val">360°</span>
-      <span class="stat-label">Unified Customer Profile</span>
-    </div>
-    <div class="stat-pill">
-      <span class="stat-val" style="color:#66A3FF">38%</span>
-      <span class="stat-label">Faster Onboarding</span>
-    </div>
-    <div class="stat-pill">
-      <span class="stat-val" style="color:#C47FFF">4×</span>
-      <span class="stat-label">Agent Productivity</span>
-    </div>
-    <div class="stat-pill">
-      <span class="stat-val" style="color:#FF9900">AWS</span>
-      <span class="stat-label">Cloud Infrastructure</span>
-    </div>
+    <div class="stat-pill"><span class="stat-val">360°</span><span class="stat-label">Unified Customer Profile</span></div>
+    <div class="stat-pill"><span class="stat-val" style="color:#66A3FF">38%</span><span class="stat-label">Faster Onboarding</span></div>
+    <div class="stat-pill"><span class="stat-val" style="color:#C47FFF">4×</span><span class="stat-label">Agent Productivity</span></div>
+    <div class="stat-pill"><span class="stat-val" style="color:#FF9900">AWS</span><span class="stat-label">Cloud Infrastructure</span></div>
   </div>
 </div>
 
-<div class="hint">Drag to rotate · Scroll to zoom · Arrow keys to toggle rotation</div>
+<div class="hint">Drag to rotate · Scroll to zoom · Arrow keys pause rotation</div>
 
-<!-- Slide nav — bottom-center -->
 <nav class="slide-controls">
   <button id="btn-prev">&#8592;</button>
-  <span class="slide-counter" id="counter">1 / 1</span>
+  <span class="slide-counter">1 / 1</span>
   <button id="btn-next">&#8594;</button>
 </nav>
 
-<!-- Presenter mode — bottom-right -->
-<button id="btn-present" title="Presenter mode" onclick="togglePresenter()">
+<button id="btn-theme" class="icon-btn" title="Toggle theme" onclick="toggleTheme()">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+</button>
+
+<button id="btn-present" class="icon-btn" title="Presenter mode" onclick="togglePresenter()">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <rect x="2" y="3" width="20" height="14" rx="2"/>
     <path d="M8 21h8M12 17v4"/>
@@ -242,334 +234,368 @@
 
 <script type="module">
 import * as THREE from 'three';
-import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
-import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { OrbitControls }                    from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject }        from 'three/addons/renderers/CSS2DRenderer.js';
 
-// ── Scene setup ──────────────────────────────────────────────────
+// ── Renderer ──────────────────────────────────────────────────────────
 const canvas = document.getElementById('three-canvas');
-const W = window.innerWidth, H = window.innerHeight;
-
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setSize(W, H);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x080D26, 1);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 const labelRenderer = new CSS2DRenderer();
-labelRenderer.setSize(W, H);
+labelRenderer.setSize(innerWidth, innerHeight);
 labelRenderer.domElement.style.cssText = 'position:fixed;inset:0;z-index:2;pointer-events:none;';
 document.body.appendChild(labelRenderer.domElement);
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x080D26, 0.04);
-
-const camera = new THREE.PerspectiveCamera(52, W / H, 0.1, 200);
-camera.position.set(0, 3.5, 20);
+// ── Scene / camera / controls ─────────────────────────────────────────
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 200);
+camera.position.set(0, 3.5, 24);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.06;
-controls.enablePan = false;
-controls.minDistance = 8;
-controls.maxDistance = 32;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.32;
+controls.enablePan  = false;
+controls.minDistance = 9;
+controls.maxDistance = 36;
+controls.autoRotate  = true;
+controls.autoRotateSpeed = 0.3;
 
-// ── Lighting ───────────────────────────────────────────────────────
-scene.add(new THREE.AmbientLight(0x1a2060, 2.2));
-const dirLight = new THREE.DirectionalLight(0x4080ff, 1.6);
+// ── Lighting ──────────────────────────────────────────────────────────
+const ambientLight = new THREE.AmbientLight(0x1a2060, 2.2);
+const dirLight     = new THREE.DirectionalLight(0x4080ff, 1.6);
 dirLight.position.set(5, 10, 8);
-scene.add(dirLight);
-const rimLight = new THREE.DirectionalLight(0x04E1CB, 0.7);
-rimLight.position.set(-8, -2, -5);
-scene.add(rimLight);
-const orangeRim = new THREE.DirectionalLight(0xFF9900, 0.3);
+const rimLight     = new THREE.DirectionalLight(0x04E1CB, 0.7);
+rimLight.position.set(-8, -2, -6);
+const orangeRim    = new THREE.DirectionalLight(0xFF9900, 0.28);
 orangeRim.position.set(0, -8, 4);
-scene.add(orangeRim);
+scene.add(ambientLight, dirLight, rimLight, orangeRim);
 
-// ── Star field ─────────────────────────────────────────────────────
+// ── Star field ────────────────────────────────────────────────────────
 const starVerts = [];
-for (let i = 0; i < 900; i++) {
-  starVerts.push((Math.random() - 0.5) * 130, (Math.random() - 0.5) * 90, (Math.random() - 0.5) * 90);
-}
+for (let i = 0; i < 900; i++)
+  starVerts.push((Math.random()-.5)*140, (Math.random()-.5)*100, (Math.random()-.5)*100);
 const starGeo = new THREE.BufferGeometry();
 starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
-scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.07, transparent: true, opacity: 0.4 })));
+const starField = new THREE.Points(starGeo, new THREE.PointsMaterial({ color:0xffffff, size:0.07, transparent:true, opacity:0.4 }));
+scene.add(starField);
 
-// ── AWS ground plane ───────────────────────────────────────────────
-const planeGeo = new THREE.PlaneGeometry(24, 5);
-const planeMat = new THREE.MeshStandardMaterial({
-  color: 0x1a0a00, emissive: 0xFF6600, emissiveIntensity: 0.04,
-  transparent: true, opacity: 0.4, roughness: 1,
-});
-const plane = new THREE.Mesh(planeGeo, planeMat);
+// ── AWS ground plane ──────────────────────────────────────────────────
+const planeMat = new THREE.MeshStandardMaterial({ color:0x1a0a00, emissive:0xFF6600, emissiveIntensity:0.04, transparent:true, opacity:0, roughness:1 });
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(28, 6.5), planeMat);
 plane.rotation.x = -Math.PI / 2;
-plane.position.y = -1.8;
-plane.userData = { targetOpacity: 0.4, revealed: false };
+plane.position.y = -2.6;
+plane.userData = { targetOpacity: 0.35, revealed: false };
 scene.add(plane);
-// AWS label on plane
-const awsLabel = document.createElement('div');
-awsLabel.className = 'zone-label-wrap';
-awsLabel.innerHTML = '<div class="aws-text">AWS</div><div class="zone-text" style="color:rgba(255,153,0,0.4)">CLOUD INFRASTRUCTURE</div>';
-const awsObj = new CSS2DObject(awsLabel);
-awsObj.position.set(-9.5, -1.6, 0);
-scene.add(awsObj);
 
-// ── Label helpers ──────────────────────────────────────────────────
-function makeLabel(title, sub, chipText, chipClass, iconSrc, logoSrc) {
-  const div = document.createElement('div');
-  div.className = 'node-label-wrap';
-  let inner = '';
-  if (logoSrc) {
-    inner += `<img src="${logoSrc}" class="node-logo-sf" alt="${title}" />`;
-  } else if (iconSrc) {
-    inner += `<img src="${iconSrc}" class="node-icon-img" alt="${title}" />`;
-  }
-  inner += `<div class="node-title">${title}</div>`;
-  if (sub) inner += `<div class="node-sub">${sub}</div>`;
-  if (chipText) inner += `<div class="node-chip ${chipClass||''}">${chipText}</div>`;
-  div.innerHTML = inner;
-  return new CSS2DObject(div);
+const awsDiv = document.createElement('div');
+awsDiv.className = 'zone-label-wrap';
+awsDiv.innerHTML = '<div style="font-size:14px;font-weight:900;color:#FF9900;letter-spacing:-0.02em;text-shadow:0 1px 6px rgba(0,0,0,.6)">AWS</div><div class="zone-text" style="color:rgba(255,153,0,.45)">CLOUD INFRASTRUCTURE</div>';
+const awsCSS = new CSS2DObject(awsDiv);
+awsCSS.position.set(-10.5, -2.4, 0);
+scene.add(awsCSS);
+
+// ── Geometry factories ────────────────────────────────────────────────
+
+function stdMat(cHex, eHex, eInt=0.38) {
+  return new THREE.MeshStandardMaterial({ color:cHex, emissive:eHex, emissiveIntensity:eInt, transparent:true, opacity:0, roughness:0.35, metalness:0.65 });
 }
 
-function makeSapLabel() {
-  const div = document.createElement('div');
-  div.className = 'node-label-wrap';
-  div.innerHTML = '<div class="sap-text">SAP</div><div class="node-sub">S/4HANA · ERP</div>';
-  return new CSS2DObject(div);
-}
-
-function makeZoneLabel(text, color) {
-  const div = document.createElement('div');
-  div.className = 'zone-label-wrap';
-  div.innerHTML = `<div class="zone-text" style="color:${color||'rgba(255,255,255,0.2)'}">${text}</div>`;
-  return new CSS2DObject(div);
-}
-
-// ── Glowing box node ───────────────────────────────────────────────
-function makeNode(x, y, z, colorHex, emissiveHex, w=2.4, h=1.2, d=0.5) {
-  const geo = new THREE.BoxGeometry(w, h, d);
-  const mat = new THREE.MeshStandardMaterial({
-    color: colorHex, emissive: emissiveHex,
-    emissiveIntensity: 0.35, transparent: true, opacity: 0.0,
-    roughness: 0.4, metalness: 0.6,
-  });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(x, y, z);
-  const edges = new THREE.LineSegments(
-    new THREE.EdgesGeometry(geo),
-    new THREE.LineBasicMaterial({ color: emissiveHex, transparent: true, opacity: 0.0 })
-  );
+function addWireEdges(mesh, geo, eHex, targetOpacity=0.7) {
+  const mat = new THREE.LineBasicMaterial({ color:eHex, transparent:true, opacity:0 });
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), mat);
   mesh.add(edges);
-  mesh.userData = { targetOpacity: 0.78, edgeMat: edges.material, revealed: false };
-  scene.add(mesh);
-  return mesh;
+  mesh.userData.edgeMat = mat;
+  mesh.userData.edgeTargetOpacity = targetOpacity;
 }
 
-// ── Glowing line ───────────────────────────────────────────────────
-function makeLine(p1, p2, colorHex) {
-  const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...p1), new THREE.Vector3(...p2)]);
-  const mat = new THREE.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.0, linewidth: 1 });
+// Box — source systems / Slack
+function makeBox(x, y, z, cHex, eHex, w=2.1, h=1.0, d=0.55) {
+  const geo  = new THREE.BoxGeometry(w, h, d);
+  const mesh = new THREE.Mesh(geo, stdMat(cHex, eHex));
+  mesh.position.set(x, y, z);
+  addWireEdges(mesh, geo, eHex);
+  mesh.userData = { ...mesh.userData, targetOpacity:0.78, revealed:false };
+  scene.add(mesh);
+  return { mesh, aboveTop: h/2 };
+}
+
+// Hexagonal prism — connectors / SF clouds
+function makeHexPrism(x, y, z, cHex, eHex, r=0.88, h=1.5) {
+  const geo  = new THREE.CylinderGeometry(r, r, h, 6);
+  const mesh = new THREE.Mesh(geo, stdMat(cHex, eHex, 0.42));
+  mesh.position.set(x, y, z);
+  addWireEdges(mesh, geo, eHex, 0.75);
+  mesh.userData = { ...mesh.userData, targetOpacity:0.82, revealed:false };
+  scene.add(mesh);
+  return { mesh, aboveTop: h/2 };
+}
+
+// Sphere — Data Cloud hub
+function makeSphere(x, y, z, cHex, eHex, r=1.32) {
+  const geo  = new THREE.SphereGeometry(r, 32, 32);
+  const mesh = new THREE.Mesh(geo, stdMat(cHex, eHex, 0.28));
+  mesh.position.set(x, y, z);
+  // Thin latticework instead of box edges
+  const wireMat = new THREE.MeshBasicMaterial({ color:eHex, wireframe:true, transparent:true, opacity:0 });
+  const wire = new THREE.Mesh(new THREE.SphereGeometry(r * 1.03, 12, 8), wireMat);
+  mesh.add(wire);
+  mesh.userData = { targetOpacity:0.85, edgeMat:wireMat, edgeTargetOpacity:0.22, revealed:false };
+  scene.add(mesh);
+  return { mesh, aboveTop: r };
+}
+
+// Octahedron — Agentforce AI gem
+function makeOcta(x, y, z, cHex, eHex, r=1.32) {
+  const geo  = new THREE.OctahedronGeometry(r);
+  const mesh = new THREE.Mesh(geo, stdMat(cHex, eHex, 0.55));
+  mesh.position.set(x, y, z);
+  addWireEdges(mesh, geo, eHex, 0.9);
+  mesh.userData = { ...mesh.userData, targetOpacity:0.82, revealed:false };
+  scene.add(mesh);
+  return { mesh, aboveTop: r };
+}
+
+// ── Attach label above node ───────────────────────────────────────────
+function label(lines) {
+  const div = document.createElement('div');
+  div.className = 'node-label-wrap';
+  let html = '';
+  for (const l of lines) {
+    if (l.t === 'sap')   html += '<div class="sap-text">SAP</div>';
+    if (l.t === 'icon')  html += `<img src="${l.src}" class="node-icon-img" alt=""/>`;
+    if (l.t === 'logo')  html += `<img src="${l.src}" class="node-logo-sf" alt=""/>`;
+    if (l.t === 'title') html += `<div class="node-title">${l.text}</div>`;
+    if (l.t === 'sub')   html += `<div class="node-sub">${l.text}</div>`;
+    if (l.t === 'chip')  html += `<div class="node-chip ${l.cls}">${l.text}</div>`;
+  }
+  div.innerHTML = html;
+  return new CSS2DObject(div);
+}
+
+function attach(node, aboveTop, gap, lines) {
+  const obj = label(lines);
+  obj.position.set(0, aboveTop + gap, 0);
+  node.add(obj);
+}
+
+// Zone label in world space
+function zoneLabel(text, color, x, y, z) {
+  const div = document.createElement('div');
+  div.innerHTML = `<div class="zone-text" style="color:${color}">${text}</div>`;
+  const obj = new CSS2DObject(div);
+  obj.position.set(x, y, z);
+  scene.add(obj);
+}
+
+// ── Connection lines ──────────────────────────────────────────────────
+function makeLine(p1, p2, cHex) {
+  const geo  = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...p1), new THREE.Vector3(...p2)]);
+  const mat  = new THREE.LineBasicMaterial({ color:cHex, transparent:true, opacity:0 });
   const line = new THREE.Line(geo, mat);
-  line.userData = { targetOpacity: 0.55, revealed: false };
+  line.userData = { targetOpacity:0.5, revealed:false };
   scene.add(line);
   return line;
 }
 
-// ── Moving particle ────────────────────────────────────────────────
-function makeParticle(colorHex) {
+// ── Particles ─────────────────────────────────────────────────────────
+function makeParticle(cHex) {
   const mesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.09, 6, 6),
-    new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: 0 })
+    new THREE.SphereGeometry(0.1, 6, 6),
+    new THREE.MeshBasicMaterial({ color:cHex, transparent:true, opacity:0 })
   );
-  mesh.userData = { t: Math.random(), speed: 0.0038 + Math.random() * 0.004, active: false };
+  mesh.userData = { t: Math.random(), speed: 0.0035 + Math.random()*0.004, active:false };
   scene.add(mesh);
   return mesh;
 }
 
-// ── Colour palette ─────────────────────────────────────────────────
-const BLUE   = 0x1a3a8f; const BLUE_E = 0x066AFE;
-const TEAL   = 0x0a4040; const TEAL_E = 0x04E1CB;
-const PURP   = 0x2a0a40; const PURP_E = 0xB34FFF;
-const GREY   = 0x1a2040; const GREY_E = 0x4060a0;
-const ORANG  = 0x2a1a00; const ORANG_E= 0xFF9900;
+// ── Colour palette ────────────────────────────────────────────────────
+const GREY  = [0x0e1430, 0x3a5090];
+const SAP   = [0x001840, 0x0070F0];
+const BLUE  = [0x0a1a5f, 0x066AFE];
+const TEAL  = [0x032424, 0x04E1CB];
+const PURP  = [0x1a0530, 0xB34FFF];
+const SLACK = [0x0e0820, 0x4A154B];
 
-// ── Node layout ────────────────────────────────────────────────────
-// Source zone: x≈-8  |  Integration: x≈-4.5  |  Data Cloud: x≈0
-// SF Clouds: x≈4     |  Agentforce: x≈8.5
+// ── Node layout — staggered z for real depth on orbit ─────────────────
+//  Source: z=+2.5  |  Mule: z=+1  |  DC: z=0  |  SF: z=-1.5  |  Agent: z=-3
+const SRC_Z =  2.5, MULE_Z = 1.0, DC_Z = 0, SF_Z = -1.5, AG_Z = -3.0;
 
-// Source systems
-const nSAP   = makeNode(-8,  1.6, 0, GREY, 0x0070F0, 2.2, 1.0);
-const nCRM   = makeNode(-8,  0.0, 0, GREY, GREY_E,   2.2, 1.0);
-const nDW    = makeNode(-8, -1.6, 0, GREY, GREY_E,   2.2, 1.0);
+const { mesh:nSAP,   aboveTop:atSAP   } = makeBox    (-8,   1.7, SRC_Z,  ...SAP,  2.0, 1.0, 0.6);
+const { mesh:nCRM,   aboveTop:atCRM   } = makeBox    (-8,   0.0, SRC_Z,  ...GREY, 2.0, 1.0, 0.6);
+const { mesh:nDW,    aboveTop:atDW    } = makeBox    (-8,  -1.7, SRC_Z,  ...GREY, 2.0, 1.0, 0.6);
+const { mesh:nMule,  aboveTop:atMule  } = makeHexPrism(-4.2, 0.0, MULE_Z, ...BLUE, 0.92, 1.65);
+const { mesh:nDC,    aboveTop:atDC    } = makeSphere  ( 0.0, 0.0, DC_Z,   ...TEAL, 1.35);
+const { mesh:nSales, aboveTop:atSales } = makeHexPrism( 4.5, 1.7, SF_Z,   ...BLUE, 0.82, 1.05);
+const { mesh:nSvc,   aboveTop:atSvc   } = makeHexPrism( 4.5, 0.0, SF_Z,   ...BLUE, 0.82, 1.05);
+const { mesh:nMC,    aboveTop:atMC    } = makeHexPrism( 4.5,-1.7, SF_Z,   ...BLUE, 0.82, 1.05);
+const { mesh:nAgent, aboveTop:atAgent } = makeOcta    ( 8.6, 0.2, AG_Z,   ...PURP, 1.38);
+const { mesh:nSlack, aboveTop:atSlack } = makeBox     ( 8.6,-2.2, -1.5,   ...SLACK, 2.2, 0.85, 0.5);
 
-// Integration
-const nMule  = makeNode(-4.2, 0,   0, BLUE, BLUE_E,  2.4, 1.4);
+// ── Labels ────────────────────────────────────────────────────────────
+attach(nSAP,   atSAP,   0.85, [{ t:'sap' }, { t:'sub', text:'S/4HANA · ERP' }]);
+attach(nCRM,   atCRM,   0.85, [{ t:'title', text:'CRM / DW' }, { t:'sub', text:'Snowflake · Existing' }]);
+attach(nDW,    atDW,    0.85, [{ t:'title', text:'Web & Mobile' }, { t:'sub', text:'Clickstream Events' }]);
+attach(nMule,  atMule,  0.82, [{ t:'title', text:'MuleSoft' }, { t:'sub', text:'API Integration' }, { t:'chip', text:'500+ Connectors', cls:'blue' }]);
+attach(nDC,    atDC,    0.88, [{ t:'icon', src:'assets/icons/icon-data360.png' }, { t:'title', text:'Data Cloud' }, { t:'sub', text:'Unified Profile' }, { t:'chip', text:'Real-Time Segments', cls:'teal' }]);
+attach(nSales, atSales, 0.82, [{ t:'logo', src:'assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg' }, { t:'title', text:'Sales Cloud' }, { t:'sub', text:'Revenue Intelligence' }]);
+attach(nSvc,   atSvc,   0.82, [{ t:'logo', src:'assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg' }, { t:'title', text:'Service Cloud' }, { t:'sub', text:'Case Management' }]);
+attach(nMC,    atMC,    0.82, [{ t:'icon', src:'assets/icons/icon-marketing.png' }, { t:'title', text:'Marketing Cloud' }, { t:'sub', text:'Journey Orchestration' }]);
+attach(nAgent, atAgent, 0.85, [{ t:'icon', src:'assets/icons/icon-agentforce.png' }, { t:'title', text:'Agentforce' }, { t:'sub', text:'Autonomous AI' }, { t:'chip', text:'Atlas Reasoning', cls:'purple' }]);
+attach(nSlack, atSlack, 0.82, [{ t:'icon', src:'assets/icons/icon-slack.png' }, { t:'title', text:'Slack' }, { t:'sub', text:'Agent Notifications' }]);
 
-// Data Cloud
-const nDC    = makeNode( 0.0, 0,   0, TEAL, TEAL_E,  3.0, 2.0);
+// ── Zone labels in 3D ─────────────────────────────────────────────────
+zoneLabel('SOURCE SYSTEMS',       'rgba(255,255,255,0.22)', -8,    3.1, SRC_Z);
+zoneLabel('SALESFORCE PLATFORM',  'rgba(6,106,254,0.5)',     1.5,  3.1, DC_Z);
+zoneLabel('AGENTS',               'rgba(179,79,255,0.5)',    8.6,  3.1, AG_Z);
 
-// SF Clouds
-const nSales = makeNode( 4.4,  1.6, 0, BLUE, BLUE_E, 2.2, 1.0);
-const nSvc   = makeNode( 4.4,  0.0, 0, BLUE, BLUE_E, 2.2, 1.0);
-const nMC    = makeNode( 4.4, -1.6, 0, BLUE, BLUE_E, 2.2, 1.0);
+// ── Connection lines (world-space, edge-to-edge approx) ───────────────
+const lSAP2M   = makeLine([-7.0,  1.7, SRC_Z],  [-5.12,  0.5, MULE_Z], 0x0070F0);
+const lCRM2M   = makeLine([-7.0,  0.0, SRC_Z],  [-5.12,  0.0, MULE_Z], 0x3a5090);
+const lDW2M    = makeLine([-7.0, -1.7, SRC_Z],  [-5.12, -0.5, MULE_Z], 0x3a5090);
+const lM2DC    = makeLine([-3.28, 0.0, MULE_Z], [-1.35,  0.0, DC_Z],   0x04E1CB);
+const lDC2S    = makeLine([ 1.35, 0.5, DC_Z],   [ 3.68,  1.7, SF_Z],   0x066AFE);
+const lDC2Sv   = makeLine([ 1.35, 0.0, DC_Z],   [ 3.68,  0.0, SF_Z],   0x066AFE);
+const lDC2MC   = makeLine([ 1.35,-0.5, DC_Z],   [ 3.68, -1.7, SF_Z],   0x066AFE);
+const lS2A     = makeLine([ 5.32, 1.7, SF_Z],   [ 7.22,  0.9, AG_Z],   0xB34FFF);
+const lSv2A    = makeLine([ 5.32, 0.0, SF_Z],   [ 7.22,  0.2, AG_Z],   0xB34FFF);
+const lMC2A    = makeLine([ 5.32,-1.7, SF_Z],   [ 7.22, -0.5, AG_Z],   0xB34FFF);
+const lA2Sl    = makeLine([ 8.6, -1.1, AG_Z],   [ 8.6,  -1.78, -1.5],  0x4A154B);
 
-// Agentforce
-const nAgent = makeNode( 8.8, 0.4, 0, PURP, PURP_E, 2.8, 2.8);
-
-// Slack (below agent)
-const nSlack = makeNode( 8.8,-1.8, 0, GREY, 0x4A154B, 2.4, 0.9);
-
-// AWS infra label (already added as plane)
-
-// Labels
-nSAP.add(makeSapLabel());
-nCRM.add(makeLabel('CRM / DW', 'Snowflake · Existing', null, ''));
-nDW.add(makeLabel('Web & Mobile', 'Clickstream Events', null, ''));
-nMule.add(makeLabel('MuleSoft', 'API Integration', '500+ Connectors', 'blue'));
-nDC.add(makeLabel('Data Cloud', 'Unified Profile', 'Real-Time Segments', '', 'assets/icons/icon-data360.png'));
-nSales.add(makeLabel('Sales Cloud', 'Revenue Intelligence', null, '', null, 'assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg'));
-nSvc.add(makeLabel('Service Cloud', 'Case Management', null, '', null, 'assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg'));
-nMC.add(makeLabel('Marketing Cloud', 'Journey Orchestration', null, '', 'assets/icons/icon-marketing.png'));
-nAgent.add(makeLabel('Agentforce', 'Autonomous AI', 'Atlas Reasoning', 'purple', 'assets/icons/icon-agentforce.png'));
-nSlack.add(makeLabel('Slack', 'Agent Notifications', null, '', 'assets/icons/icon-slack.png'));
-
-// Zone labels
-const zSource = makeZoneLabel('SOURCE SYSTEMS', 'rgba(255,255,255,0.2)');
-zSource.position.set(-8, 3.0, 0); scene.add(zSource);
-const zSF = makeZoneLabel('SALESFORCE PLATFORM', 'rgba(6,106,254,0.45)');
-zSF.position.set(1.5, 3.0, 0); scene.add(zSF);
-const zAgent = makeZoneLabel('AGENTS', 'rgba(179,79,255,0.45)');
-zAgent.position.set(8.8, 3.0, 0); scene.add(zAgent);
-
-// ── Connections ────────────────────────────────────────────────────
-const lSAP2Mule   = makeLine([-6.9,  1.6, 0], [-5.4,  0.4, 0], 0x0070F0);
-const lCRM2Mule   = makeLine([-6.9,  0.0, 0], [-5.4,  0.0, 0], BLUE_E);
-const lDW2Mule    = makeLine([-6.9, -1.6, 0], [-5.4, -0.4, 0], BLUE_E);
-const lMule2DC    = makeLine([-3.0,  0.0, 0], [-1.5,  0.0, 0], TEAL_E);
-const lDC2Sales   = makeLine([ 1.5,  0.6, 0], [ 3.3,  1.6, 0], BLUE_E);
-const lDC2Svc     = makeLine([ 1.5,  0.0, 0], [ 3.3,  0.0, 0], BLUE_E);
-const lDC2MC      = makeLine([ 1.5, -0.6, 0], [ 3.3, -1.6, 0], BLUE_E);
-const lSales2Ag   = makeLine([ 5.5,  1.6, 0], [ 7.4,  1.0, 0], PURP_E);
-const lSvc2Ag     = makeLine([ 5.5,  0.0, 0], [ 7.4,  0.4, 0], PURP_E);
-const lMC2Ag      = makeLine([ 5.5, -1.6, 0], [ 7.4, -0.2, 0], PURP_E);
-const lAg2Slack   = makeLine([ 8.8, -0.6, 0], [ 8.8, -1.3, 0], 0x4A154B);
-
-// ── Particles ──────────────────────────────────────────────────────
-const particles = [
-  { p: makeParticle(0x0070F0), from: [-6.9,  1.6, 0], to: [-5.4,  0.4, 0] },
-  { p: makeParticle(TEAL_E),   from: [-3.0,  0.0, 0], to: [-1.5,  0.0, 0] },
-  { p: makeParticle(BLUE_E),   from: [ 1.5,  0.6, 0], to: [ 3.3,  1.6, 0] },
-  { p: makeParticle(BLUE_E),   from: [ 1.5,  0.0, 0], to: [ 3.3,  0.0, 0] },
-  { p: makeParticle(PURP_E),   from: [ 5.5,  1.6, 0], to: [ 7.4,  1.0, 0] },
-  { p: makeParticle(PURP_E),   from: [ 5.5, -1.6, 0], to: [ 7.4, -0.2, 0] },
-  { p: makeParticle(0xFF9900), from: [-9, -1.6, 0],   to: [ 9,   -1.6, 0] },
+// ── Particles ─────────────────────────────────────────────────────────
+const PD = [
+  { cHex:0x0070F0, from:[-7.0,  1.7, SRC_Z],  to:[-5.12,  0.5, MULE_Z] },
+  { cHex:0x04E1CB, from:[-3.28, 0.0, MULE_Z], to:[-1.35,  0.0, DC_Z]   },
+  { cHex:0x066AFE, from:[ 1.35, 0.5, DC_Z],   to:[ 3.68,  1.7, SF_Z]   },
+  { cHex:0x066AFE, from:[ 1.35, 0.0, DC_Z],   to:[ 3.68,  0.0, SF_Z]   },
+  { cHex:0xB34FFF, from:[ 5.32, 1.7, SF_Z],   to:[ 7.22,  0.9, AG_Z]   },
+  { cHex:0xB34FFF, from:[ 5.32,-1.7, SF_Z],   to:[ 7.22, -0.5, AG_Z]   },
+  { cHex:0xFF9900, from:[-11,  -2.6, SRC_Z],   to:[ 11,   -2.6, AG_Z]   },
 ];
-particles.forEach(({ p }, i) => { p.userData.t = i * 0.15; });
+const particles = PD.map(({ cHex, from, to }, i) => {
+  const p = makeParticle(cHex);
+  p.userData.t = i / PD.length;
+  return { p, from, to };
+});
+const fromV = PD.map(d => new THREE.Vector3(...d.from));
+const toV   = PD.map(d => new THREE.Vector3(...d.to));
 
-// ── Reveal sequence ────────────────────────────────────────────────
+// ── Reveal sequence ───────────────────────────────────────────────────
 const revealSeq = [
-  { objs: [nSAP, nCRM, nDW],                                    delay: 600  },
-  { objs: [lSAP2Mule, lCRM2Mule, lDW2Mule],                    delay: 1100 },
-  { objs: [nMule],                                               delay: 1300 },
-  { objs: [lMule2DC],                                            delay: 1800 },
-  { objs: [nDC],                                                 delay: 2000 },
-  { objs: [lDC2Sales, lDC2Svc, lDC2MC],                        delay: 2500 },
-  { objs: [nSales, nSvc, nMC],                                   delay: 2700 },
-  { objs: [lSales2Ag, lSvc2Ag, lMC2Ag],                        delay: 3200 },
-  { objs: [nAgent],                                              delay: 3400 },
-  { objs: [nSlack, lAg2Slack, plane],                           delay: 3800 },
+  { objs:[nSAP, nCRM, nDW],                      delay:500  },
+  { objs:[lSAP2M, lCRM2M, lDW2M],               delay:1000 },
+  { objs:[nMule],                                delay:1200 },
+  { objs:[lM2DC],                                delay:1700 },
+  { objs:[nDC],                                  delay:1900 },
+  { objs:[lDC2S, lDC2Sv, lDC2MC],               delay:2400 },
+  { objs:[nSales, nSvc, nMC],                    delay:2600 },
+  { objs:[lS2A, lSv2A, lMC2A],                  delay:3100 },
+  { objs:[nAgent],                               delay:3300 },
+  { objs:[nSlack, lA2Sl, plane],                 delay:3700 },
 ];
 
 let particlesActive = false;
 revealSeq.forEach(({ objs, delay }) => {
   setTimeout(() => {
     objs.forEach(o => { o.userData.revealed = true; });
-    if (delay >= 3800) {
+    if (delay >= 3700) {
       particlesActive = true;
-      setTimeout(() => {
-        document.getElementById('stat-bar').classList.add('visible');
-      }, 600);
+      setTimeout(() => document.getElementById('stat-bar').classList.add('visible'), 500);
     }
   }, delay);
 });
 
-// ── Animation loop ─────────────────────────────────────────────────
+// ── Theme ─────────────────────────────────────────────────────────────
+let isDark = true;
+
+function applyTheme() {
+  const bg = isDark ? 0x080D26 : 0xEDF1FF;
+  renderer.setClearColor(bg, 1);
+  scene.fog = new THREE.FogExp2(bg, isDark ? 0.03 : 0.022);
+  ambientLight.color.setHex(isDark ? 0x1a2060 : 0x6688BB);
+  ambientLight.intensity  = isDark ? 2.2 : 3.8;
+  dirLight.color.setHex(isDark ? 0x4080ff : 0xFFFFFF);
+  dirLight.intensity      = isDark ? 1.6 : 2.2;
+  rimLight.intensity      = isDark ? 0.7 : 0.3;
+  starField.visible       = isDark;
+  planeMat.emissiveIntensity = isDark ? 0.04 : 0.02;
+}
+
+applyTheme();
+
+window.toggleTheme = () => {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  applyTheme();
+};
+
+// ── Animation loop ────────────────────────────────────────────────────
 const clock = new THREE.Clock();
 function lerp(a, b, t) { return a + (b - a) * t; }
 
 renderer.setAnimationLoop(() => {
-  const dt = clock.getDelta();
+  const et = clock.getElapsedTime();
+  clock.getDelta(); // consume delta
   controls.update();
 
   scene.traverse(obj => {
-    if (!obj.userData) return;
-    const { revealed, targetOpacity, edgeMat } = obj.userData;
-    if (revealed && obj.material) {
-      obj.material.opacity = lerp(obj.material.opacity, targetOpacity, 0.05);
-      if (edgeMat) edgeMat.opacity = lerp(edgeMat.opacity, 0.75, 0.05);
+    if (!obj.userData?.revealed) return;
+    if (obj.material) {
+      obj.material.opacity = lerp(obj.material.opacity, obj.userData.targetOpacity, 0.045);
+    }
+    if (obj.userData.edgeMat) {
+      obj.userData.edgeMat.opacity = lerp(obj.userData.edgeMat.opacity, obj.userData.edgeTargetOpacity ?? 0.7, 0.045);
     }
   });
 
   if (particlesActive) {
-    particles.forEach(({ p, from, to }) => {
+    particles.forEach(({ p, from, to }, i) => {
       p.userData.t += p.userData.speed;
       if (p.userData.t > 1) p.userData.t = 0;
       const t = p.userData.t;
-      p.position.set(
-        lerp(from[0], to[0], t),
-        lerp(from[1], to[1], t),
-        lerp(from[2], to[2], t)
-      );
-      const fade = t < 0.12 ? t / 0.12 : t > 0.88 ? (1 - t) / 0.12 : 1;
-      p.material.opacity = fade * 0.9;
+      p.position.lerpVectors(fromV[i], toV[i], t);
+      const fade = t < 0.1 ? t / 0.1 : t > 0.9 ? (1 - t) / 0.1 : 1;
+      p.material.opacity = fade * 0.95;
     });
   }
 
-  // Gentle bob on key nodes
-  const et = clock.getElapsedTime();
+  // Gentle bob
   [nDC, nAgent, nMule].forEach((n, i) => {
-    n.position.y += Math.sin(et * 0.7 + i * 1.2) * 0.0007;
+    n.position.y += Math.sin(et * 0.65 + i * 1.4) * 0.00065;
   });
+
+  // Spin octahedron
+  nAgent.rotation.y += 0.0028;
+  nAgent.rotation.x += 0.001;
 
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
 });
 
-// ── Resize ─────────────────────────────────────────────────────────
+// ── Resize ────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => {
-  const w = window.innerWidth, h = window.innerHeight;
-  camera.aspect = w / h; camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-  labelRenderer.setSize(w, h);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  labelRenderer.setSize(innerWidth, innerHeight);
 });
 
-// ── Keyboard nav ───────────────────────────────────────────────────
+// ── Keyboard ──────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-    controls.autoRotate = !controls.autoRotate;
-  }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') controls.autoRotate = !controls.autoRotate;
 });
-
 controls.addEventListener('start', () => { controls.autoRotate = false; });
 </script>
 
 <script>
-// ── Presenter mode ──────────────────────────────────────────────
 let presenting = false;
 function togglePresenter() {
   presenting = !presenting;
   const btn = document.getElementById('btn-present');
-  if (presenting) {
-    btn.style.background = 'rgba(6,106,254,0.5)';
-    btn.style.borderColor = 'rgba(6,106,254,0.8)';
-    btn.style.color = '#fff';
-    btn.title = 'Exit presenter mode';
-  } else {
-    btn.style.background = '';
-    btn.style.borderColor = '';
-    btn.style.color = '';
-    btn.title = 'Presenter mode';
-  }
+  btn.style.background   = presenting ? 'rgba(6,106,254,0.5)' : '';
+  btn.style.borderColor  = presenting ? 'rgba(6,106,254,0.8)' : '';
+  btn.style.color        = presenting ? '#fff' : '';
   const fab = document.getElementById('dt-fab');
   if (fab) fab.style.display = presenting ? 'none' : '';
 }
