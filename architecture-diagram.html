@@ -393,6 +393,54 @@
 
     /* ── Slide 4 agent hub orbit path ──────────────────────────── */
     #agent-orbit { fill:none; stroke:none; }
+
+    /* ── PDF export button ──────────────────────────────────────── */
+    #btn-pdf {
+      right: 112px;
+      display: flex; align-items: center; gap: 6px;
+      width: auto; padding: 0 14px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    #btn-pdf svg { flex-shrink: 0; }
+
+    /* ── Print styles ───────────────────────────────────────────── */
+    @media print {
+      @page { size: landscape; margin: 0; }
+
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body { overflow: visible !important; }
+
+      .slide-deck { height: auto !important; }
+
+      /* Each slide = one printed page */
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        position: relative !important;
+        inset: auto !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        page-break-after: always;
+        break-after: page;
+        overflow: hidden;
+      }
+
+      /* Force all nodes and connections visible */
+      .node, .conn, .stat-callout {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      /* Freeze animations */
+      .conn { animation: none !important; stroke-dashoffset: 0 !important; }
+      .pulse-ring { animation: none !important; opacity: 0 !important; }
+      .packet { animation: none !important; opacity: 0 !important; }
+
+      /* Hide chrome */
+      .slide-controls, #btn-present, #btn-theme, #btn-pdf, #dt-fab { display: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -771,6 +819,14 @@
   <button id="btn-next" onclick="navigate(1)">&#8594;</button>
 </nav>
 
+<button id="btn-pdf" class="icon-btn" title="Export to PDF" onclick="exportPDF()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  Export PDF
+</button>
 <button id="btn-theme" class="icon-btn" title="Toggle light/dark" onclick="toggleTheme()">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="5"/>
@@ -894,6 +950,45 @@ function togglePresenter() {
 }
 
 showSlide(0);
+
+// ── PDF export ─────────────────────────────────────────────────────
+function exportPDF() {
+  // 1. Force-reveal every slide's content instantly
+  revealed.clear();
+  slides.forEach((s, i) => {
+    s.classList.add('active', 'visible');
+    // reveal all hidden elements inside
+    s.querySelectorAll('.node, .conn, .stat-callout').forEach(el => {
+      el.classList.add('revealed');
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+    // fire each slide's reveal so stat callouts etc are visible
+    if (i === 1) revealOverview();
+    if (i === 2) revealFlow();
+    if (i === 3) revealAgent();
+  });
+
+  // 2. Small delay so any pending rAF transitions settle, then print
+  setTimeout(() => {
+    window.print();
+
+    // 3. After print dialog closes, restore normal deck state
+    setTimeout(() => {
+      slides.forEach((s, i) => {
+        s.classList.remove('active', 'visible');
+        if (i !== current) {
+          s.querySelectorAll('.node, .conn, .stat-callout').forEach(el => {
+            el.style.opacity = '';
+            el.style.transform = '';
+          });
+        }
+      });
+      revealed.clear();
+      showSlide(current);
+    }, 500);
+  }, 120);
+}
 </script>
 </body>
 </html>
