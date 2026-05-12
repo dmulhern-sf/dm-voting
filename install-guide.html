@@ -291,7 +291,6 @@
       <div class="guide-eyebrow">SF Decktools · Install Guide</div>
       <h1>Build Salesforce customer decks<br/><em>in minutes, not days.</em></h1>
       <p>SF Decktools is a complete design system for building narrative-driven HTML decks — built on the official 2026 Salesforce brand guidelines. One command installs everything into Claude Code, and it enforces the rules for you automatically.</p>
-      <p style="margin-top:14px;font-size:14px;color:rgba(255,255,255,0.65);">You're reading the hosted version — <a href="https://mtoolin-sf.github.io/sf-decktools/install-guide.html" target="_blank" rel="noopener" style="color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px;">open the full rendered guide</a> to see fonts, animations, and all examples.</p>
       <div class="guide-chips">
         <span class="chip">Salesforce Brand 2026</span>
         <span class="chip">Claude Code Skill</span>
@@ -447,8 +446,8 @@
             <h3>Install the Claude skill</h3>
             <p>Run this in your terminal. It pulls the full decktools repo into <code>~/claude/decktools</code> and registers the skill globally in Claude Code.</p>
             <div class="code-block">
-              <button class="code-copy" onclick="copyCode(this, 'claude skills install github.com/mtoolin-sf/sf-decktools')">COPY</button>
-              <span class="cmd">claude skills install github.com/mtoolin-sf/sf-decktools</span>
+              <button class="code-copy" onclick="copyCode(this, 'claude skills install github.com/mtoolin_sfemu/decktools')">COPY</button>
+              <span class="cmd">claude skills install github.com/mtoolin_sfemu/decktools</span>
             </div>
             <div style="margin-top:12px;padding:14px 18px;border-radius:8px;background:#FFF9E6;border:1px solid #F5D87A;">
               <p style="font-size:12px;color:#7A5C00;margin:0 0 6px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">No Git? Use the ZIP instead</p>
@@ -640,7 +639,7 @@
         <p>When the decktools skill is updated, Claude will tell you at the start of your next session:</p>
         <div class="code-block" style="background:rgba(255,255,255,0.08);border-radius:6px;padding:10px 14px;margin:0 0 12px;">
           <span style="color:rgba(255,255,255,0.5);">decktools skill v1.1 is available.</span><br/>
-          <span style="color:#fff;">Run </span><span style="color:var(--accent);">claude skills install github.com/mtoolin-sf/sf-decktools</span><span style="color:#fff;"> to update.</span>
+          <span style="color:#fff;">Run </span><span style="color:var(--accent);">claude skills install github.com/mtoolin_sfemu/decktools</span><span style="color:#fff;"> to update.</span>
         </div>
         <p>Run that command any time to pull the latest brand rules, components, and widget improvements. Your deck files are untouched — only the skill and shared CSS/JS files update.</p>
       </div>
@@ -657,7 +656,7 @@
       <div class="workflow-cards">
         <div class="workflow-card">
           <h3>How it works</h3>
-          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0;">When you run <code>/decktools new</code>, Claude creates a repo under <strong>your</strong> GitHub account and pushes the HTML there. The decktools repo (<code>mtoolin-sf/sf-decktools</code>) is never touched — it's the source of the skill and design system only. Your deck repos are completely separate.</p>
+          <p style="font-size:13px;color:var(--body);line-height:1.6;margin:0;">When you run <code>/decktools new</code>, Claude creates a repo under <strong>your</strong> GitHub account and pushes the HTML there. The decktools repo (<code>mtoolin_sfemu/decktools</code>) is never touched — it's the source of the skill and design system only. Your deck repos are completely separate.</p>
         </div>
         <div class="workflow-card">
           <h3>Hosting your deck</h3>
@@ -675,7 +674,7 @@
       </div>
 
       <div style="margin-top:20px;padding:14px 18px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;">
-        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">The <code>mtoolin-sf/sf-decktools</code> repo is read-only for all users. Nobody outside the maintainer can push to it — your install is a local clone on your own machine.</p>
+        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">The <code>mtoolin_sfemu/decktools</code> repo is read-only for all users. Nobody outside the maintainer can push to it — your install is a local clone on your own machine.</p>
       </div>
     </div>
 
