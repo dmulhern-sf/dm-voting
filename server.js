@@ -13,16 +13,16 @@ app.get('/', (req, res) => {
 });
 
 app.post('/collaborate', async (req, res) => {
-  const { name, email, github, role } = req.body;
+  const { name, email, github } = req.body;
   if (!name || !email || !github) {
-    return res.status(400).json({ error: 'name, email and github are required' });
+    return res.status(400).json({ error: 'name, email and githubid are required' });
   }
 
   try {
     const response = await fetch(SLACK_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, github, role: role || '—' })
+      body: JSON.stringify({ name, email, githubid: github })
     });
     if (!response.ok) throw new Error(`Slack returned ${response.status}`);
     res.json({ ok: true });
