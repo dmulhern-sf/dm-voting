@@ -46,38 +46,63 @@ decktools/
 - **Dark hero, light sections.** Alternates white ↔ `--off-white` for rhythm.
 - **Numbers are the hero.** Big figures carry the narrative — let data speak.
 
-## Claude prompt for team members
+## Using with Claude Code
 
-Copy this prompt into Claude Code to build a new narrative page from scratch:
+The fastest way to build a new deck is the `/decktools new` skill — it interviews you about the customer and story, then scaffolds the full HTML file automatically.
+
+**Prerequisites:** install the skill from `github.com/mtoolin_sfemu/decktools` (requires collaborator access).
+
+Once installed, just type:
+```
+/decktools new
+```
+
+Claude will ask you for customer name, story angle, accent colour, products, and key stats — then build the page.
+
+### Manual prompt (no skill)
+
+If you're not using the skill, copy this into Claude Code:
 
 ```
-I'm building a Salesforce customer narrative page using the decktools design kit.
+I'm building a Salesforce customer deck using the SF Decktools design system.
 
-Context:
-- Location: ~/claude/decktools/
-- Stack: vanilla HTML/CSS/JS, no build tool, Salesforce Brand Guidelines 2026
-- Key files: tokens.css (design tokens), components.css (components), template.html (starter), gate.js (visitor gate)
-- Assets: assets/fonts/ (Salesforce Sans), assets/logos/ (SF SVGs), assets/icons/2d/ (product icons), assets/characters/ (Astro)
+Location: ~/claude/decktools/
+Stack: vanilla HTML/CSS/JS, no build tool, Salesforce Brand Guidelines 2026
+
+Key files:
+- tokens.css — design tokens (colours, spacing, type)
+- components.css — all reusable blocks
+- template.html — blank starter
+- gate.js — optional visitor gate
+- STYLE-GUIDE.md — page structure and copy rules
+- SLIDE-PRINCIPLES.md — design rules, colour assignments, icon map
+
+Assets:
+- assets/fonts/ — Avant Garde For Salesforce Demi (headings), Salesforce Sans (body)
+- assets/logos/ — official SF SVGs
+- assets/icons/2d/ — 2D product icons (narrative pages only — no 3D)
+- assets/characters/ — Astro, Einstein
 
 Brand rules:
-- Salesforce Sans only, max font-weight 700
+- Headings: Avant Garde For Salesforce Demi (--font-display)
+- Body: Salesforce Sans (--font-body), max-weight 700
 - 80/20 rule: 80% primary blues, 20% accent max
-- 2D icons only in narrative pages (no 3D)
-- Dark hero, light alternating sections
-- One --accent CSS variable override per page
+- One --accent CSS variable per page (customer brand colour)
+- Dark hero, alternating white/off-white sections
+- 2D icons only in narrative pages
 
-Narrative structure (10 sections):
+Deck structure (10 sections):
 Nav → Hero → Why Now → The Gap → Stack → Beachheads → Scale → Proof → Roadmap → Closing
 
-My page: [CUSTOMER NAME] — [STORY TITLE]
-Accent colour: [HEX CODE]
-Products/clouds featured: [LIST]
+Customer: [NAME]
+Story title: [TITLE]
+Accent colour: [HEX]
+Products featured: [LIST]
 Key proof stats: [NUMBERS]
+Gate needed: yes/no — password: [PASSWORD]
 
-Create the HTML file by copying template.html and customising for this customer. Follow STYLE-GUIDE.md and SLIDE-PRINCIPLES.md strictly. Add data-password="[PASSWORD]" to <body> and include gate.js if gating is needed.
+Read STYLE-GUIDE.md and SLIDE-PRINCIPLES.md before writing any HTML.
 ```
-
-See `STYLE-GUIDE.md` for the full page-structure playbook and `SLIDE-PRINCIPLES.md` for design rules.
 
 
 ## Gating a page (optional)
