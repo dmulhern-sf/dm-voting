@@ -63,10 +63,9 @@ nav {
   line-height: 1.7; margin-bottom: 36px;
 }
 .hero-quote {
-  border-left: 3px solid var(--accent);
   padding: 12px 16px;
   background: rgba(2,42,192,0.2);
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px;
 }
 .hero-quote p {
   font-size: 13px; color: rgba(255,255,255,0.7);
@@ -81,7 +80,6 @@ nav {
 .hero-kpi-card {
   background: rgba(2,42,192,0.25);
   border: 1px solid #066AFE;
-  border-left: 3px solid var(--sf-blue-l);
   border-radius: 4px; padding: 20px;
 }
 .hkc-val {
@@ -140,8 +138,8 @@ hr.divider-navy { border: none; border-top: 1px solid rgba(255,255,255,0.1); }
 .card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 .card-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
 .card-body strong { color: var(--body); }
-.card-accent-accent { border-top: 3px solid var(--accent); }
-.card-accent-blue   { border-top: 3px solid var(--sf-blue); }
+.card-accent-accent { background: rgba(var(--accent-rgb, 218,23,16), 0.04); }
+.card-accent-blue   { background: rgba(2,42,192,0.04); }
 
 /* ── COMPARISON TABLE (Today vs Tomorrow) ────────────────────── */
 .compare-wrap {
@@ -283,7 +281,6 @@ hr.divider-navy { border: none; border-top: 1px solid rgba(255,255,255,0.1); }
 .proof-stat {
   background: rgba(2,42,192,0.25);
   border: 1px solid #066AFE;
-  border-bottom: 3px solid var(--sf-blue-l);
   border-radius: 4px; padding: 20px; text-align: center;
 }
 .proof-stat-val {
@@ -342,7 +339,6 @@ hr.divider-navy { border: none; border-top: 1px solid rgba(255,255,255,0.1); }
 .closing-inner {
   background: var(--sf-navy);
   border-radius: 8px;
-  border-top: 4px solid var(--accent);
   padding: 64px 60px;
   text-align: center;
   position: relative; overflow: hidden;

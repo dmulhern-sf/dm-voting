@@ -98,7 +98,7 @@ Never use accent on: primary blues, text on dark backgrounds, tables, stack diag
 
 ### Fonts
 All slides inherit from `tokens.css`. No Google Fonts, no Inter, no Poppins in narrative pages.
-- Headlines (`h1`–`h4`): `--font-display` → Salesforce Sans
+- Headlines (`h1`–`h4`): `--font-display` → Avant Garde For Salesforce
 - Body, cards, labels: `--font-body` → Salesforce Sans
 - Trailhead content only: `--font-trailhead`
 
