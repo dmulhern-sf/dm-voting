@@ -366,6 +366,75 @@
 
     <hr class="div" />
 
+    <!-- GIT.SOMA ACCESS -->
+    <div class="section">
+      <div class="section-eyebrow">Access — internal Salesforce only</div>
+      <h2>Get access to git.soma first</h2>
+      <p style="font-size:14px;color:var(--body);line-height:1.6;margin:0 0 24px;max-width:660px;">The decktools repo lives on git.soma — Salesforce's internal GitHub. You need platform access provisioned via EIP before you can clone or install it. Allow up to 24 hours from approval to propagation.</p>
+
+      <div class="install-steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Give your manager a heads up</h3>
+            <p>They'll receive an approval email from the EIP system — loop them in before you start so it doesn't sit pending in their inbox.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Request access via EIP (Enterprise IGA Platform)</h3>
+            <p>Go to <a href="https://salesforce.okta.com" target="_blank" rel="noopener" style="color:var(--sf-blue);font-weight:600;">salesforce.okta.com</a> and search for <strong>EIP</strong> — some older guides call it IIQ, but EIP is the current name. Once in, search for the group below and select it carefully — avoid similarly-named groups.</p>
+            <div class="code-block" style="margin-top:10px;">
+              <button class="code-copy" onclick="copyCode(this, 'Technology-RnD-Access')">COPY</button>
+              <span class="cmd">Technology-RnD-Access</span>
+            </div>
+            <p style="margin-top:12px;">Use a business justification like:</p>
+            <div class="code-block">
+              <button class="code-copy" onclick="copyCode(this, 'I need access to Git.Soma to collaborate on an internal team project / repository.')">COPY</button>
+              <span class="cmd">I need access to Git.Soma to collaborate on an internal team project / repository.</span>
+            </div>
+            <p style="margin-top:10px;">Submit — your manager will receive an approval email. Nudge them if they don't act quickly.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Wait for permissions to propagate</h3>
+            <p>Allow ~4 hours (up to 24 hours) after your manager approves for access to sync across systems.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Connect via ZScaler VPN</h3>
+            <p>You must be on ZScaler VPN to access git.soma. Once permissions propagate, the site will redirect through Okta SSO automatically.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:20px;padding:20px 22px;border-radius:12px;background:var(--off-white);border:1px solid var(--gray-200);">
+        <h3 style="font-size:14px;font-weight:700;color:var(--sf-navy);margin:0 0 10px;">Troubleshooting &amp; edge cases</h3>
+        <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;">
+          <li style="font-size:13px;color:var(--body);line-height:1.55;">If <strong>Technology-RnD-Access</strong> doesn't appear in EIP when you search, post in <strong>#help-techforce</strong> to have it provisioned manually.</li>
+          <li style="font-size:13px;color:var(--body);line-height:1.55;"><strong>Contractors</strong> may also need the <strong>Aloha - BPO GitSoma AD</strong> group in addition to Technology-RnD-Access.</li>
+          <li style="font-size:13px;color:var(--body);line-height:1.55;">For IAM/access issues: <strong>#ask-iam</strong></li>
+          <li style="font-size:13px;color:var(--body);line-height:1.55;">General help: <strong>#help-techforce</strong></li>
+        </ul>
+      </div>
+
+      <div style="margin-top:16px;padding:14px 18px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;">
+        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">Once you have git.soma access, message Miles Toolin on Slack to be added as a collaborator on the decktools repo before running the install command below.</p>
+      </div>
+    </div>
+
+    <hr class="div" />
+
     <!-- INSTALL -->
     <div class="section">
       <div class="section-eyebrow">Installation</div>
