@@ -248,9 +248,42 @@
       .workflow-cards { grid-template-columns: 1fr; }
       .closing-steps { flex-direction: column; align-items: center; }
     }
+
+    /* ── PDF export button ──────────────────────────────────────── */
+    #btn-pdf {
+      position: fixed; bottom: 24px; right: 24px; z-index: 200;
+      display: flex; align-items: center; gap: 7px;
+      height: 36px; padding: 0 16px; border-radius: 999px;
+      border: 1px solid rgba(6,106,254,0.28);
+      background: #fff; color: #0050C8;
+      font-family: 'Salesforce Sans', system-ui, sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+      cursor: pointer; white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(6,106,254,0.14);
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+    #btn-pdf:hover {
+      background: #0050C8; color: #fff;
+      box-shadow: 0 4px 18px rgba(6,106,254,0.32);
+    }
+
+    @media print {
+      @page { size: A4; margin: 12mm; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      #btn-pdf, #dt-fab { display: none !important; }
+    }
   </style>
 </head>
 <body>
+
+  <button id="btn-pdf" onclick="window.print()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    EXPORT PDF
+  </button>
 
   <!-- HERO -->
   <div class="guide-hero">
