@@ -438,8 +438,38 @@
 
       </div>
 
-      <div style="margin-top:16px;padding:14px 18px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;">
-        <p style="font-size:12px;color:var(--sf-blue);margin:0;font-weight:600;">Once you have git.soma access, message Miles Toolin on Slack to be added as a collaborator on the decktools repo before running the install command below.</p>
+    </div>
+
+    <hr class="div" />
+
+    <!-- REQUEST ACCESS FORM (moved here — blocking dependency before install) -->
+    <div class="section">
+      <div class="section-eyebrow">Get repo access</div>
+      <h2>Request collaborator access</h2>
+      <p style="font-size:14px;color:var(--body);line-height:1.6;margin:0 0 24px;max-width:620px;">Once you have git.soma access via EIP, submit this form. Miles will add you as a collaborator on the decktools repo — you need this before you can run the install command.</p>
+
+      <div style="background:var(--off-white);border:1px solid var(--gray-200);border-radius:14px;padding:28px;">
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 20px;">This will automatically invite you as a collaborator once your Salesforce GitHub account has been provisioned and you provide your GitHub ID.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--sf-navy);margin-bottom:6px;">Full name</label>
+              <input id="cr-name" type="text" placeholder="Jane Smith" maxlength="80" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='var(--gray-200)'" />
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--sf-navy);margin-bottom:6px;">Salesforce email</label>
+              <input id="cr-email" type="email" placeholder="jane.smith@salesforce.com" maxlength="120" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='var(--gray-200)'" />
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--sf-navy);margin-bottom:6px;">GitHub ID</label>
+              <input id="cr-github" type="text" placeholder="jsmith" maxlength="80" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='var(--gray-200)'" />
+            </div>
+          </div>
+          <div>
+            <button id="cr-submit" onclick="submitCollabRequest()" style="padding:11px 28px;background:var(--sf-blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;">Request Access</button>
+            <span id="cr-msg" style="margin-left:14px;font-size:13px;display:none;"></span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -692,39 +722,6 @@
           <span style="color:#fff;">Run </span><span style="color:var(--accent);">claude skills install github.com/mtoolin_sfemu/decktools</span><span style="color:#fff;"> to update.</span>
         </div>
         <p>Run that command any time to pull the latest brand rules, components, and widget improvements. Your deck files are untouched — only the skill and shared CSS/JS files update.</p>
-      </div>
-    </div>
-
-    <hr class="div" />
-
-    <!-- REQUEST ACCESS FORM -->
-    <div class="section">
-      <div class="section-eyebrow">Get repo access</div>
-      <h2>Request collaborator access</h2>
-      <p style="font-size:14px;color:var(--body);line-height:1.6;margin:0 0 24px;max-width:620px;">Once you have git.soma access via EIP, submit this form and Miles will add you as a collaborator on the decktools repo.</p>
-
-      <div style="background:var(--off-white);border:1px solid var(--gray-200);border-radius:14px;padding:28px;">
-        <p style="font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 20px;">This will automatically invite you as a collaborator once your Salesforce GitHub account has been provisioned and you provide your GitHub ID.</p>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-            <div>
-              <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--sf-navy);margin-bottom:6px;">Full name</label>
-              <input id="cr-name" type="text" placeholder="Jane Smith" maxlength="80" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='var(--gray-200)'" />
-            </div>
-            <div>
-              <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--sf-navy);margin-bottom:6px;">Salesforce email</label>
-              <input id="cr-email" type="email" placeholder="jane.smith@salesforce.com" maxlength="120" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='var(--gray-200)'" />
-            </div>
-            <div>
-              <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--sf-navy);margin-bottom:6px;">GitHub ID</label>
-              <input id="cr-github" type="text" placeholder="jsmith" maxlength="80" style="width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor='#066AFE'" onblur="this.style.borderColor='var(--gray-200)'" />
-            </div>
-          </div>
-          <div>
-            <button id="cr-submit" onclick="submitCollabRequest()" style="padding:11px 28px;background:var(--sf-blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;">Request Access</button>
-            <span id="cr-msg" style="margin-left:14px;font-size:13px;display:none;"></span>
-          </div>
-        </div>
       </div>
     </div>
 
