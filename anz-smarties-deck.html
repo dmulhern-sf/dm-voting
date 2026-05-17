@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANZ Smarties · Claude Code · May 2026</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    /* Claude Code orange accent — hardcoded per PRD */
+    :root {
+      --accent:   #D4622A;
+      --accent-l: #F07840;
+    }
+
+    html, body { height: 100%; overflow: hidden; margin: 0; }
+
+    .slide-deck { width: 100vw; height: 100vh; position: relative; }
+    .slide {
+      position: absolute; inset: 0;
+      overflow-y: auto;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .slide.active { opacity: 1; pointer-events: all; }
+
+    /* Nav pill */
+    .nav-pill {
+      position: fixed; top: 20px; left: 28px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 40px; padding: 8px 18px;
+      display: flex; align-items: center; gap: 10px;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      backdrop-filter: blur(4px);
+    }
+    .nav-divider { width: 1px; height: 22px; background: #E5E5E5; }
+    .nav-pill-dark {
+      position: fixed; top: 20px; left: 28px;
+      background: rgba(0,30,91,0.7);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 40px; padding: 8px 18px;
+      display: flex; align-items: center; gap: 10px;
+      z-index: 200;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Section label */
+    .section-label {
+      position: fixed; top: 24px; right: 32px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(0,30,91,0.28);
+      z-index: 100;
+    }
+
+    /* Nav controls */
+    .slide-controls {
+      position: fixed; bottom: 20px; right: 24px;
+      display: flex; align-items: center; gap: 8px; z-index: 200;
+    }
+    .slide-btn {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1px solid var(--gray-200); background: var(--white);
+      color: var(--text); font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-card); transition: background 0.15s, border-color 0.15s;
+    }
+    .slide-btn:hover { background: var(--sf-blue); color: #fff; border-color: var(--sf-blue); }
+    .slide-btn:disabled { opacity: 0.3; cursor: default; }
+    .slide-counter {
+      font-size: 10px; font-weight: 600; color: var(--muted);
+      letter-spacing: 0.05em; min-width: 32px; text-align: center;
+    }
+    .slide-dots {
+      position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 5px; z-index: 200;
+    }
+    .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--gray-200); cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .dot.active { background: var(--accent); transform: scale(1.4); }
+
+    /* Slide body */
+    .slide-body {
+      max-width: 1200px; margin: 0 auto; padding: 80px 48px 100px;
+    }
+
+    /* ── BREAK SLIDE (section intro dark) ─────────────────────── */
+    .break-slide {
+      min-height: 100vh;
+      background: var(--grad-evening);
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: center;
+      padding: 80px 80px;
+      position: relative;
+    }
+    .break-slide::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent);
+    }
+    .break-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--accent-l);
+      margin-bottom: 20px;
+    }
+    .break-title {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 400; color: #fff; line-height: 1.08;
+      letter-spacing: -0.02em; max-width: 760px; margin-bottom: 24px;
+    }
+    .break-sub {
+      font-size: 20px; color: rgba(255,255,255,0.6);
+      max-width: 580px; line-height: 1.55; font-weight: 300;
+    }
+    /* Image circle on break slides — large circle, right-anchored */
+    .break-image-circle {
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-50%);
+      width: 640px; height: 640px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 0 100px rgba(6,106,254,0.25), 0 0 0 28px rgba(255,255,255,0.025);
+    }
+    .break-image-circle img, .break-image-circle video {
+      width: 100%; height: 100%; object-fit: cover; object-position: center;
+    }
+
+    /* ── VIBE CHECK — large circle cards on light gradient bg ────── */
+    .vibe-slide-bg {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #f0f4ff 0%, #e8f0fe 60%, #f5f9ff 100%);
+      padding: 80px 48px 100px;
+    }
+    .vibe-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 28px; margin-top: 48px;
+    }
+    .vibe-card {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      background: var(--white); border-radius: 20px;
+      padding: 40px 28px 32px;
+      border: 1px solid rgba(2,42,192,0.08);
+      box-shadow: 0 4px 20px rgba(2,42,192,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .vibe-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(2,42,192,0.12); }
+    .vibe-circle {
+      width: 200px; height: 200px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px; flex-shrink: 0;
+    }
+    .vibe-card-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; margin-bottom: 10px;
+      padding: 4px 12px; border-radius: 999px;
+      display: inline-block;
+    }
+    .vibe-card-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .vibe-card-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── SETUP CARDS — floating icon above card (SF reference pattern) ── */
+    .setup-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 24px; margin-top: 56px;
+    }
+    .setup-card-outer {
+      position: relative; padding-top: 40px;
+    }
+    .setup-card-floating-icon {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+    }
+    .setup-card {
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: 16px; padding: 44px 22px 28px;
+      transition: box-shadow 0.2s; text-align: center;
+    }
+    .setup-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.09); }
+    .setup-card-num {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--sf-blue); margin-bottom: 10px;
+    }
+    .setup-card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .setup-card-body { font-size: 13px; color: var(--muted); line-height: 1.6; text-align: left; }
+    .setup-card-tag {
+      display: inline-block; margin-top: 16px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 999px;
+      background: rgba(2,42,192,0.06); color: var(--sf-blue);
+    }
+
+    /* ── WHAT I BUILT — floating icon + white card on dark bg ────── */
+    .built-section-bg {
+      min-height: 100vh;
+      background: var(--sf-navy);
+      padding: 80px 48px 100px;
+    }
+    .built-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; margin-top: 64px;
+      align-items: stretch;
+    }
+    .built-card-outer {
+      position: relative; padding-top: 44px;
+      display: flex; flex-direction: column;
+    }
+    .built-card-floating-icon {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 80px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .built-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 52px 28px 32px;
+      position: relative; overflow: hidden; text-align: center;
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .built-card-pill {
+      display: inline-block; margin-bottom: 14px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);
+    }
+    .built-card-title { font-family: var(--font-display); font-size: 24px; font-weight: 400; color: #fff; margin-bottom: 12px; line-height: 1.15; }
+    .built-card-body { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; text-align: left; }
+    .built-card-stat {
+      margin-top: 20px; padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 32px; font-family: var(--font-display); color: var(--sf-blue-l); text-align: center;
+    }
+    .built-card-stat-label { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; text-align: center; }
+
+    /* ── SF PILL CHIP ───────────────────────────────────────────── */
+    .sf-pill {
+      display: inline-block; padding: 6px 16px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .sf-pill-navy { background: var(--sf-navy); color: #fff; }
+    .sf-pill-blue { background: rgba(2,42,192,0.09); color: var(--sf-blue); }
+    .sf-pill-accent { background: rgba(212,98,42,0.09); color: var(--accent); border: 1px solid rgba(212,98,42,0.2); }
+    .sf-pill-teal { background: rgba(6,165,154,0.09); color: var(--teal); }
+
+    .how-chip {
+      display: inline-block; padding: 5px 14px; border-radius: 999px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    /* ── HOW IT HAPPENED ────────────────────────────────────────── */
+    .how-card-outer {
+      position: relative; padding-top: 36px;
+    }
+    .how-card-icon {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 64px; height: 64px; border-radius: 50%; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    /* Claude logo as inline SVG circle — orange gradient matching Claude Code brand */
+    .claude-circle {
+      background: #fff;
+      border: 2px solid rgba(212,98,42,0.2);
+    }
+    .how-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; margin-top: 40px; align-items: start;
+    }
+    .how-screenshot {
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(2,42,192,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 4px 20px rgba(2,42,192,0.08);
+    }
+    .how-screenshot-header {
+      background: var(--sf-navy); padding: 12px 16px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .how-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .how-terminal {
+      background: #0d1117; padding: 24px 20px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px; line-height: 1.7; color: #e6edf3;
+      min-height: 260px;
+    }
+    .how-terminal .t-prompt { color: var(--accent-l); }
+    .how-terminal .t-cmd { color: #79c0ff; }
+    .how-terminal .t-output { color: rgba(230,237,243,0.55); }
+    .how-terminal .t-success { color: #3fb950; }
+    .how-caption {
+      font-size: 12px; color: var(--muted); margin-top: 12px;
+      line-height: 1.5; font-style: italic; text-align: center;
+    }
+
+    /* ── ARCH DIAGRAM ───────────────────────────────────────────── */
+    .arch-node, .arch-conn { transition: opacity 0.4s ease; }
+    .arch-node.hidden, .arch-conn.hidden { opacity: 0; pointer-events: none; }
+    .arch-row {
+      display: flex; align-items: flex-start; margin-top: 48px;
+    }
+    .arch-node {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+    }
+    .arch-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
+    .arch-node-num {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .arch-node-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .arch-node-sub { font-size: 11px; color: var(--muted); line-height: 1.4; max-width: 120px; }
+    .arch-conn {
+      flex: 0 0 60px; position: relative; align-self: stretch;
+    }
+    .arch-conn-line {
+      position: absolute; top: 36px; left: 0; right: 0; height: 2px;
+      background: var(--gray-200); border-radius: 1px;
+    }
+    .arch-conn-line::after {
+      content: ''; position: absolute; right: -1px; top: 50%;
+      width: 7px; height: 7px;
+      border-top: 2px solid var(--gray-200);
+      border-right: 2px solid var(--gray-200);
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    /* ── DOS / DON'TS ───────────────────────────────────────────── */
+    .compare-col-title {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 16px 24px;
+      border-radius: 8px 8px 0 0;
+    }
+    .compare-col-title.dont { background: rgba(212,98,42,0.08); color: var(--accent); }
+    .compare-col-title.do { background: rgba(2,42,192,0.08); color: var(--sf-blue); }
+    .nugget-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid var(--gray-200);
+    }
+    .nugget-row:last-child { border-bottom: none; }
+    .nugget-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .nugget-text { font-size: 14px; color: var(--body); line-height: 1.5; }
+
+    /* ── PROMPT TEMPLATE ────────────────────────────────────────── */
+    .template-wrap {
+      margin-top: 40px; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 32px;
+    }
+    .template-card {
+      border-radius: 12px; padding: 28px;
+      border: 1px solid var(--gray-200);
+    }
+    .template-card-header {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; margin-bottom: 16px;
+    }
+    .template-field {
+      padding: 12px 16px; border-radius: 8px;
+      background: var(--off-white); margin-bottom: 10px;
+    }
+    .template-field-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    .template-field-value { font-size: 13px; color: var(--body); line-height: 1.5; }
+    .template-example {
+      background: #0d1117; border-radius: 10px; padding: 20px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px; line-height: 1.8; color: #e6edf3;
+    }
+    .te-label { color: var(--accent-l); font-weight: 700; }
+    .te-val { color: #79c0ff; }
+
+    /* ── CLOSING ────────────────────────────────────────────────── */
+    .closing-full {
+      min-height: 100vh; background: var(--grad-evening);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 80px 48px; position: relative;
+    }
+    .closing-full::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent);
+    }
+    .closing-full::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--sf-blue), var(--sf-blue-l), var(--accent));
+    }
+    .closing-q {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 56px);
+      font-weight: 400; color: #fff; line-height: 1.15;
+      letter-spacing: -0.02em; max-width: 860px; margin: 0 auto;
+    }
+    .closing-q em { color: var(--sf-blue-l); font-style: normal; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV PILL (light slides) ──────────────────────────────── -->
+  <div class="nav-pill" id="nav-light">
+    <img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="28" height="28" alt="Salesforce" />
+    <div class="nav-divider"></div>
+    <img src="assets/logos/smarties-logo.png" width="56" height="48" alt="Smarties" />
+    <div class="nav-divider"></div>
+    <span style="font-size:12px;font-weight:700;color:var(--sf-navy);letter-spacing:0.02em;">May 2026</span>
+  </div>
+
+  <div class="section-label" id="section-label"></div>
+
+  <!-- ─── SLIDE DECK ────────────────────────────────────────────── -->
+  <div class="slide-deck">
+
+    <!-- SLIDE 1 · COVER ─────────────────────────────────────────── -->
+    <div class="slide active" data-section="" data-dark="true">
+      <div class="break-slide" style="padding-left: 80px;">
+        <div class="break-eyebrow">ANZ Smarties · May 2026</div>
+        <h1 class="break-title">Claude Code:<br/><span style="color:var(--accent-l);">The Build Machine.</span></h1>
+        <p class="break-sub">How I built 4 things in 3 weeks<br/>and saved 40 hours doing it.</p>
+
+        <div style="display:flex;gap:32px;margin-top:48px;">
+          <div>
+            <div style="font-family:var(--font-display);font-size:42px;font-weight:400;color:#fff;">4</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">things built</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:42px;font-weight:400;color:var(--sf-blue-l);">~40</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">hours saved</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:42px;font-weight:400;color:#fff;">3</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">weeks</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:42px;font-weight:400;color:var(--accent-l);">1</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">tool to start</div>
+          </div>
+        </div>
+
+        <div class="break-image-circle" style="display:flex;align-items:center;justify-content:center;background:#000;"><video src="assets/smarties-robot.mp4" autoplay loop muted playsinline style="width:72%;height:72%;object-fit:contain;display:block;"></video></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 · AGENDA ─────────────────────────────────────────── -->
+    <div class="slide" data-section="Agenda">
+      <div class="slide-body">
+        <div class="eyebrow">Today</div>
+        <div class="section-title" style="margin-bottom:48px;">Agenda</div>
+        <div style="display:flex;flex-direction:column;gap:4px;max-width:680px;">
+          <div style="display:flex;align-items:center;gap:24px;padding:20px 24px;border-radius:10px;background:var(--off-white);">
+            <div style="font-family:var(--font-display);font-size:32px;color:var(--sf-blue-l);font-weight:400;min-width:40px;">01</div>
+            <div><div style="font-size:17px;font-weight:700;color:var(--text);">Housekeeping & Celebrations</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;padding:20px 24px;border-radius:10px;background:var(--sf-navy);">
+            <div style="font-family:var(--font-display);font-size:32px;color:var(--accent-l);font-weight:400;min-width:40px;">02</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;color:#fff;">Claude — The MVP</div>
+              <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:2px;">Miles Toolin</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;padding:20px 24px;border-radius:10px;background:var(--off-white);">
+            <div style="font-family:var(--font-display);font-size:32px;color:var(--sf-blue-l);font-weight:400;min-width:40px;">03</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;color:var(--text);">Mully's Showcase</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px;">Dan Mulhern</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;padding:20px 24px;border-radius:10px;background:var(--off-white);">
+            <div style="font-family:var(--font-display);font-size:32px;color:var(--sf-blue-l);font-weight:400;min-width:40px;">04</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;color:var(--text);">Cindy Hoang — D360 & Deploying MCA</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;padding:20px 24px;border-radius:10px;background:var(--off-white);">
+            <div style="font-family:var(--font-display);font-size:32px;color:var(--sf-blue-l);font-weight:400;min-width:40px;">05</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;color:var(--text);">Marty's Mind</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:2px;">Marty</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;padding:20px 24px;border-radius:10px;background:var(--off-white);">
+            <div style="font-family:var(--font-display);font-size:32px;color:var(--sf-blue-l);font-weight:400;min-width:40px;">06</div>
+            <div><div style="font-size:17px;font-weight:700;color:var(--text);">Any Other Business</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 · VIBE CHECK ────────────────────────────────────── -->
+    <div class="slide" data-section="Vibe Check">
+      <div class="slide-body">
+        <div class="eyebrow eyebrow-accent">Quick poll</div>
+        <div class="section-title">Where are you at<br/>with AI coding tools?</div>
+        <div class="vibe-grid">
+
+          <div class="vibe-card">
+            <div class="vibe-circle" style="background:linear-gradient(135deg,#022AC0,#066AFE);box-shadow:0 8px 24px rgba(2,42,192,0.25);">
+              <img src="assets/vibe-a-warrior.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="Terminal Warrior" />
+            </div>
+            <span class="vibe-card-label" style="background:rgba(2,42,192,0.08);color:var(--sf-blue);">Option A</span>
+            <div class="vibe-card-title">Terminal Warrior</div>
+            <div class="vibe-card-desc">Used Cursor, Codex, or Claude Code this week. You're already cooking.</div>
+          </div>
+
+          <div class="vibe-card">
+            <div class="vibe-circle" style="background:linear-gradient(135deg,#D4622A,#F07840);box-shadow:0 8px 24px rgba(212,98,42,0.25);">
+              <img src="assets/vibe-b-figuring.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="Still Figuring It Out" />
+            </div>
+            <span class="vibe-card-label" style="background:rgba(212,98,42,0.08);color:var(--accent);">Option B</span>
+            <div class="vibe-card-title">Still Figuring It Out</div>
+            <div class="vibe-card-desc">Tried it, got a bit lost. This is normal — the setup unlocks everything.</div>
+          </div>
+
+          <div class="vibe-card">
+            <div class="vibe-circle" style="background:linear-gradient(135deg,#001E5B,#022AC0);box-shadow:0 8px 24px rgba(0,30,91,0.2);">
+              <img src="assets/vibe-c-notyet.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="Not Yet" />
+            </div>
+            <span class="vibe-card-label" style="background:rgba(0,30,91,0.06);color:var(--sf-navy);">Option C</span>
+            <div class="vibe-card-title">Not Yet</div>
+            <div class="vibe-card-desc">You use PowerPoint. That's okay — you're in exactly the right room.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 · BREAK — CLAUDE THE MVP ──────────────────────── -->
+    <div class="slide" data-section="" data-dark="true">
+      <div class="break-slide">
+        <div class="break-eyebrow">Section 02</div>
+        <h2 class="break-title">Claude —<br/>The MVP</h2>
+        <p class="break-sub">How I built 4 things in 3 weeks and saved 40 hours doing it.</p>
+
+        <img class="break-image-circle" src="assets/smarties-claude-mvp.jpg" alt="Claude MVP" />
+      </div>
+    </div>
+
+    <!-- SLIDE 5 · THE SETUP ─────────────────────────────────────── -->
+    <div class="slide" data-section="The Setup">
+      <div class="slide-body">
+        <div class="eyebrow">The Setup</div>
+        <div class="section-title">Four things that<br/>made everything work</div>
+        <div class="section-sub">Not the AI model. The scaffolding around it. This is what turned a chatbot into a build machine.</div>
+        <div class="setup-grid">
+
+          <div class="setup-card-outer">
+            <div class="setup-card-floating-icon" style="background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.10);border:1px solid rgba(0,0,0,0.06);">
+              <img src="assets/logos/claude-robot-transparent.png" width="44" height="44" alt="Claude Code" style="display:block;" />
+            </div>
+            <div class="setup-card">
+              <div class="setup-card-num" style="color:var(--accent);">01</div>
+              <div class="setup-card-title">CLAUDE.md</div>
+              <div class="setup-card-body">Persistent instructions every session inherits. Org alias, code style, communication rules, project registry. <strong>Claude never has to ask twice.</strong></div>
+              <span class="setup-card-tag" style="background:rgba(212,98,42,0.08);color:var(--accent);">Config</span>
+            </div>
+          </div>
+
+          <div class="setup-card-outer">
+            <div class="setup-card-floating-icon" style="background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.10);border:1px solid rgba(0,0,0,0.06);">
+              <img src="assets/logos/claude-robot-transparent.png" width="44" height="44" alt="Claude Code" style="display:block;" />
+            </div>
+            <div class="setup-card">
+              <div class="setup-card-num">02</div>
+              <div class="setup-card-title">Skills</div>
+              <div class="setup-card-body">Slash commands that front-load domain knowledge. <strong>/grill-me</strong> runs a Bowden-style interview before any build. Prevents two days of rework.</div>
+              <span class="setup-card-tag">37+ installed</span>
+            </div>
+          </div>
+
+          <div class="setup-card-outer">
+            <div class="setup-card-floating-icon" style="background:linear-gradient(135deg,#066AFE,#00B3FF);box-shadow:0 6px 20px rgba(0,179,255,0.25);">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </div>
+            <div class="setup-card">
+              <div class="setup-card-num">03</div>
+              <div class="setup-card-title">MCP Servers</div>
+              <div class="setup-card-body">Claude connects directly to Salesforce, filesystem, Slack, and Higgsfield. <strong>No copy-paste. No context switching.</strong> One session, all tools.</div>
+              <span class="setup-card-tag">Live connections</span>
+            </div>
+          </div>
+
+          <div class="setup-card-outer">
+            <div class="setup-card-floating-icon" style="background:linear-gradient(135deg,#06A59A,#00B3FF);box-shadow:0 6px 20px rgba(6,165,154,0.3);">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div class="setup-card">
+              <div class="setup-card-num">04</div>
+              <div class="setup-card-title">Memory + Hooks</div>
+              <div class="setup-card-body">17 memory files persist across sessions. Context status bar shows when to /clear. <strong>Every session starts with full context — zero re-explanation.</strong></div>
+              <span class="setup-card-tag">17 memory files</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 · WHAT I BUILT ──────────────────────────────────── -->
+    <div class="slide" data-section="What I Built">
+      <div class="built-section-bg">
+        <div style="max-width:1200px;margin:0 auto;padding:80px 48px 100px;">
+        <!-- Light eyebrow on dark bg -->
+        <div class="eyebrow" style="color:rgba(255,255,255,0.45);">What I Built</div>
+        <div class="section-title section-title-white">Four working things.<br/>Three weeks.</div>
+        <!-- Pill callout — SF reference pattern -->
+        <div style="margin-top:4px;margin-bottom:0;display:flex;gap:10px;align-items:center;">
+          <span class="sf-pill" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.1);">Real projects. Not demos.</span>
+          <span class="sf-pill sf-pill-accent">~40 hours saved</span>
+        </div>
+        <div class="built-grid" style="grid-template-columns:repeat(4,1fr);">
+
+          <div class="built-card-outer">
+            <div class="built-card-floating-icon" style="background:linear-gradient(135deg,#D4622A,#F07840);">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></svg>
+            </div>
+            <div class="built-card">
+              <span class="built-card-pill">Build 01</span>
+              <div class="built-card-title">Decktools</div>
+              <div class="built-card-body">Token system, component library, narrative skills, and feedback widget. Reusable design system powering every Salesforce deck — including this one.</div>
+              <div class="built-card-stat">40<span style="font-size:16px;color:rgba(0,179,255,0.4);"> commits</span></div>
+              <div class="built-card-stat-label">shipped in one day of focused sessions</div>
+            </div>
+          </div>
+
+          <div class="built-card-outer">
+            <div class="built-card-floating-icon" style="background:linear-gradient(135deg,#022AC0,#066AFE);">
+              <img src="assets/icons/2d/Loyalty Management.svg" width="36" height="36" alt="Priceline" />
+            </div>
+            <div class="built-card">
+              <span class="built-card-pill">Build 02</span>
+              <div class="built-card-title">Priceline GPM Simulator</div>
+              <div class="built-card-body">React + Vite loyalty demo. 10 use cases, 9 profiles, 28 products. Live Salesforce-connected and running in two weeks.</div>
+              <div class="built-card-stat">6<span style="font-size:16px;color:rgba(0,179,255,0.4);"> days saved</span></div>
+              <div class="built-card-stat-label">vs. building without AI assistance</div>
+            </div>
+          </div>
+
+          <div class="built-card-outer">
+            <div class="built-card-floating-icon" style="background:linear-gradient(135deg,#06A59A,#00B3FF);">
+              <img src="assets/icons/2d/Marketing.png" width="36" height="36" alt="SF Composer" />
+            </div>
+            <div class="built-card">
+              <span class="built-card-pill">Build 03</span>
+              <div class="built-card-title">SF Composer</div>
+              <div class="built-card-body">AI journey builder for MarTech. Describe a use case in plain English — Claude generates the full multi-channel canvas in 30 seconds.</div>
+              <div class="built-card-stat">~40<span style="font-size:16px;color:rgba(0,179,255,0.4);"> hrs total</span></div>
+              <div class="built-card-stat-label">across all three builds combined</div>
+            </div>
+          </div>
+
+          <div class="built-card-outer">
+            <div class="built-card-floating-icon" style="background:linear-gradient(135deg,#4A154B,#7B2D8B);">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>
+            </div>
+            <div class="built-card">
+              <span class="built-card-pill">Build 04</span>
+              <div class="built-card-title">#mt-vibe-tutorials</div>
+              <div class="built-card-body">There's a lot of AI noise across Salesforce Slack. Worth figuring out — individually or as a team — how you want to filter and distil it. This is my answer.</div>
+              <div class="built-card-stat" style="font-size:22px;">Slack<span style="font-size:16px;color:rgba(0,179,255,0.4);"> channel</span></div>
+              <div class="built-card-stat-label">find what works for you</div>
+            </div>
+          </div>
+
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 · HOW IT HAPPENED ───────────────────────────────── -->
+    <div class="slide" data-section="How It Happened">
+      <div style="min-height:100vh;background:var(--sf-navy);position:relative;overflow:hidden;">
+
+        <!-- Radial glow behind screens -->
+        <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:800px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(6,106,254,0.12) 0%,transparent 70%);pointer-events:none;"></div>
+
+        <!-- Title block — standard slide padding, no chips here -->
+        <div style="max-width:1200px;margin:0 auto;padding:80px 48px 0;">
+          <div class="eyebrow" style="color:rgba(255,255,255,0.45);">How It Happened</div>
+          <div style="font-family:var(--font-display);font-size:clamp(28px,3vw,44px);font-weight:400;color:#fff;line-height:1.1;letter-spacing:-0.02em;margin-top:6px;">
+            Interview → PRD → Deck.<br/><span style="color:var(--accent-l);">This meeting was built by Claude Code.</span>
+          </div>
+          <div style="width:56px;height:3px;background:var(--accent);border-radius:2px;margin-top:18px;"></div>
+        </div>
+
+        <!-- Screens + chips — full width canvas, chips stay within this zone -->
+        <div style="position:relative;max-width:1200px;margin:28px auto 0;padding:0 48px 80px;">
+          <div style="position:relative;height:420px;">
+
+            <!-- ── SCREEN LEFT: /grill-me — slightly tilted left, z behind ── -->
+            <div style="position:absolute;left:0;top:10px;width:50%;z-index:1;transform:rotate(-1.8deg);transform-origin:bottom left;">
+              <div style="padding:5px;border-radius:16px;background:linear-gradient(130deg,#066AFE,#00B3FF 60%,rgba(255,255,255,0.06));box-shadow:0 20px 56px rgba(0,0,0,0.5);">
+                <div style="border-radius:12px;overflow:hidden;">
+                  <div class="how-screenshot-header">
+                    <div class="how-dot" style="background:#FF5F57;"></div>
+                    <div class="how-dot" style="background:#FEBC2E;"></div>
+                    <div class="how-dot" style="background:#28C840;"></div>
+                    <span style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:10px;">Terminal — Claude Code · /grill-me</span>
+                  </div>
+                  <div class="how-terminal" style="min-height:350px;font-size:11.5px;line-height:1.75;">
+                    <div><span class="t-prompt">Miles ~/claude/decktools</span> <span class="t-cmd">$ /grill-me</span></div>
+                    <div class="t-output">&nbsp;</div>
+                    <div style="color:rgba(230,237,243,0.45);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;">Starting interview for ANZ Smarties deck...</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div style="color:#e6edf3;">Q: Who's in the room and what do they know?</div>
+                    <div style="color:#79c0ff;padding-left:16px;">→ ANZ SE team. Mixed skill level.</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div style="color:#e6edf3;">Q: Goal — conversion or something softer?</div>
+                    <div style="color:#79c0ff;padding-left:16px;">→ Calm them down. Not a pitch.</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div style="color:#e6edf3;">Q: What have you actually built?</div>
+                    <div style="color:#79c0ff;padding-left:16px;">→ Decktools, Priceline GPM,</div>
+                    <div style="color:#79c0ff;padding-left:22px;">SF Composer, Slack channel</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div style="color:#e6edf3;">Q: One thing they leave knowing?</div>
+                    <div style="color:#79c0ff;padding-left:16px;">→ The setup is what makes it work.</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div class="t-success">✓ PRD generated. 16 slides. Ready to build.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── SCREEN RIGHT: PRD output — slightly tilted right, z front ── -->
+            <div style="position:absolute;right:0;top:32px;width:52%;z-index:2;transform:rotate(1.8deg);transform-origin:bottom right;">
+              <div style="padding:5px;border-radius:16px;background:linear-gradient(130deg,#D4622A,#F07840 60%,rgba(255,255,255,0.05));box-shadow:0 24px 64px rgba(0,0,0,0.6);">
+                <div style="border-radius:12px;overflow:hidden;">
+                  <div class="how-screenshot-header" style="background:#140800;">
+                    <div class="how-dot" style="background:#FF5F57;"></div>
+                    <div class="how-dot" style="background:#FEBC2E;"></div>
+                    <div class="how-dot" style="background:#28C840;"></div>
+                    <span style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:10px;">PRD.md — ANZ Smarties Team Meeting</span>
+                  </div>
+                  <div class="how-terminal" style="min-height:350px;font-size:11.5px;line-height:1.75;">
+                    <div style="color:#f0a070;font-weight:700;font-size:12px;"># PRD: ANZ Smarties — May 2026</div>
+                    <div style="color:rgba(230,237,243,0.3);font-size:10px;">──────────────────────────────</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div><span style="color:var(--accent-l);font-weight:700;">presenter:</span> <span style="color:#e6edf3;">Miles Toolin</span></div>
+                    <div><span style="color:var(--accent-l);font-weight:700;">audience: </span> <span style="color:#e6edf3;">ANZ SE — mixed skill level</span></div>
+                    <div><span style="color:var(--accent-l);font-weight:700;">date:     </span> <span style="color:#e6edf3;">May 15 2026 · 10:00am AEST</span></div>
+                    <div class="t-output">&nbsp;</div>
+                    <div><span style="color:#79c0ff;font-weight:700;">goal:</span></div>
+                    <div style="color:#e6edf3;padding-left:16px;">Leave feeling calm and unintimidated.</div>
+                    <div style="color:#e6edf3;padding-left:16px;">Not a conversion pitch.</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div><span style="color:#79c0ff;font-weight:700;">slides:</span> <span style="color:#e6edf3;">16 &nbsp;</span><span style="color:#79c0ff;font-weight:700;">accent:</span> <span style="color:var(--accent-l);">#D4622A</span></div>
+                    <div><span style="color:#79c0ff;font-weight:700;">agenda:</span> <span style="color:#e6edf3;">6 items &nbsp;</span><span style="color:#79c0ff;font-weight:700;">builds:</span> <span style="color:#e6edf3;">4</span></div>
+                    <div class="t-output">&nbsp;</div>
+                    <div style="color:#e6edf3;padding-left:16px;">→ Vibe Check · The Setup · What I Built</div>
+                    <div style="color:#e6edf3;padding-left:16px;">→ Dos &amp; Don'ts · Prompt Template</div>
+                    <div class="t-output">&nbsp;</div>
+                    <div class="t-success">status: approved → shipped same morning ✓</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── CLAUDE ICON — center gap between screens, white bg so robot is visible ── -->
+            <div style="position:absolute;left:50%;top:68%;transform:translate(-50%,-50%);z-index:10;">
+              <div style="width:108px;height:108px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(212,98,42,0.2),0 0 0 14px rgba(212,98,42,0.08),0 8px 40px rgba(0,0,0,0.4);">
+                <img src="assets/logos/claude-robot-transparent.png" width="68" height="68" alt="Claude Code" style="display:block;" />
+              </div>
+            </div>
+
+            <!-- ── CHIP 1: hangs off top-right corner of LEFT screen ── -->
+            <div style="position:absolute;top:-18px;left:36%;z-index:20;max-width:240px;">
+              <div style="background:rgba(255,255,255,0.97);border-radius:20px;padding:14px 22px;box-shadow:0 12px 40px rgba(0,0,0,0.32);text-align:center;">
+                <div style="font-size:15px;font-weight:800;color:var(--sf-blue);line-height:1.2;">Type a brief.<br/>Get a deck.</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:5px;">10 min interview → spec locked</div>
+              </div>
+            </div>
+
+            <!-- ── CHIP 2: hangs off right edge of RIGHT screen ── -->
+            <div style="position:absolute;top:22%;right:-28px;z-index:20;max-width:240px;">
+              <div style="background:rgba(255,255,255,0.97);border-radius:20px;padding:14px 22px;box-shadow:0 12px 40px rgba(0,0,0,0.32);text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:var(--accent);line-height:1.2;">The PRD<br/>built this deck.</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:5px;">Written by /grill-me. Zero edits.</div>
+              </div>
+            </div>
+
+            <!-- ── CHIP 3: hangs off bottom-left corner of LEFT screen ── -->
+            <div style="position:absolute;bottom:-16px;left:-20px;z-index:20;max-width:250px;">
+              <div style="background:rgba(255,255,255,0.97);border-radius:20px;padding:14px 22px;box-shadow:0 12px 40px rgba(0,0,0,0.32);text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:#1a1a2e;line-height:1.2;">No Figma.<br/>No back-and-forth.</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:5px;">Same morning. Done.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SLIDE 9 · TOOL STACK / ARCH ────────────────────────────── -->
+    <div class="slide" id="slide-arch" data-section="Tool Stack">
+      <div class="slide-body">
+        <div class="eyebrow">Under the hood</div>
+        <div class="section-title">Two tools.<br/>Everything connects through them.</div>
+        <div class="section-sub">Claude Code CLI in the terminal. DevAI toolbar in the browser. Every other tool — Salesforce, Slack, Higgsfield, filesystem — plugs in via MCP.</div>
+
+        <!-- Architecture diagram -->
+        <div style="margin-top:40px;position:relative;">
+
+          <!-- Top row: two primary tools -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:780px;margin:0 auto;">
+
+            <!-- Claude Code CLI -->
+            <div style="background:rgba(212,98,42,0.05);border:2px solid rgba(212,98,42,0.2);border-radius:16px;padding:28px 24px;text-align:center;">
+              <div style="width:64px;height:64px;border-radius:50%;background:#fff;border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 16px rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <img src="assets/logos/claude-robot-transparent.png" width="40" height="40" alt="Claude Code" style="display:block;" />
+              </div>
+              <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Claude Code CLI</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.55;">Terminal-native AI. Reads your codebase, writes files, runs commands. <strong>Every build session lives here.</strong></div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px;">
+                <span style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(212,98,42,0.08);color:var(--accent);">CLAUDE.md</span>
+                <span style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(212,98,42,0.08);color:var(--accent);">Skills</span>
+                <span style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(212,98,42,0.08);color:var(--accent);">Memory</span>
+                <span style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(212,98,42,0.08);color:var(--accent);">Hooks</span>
+              </div>
+            </div>
+
+            <!-- DevAI Toolbar -->
+            <div style="background:rgba(2,42,192,0.04);border:2px solid rgba(2,42,192,0.15);border-radius:16px;padding:28px 24px;text-align:center;">
+              <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#022AC0,#066AFE);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="8" width="24" height="16" rx="3" stroke="white" stroke-width="2"/><line x1="4" y1="13" x2="28" y2="13" stroke="white" stroke-width="1.5"/><circle cx="8" cy="10.5" r="1.2" fill="white"/><circle cx="12" cy="10.5" r="1.2" fill="white"/><circle cx="16" cy="10.5" r="1.2" fill="white"/><rect x="8" y="17" width="8" height="2" rx="1" fill="white" opacity="0.6"/></svg>
+              </div>
+              <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">DevAI Toolbar</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.55;">Browser-embedded AI. Inspect, debug, and generate UI changes without leaving the app. <strong>Visual layer on top of Claude.</strong></div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px;">
+                <span style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(2,42,192,0.08);color:var(--sf-blue);">Browser</span>
+                <span style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(2,42,192,0.08);color:var(--sf-blue);">DOM-aware</span>
+                <span style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(2,42,192,0.08);color:var(--sf-blue);">No context switch</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Connector line down -->
+          <div style="display:flex;justify-content:center;margin:12px 0 4px;">
+            <div style="width:2px;height:28px;background:var(--gray-200);"></div>
+          </div>
+          <div style="display:flex;justify-content:center;margin-bottom:4px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:4px 16px;border:1px solid var(--gray-200);border-radius:999px;background:var(--white);">connects via MCP</div>
+          </div>
+          <div style="display:flex;justify-content:center;margin:4px 0 12px;">
+            <div style="width:2px;height:28px;background:var(--gray-200);"></div>
+          </div>
+
+          <!-- Bottom row: MCP-connected tools -->
+          <div style="display:flex;flex-wrap:wrap;gap:14px;max-width:960px;margin:0 auto;justify-content:center;">
+
+            <div style="border:1px solid var(--gray-200);border-radius:12px;padding:16px 14px;text-align:center;flex:0 0 calc(14.28% - 14px);min-width:110px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(2,42,192,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="24" height="24" alt="Salesforce" />
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--text);">Salesforce</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Deploy + query</div>
+            </div>
+
+            <div style="border:1px solid var(--gray-200);border-radius:12px;padding:16px 14px;text-align:center;flex:0 0 calc(14.28% - 14px);min-width:110px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(74,21,75,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#4A154B" xmlns="http://www.w3.org/2000/svg"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></svg>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--text);">Slack</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Post + read</div>
+            </div>
+
+            <div style="border:1px solid var(--gray-200);border-radius:12px;padding:16px 14px;text-align:center;flex:0 0 calc(14.28% - 14px);min-width:110px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(212,98,42,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" fill="#D4622A" opacity="0.7"/><rect x="13" y="3" width="8" height="8" rx="1" fill="#D4622A"/><rect x="3" y="13" width="8" height="8" rx="1" fill="#D4622A" opacity="0.5"/><rect x="13" y="13" width="8" height="8" rx="1" fill="#D4622A" opacity="0.8"/></svg>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--text);">Higgsfield</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Images + video</div>
+            </div>
+
+            <div style="border:1px solid var(--gray-200);border-radius:12px;padding:16px 14px;text-align:center;flex:0 0 calc(14.28% - 14px);min-width:110px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <img src="assets/icons/2d/MuleSoft.png" width="26" height="26" alt="MuleSoft" style="display:block;object-fit:contain;" />
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--text);">MuleSoft</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">API + integration</div>
+            </div>
+
+            <div style="border:1px solid var(--gray-200);border-radius:12px;padding:16px 14px;text-align:center;flex:0 0 calc(14.28% - 14px);min-width:110px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(66,133,244,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--text);">Google Workspace</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Docs + Calendar</div>
+            </div>
+
+            <div style="border:1px solid var(--gray-200);border-radius:12px;padding:16px 14px;text-align:center;flex:0 0 calc(14.28% - 14px);min-width:110px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(75,155,87,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5" rx="9" ry="3" stroke="#4B9B57" stroke-width="1.8"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" stroke="#4B9B57" stroke-width="1.8" fill="none"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3" stroke="#4B9B57" stroke-width="1.8" fill="none"/></svg>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--text);">claude-mem</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Persistent memory</div>
+            </div>
+
+            <div style="border:1px solid var(--gray-200);border-radius:12px;padding:16px 14px;text-align:center;flex:0 0 calc(14.28% - 14px);min-width:110px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(2,42,192,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="14" rx="2" stroke="#022AC0" stroke-width="1.8"/><path d="M8 20h8M12 18v2" stroke="#022AC0" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--text);">Browser MCP</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px;">Screenshot + verify</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10 · DOS + DON'TS ─────────────────────────────────── -->
+    <div class="slide" data-section="Dos &amp; Don'ts">
+      <div class="slide-body">
+        <div class="eyebrow eyebrow-accent">Retro findings</div>
+        <div class="section-title">What the last 3 weeks<br/>actually taught me</div>
+        <div class="compare-wrap" style="margin-top:40px;">
+          <div class="compare-head">
+            <div class="compare-head-col today" style="color:var(--accent);font-weight:700;">Don't</div>
+            <div class="compare-head-col tomorrow" style="color:var(--sf-blue);font-weight:700;">Do</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today">Skip CLAUDE.md — Claude guesses your context every time</div>
+            <div class="compare-cell tomorrow"><strong>Write CLAUDE.md first.</strong> Org alias, ports, project registry. Every session compounds on it.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today">Dive in without a brief — build the wrong thing beautifully</div>
+            <div class="compare-cell tomorrow"><strong>/grill-me before you build anything.</strong> 10 min interview prevents 2 days of rework.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today">Stay in one session all day — context gets noisy, responses drift</div>
+            <div class="compare-cell tomorrow"><strong>/clear aggressively.</strong> The context bar shows when. One task per session.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today">Treat Claude like a search engine — vague questions, vague answers</div>
+            <div class="compare-cell tomorrow"><strong>Give Claude full context every time.</strong> Role, constraints, what's already decided. Specific in, specific out.</div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-cell today">Let Claude repeat a mistake — it will until you write it down</div>
+            <div class="compare-cell tomorrow"><strong>Add a memory file on first correction.</strong> It will never recur.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE · WHAT IS A PLUGIN ────────────────────────────────── -->
+    <div class="slide" data-section="What is a Plugin?">
+      <div class="slide-body">
+        <div class="eyebrow">Before you install</div>
+        <div class="section-title">What is a plugin?</div>
+        <div class="section-sub">One installable unit. Up to five things inside it. You pick what you need.</div>
+
+        <div style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+
+          <!-- Component table -->
+          <div>
+            <div style="border:1px solid var(--gray-200);border-radius:12px;overflow:hidden;">
+              <div style="display:grid;grid-template-columns:1fr 2fr;background:var(--sf-navy);padding:12px 20px;">
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);">Component</div>
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);">What it does</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 2fr;padding:14px 20px;border-bottom:1px solid var(--gray-200);background:rgba(212,98,42,0.03);">
+                <div style="font-size:13px;font-weight:700;color:var(--accent);">Skills</div>
+                <div style="font-size:13px;color:var(--body);">SKILL.md files — Claude picks them up automatically based on the task</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 2fr;padding:14px 20px;border-bottom:1px solid var(--gray-200);">
+                <div style="font-size:13px;font-weight:700;color:var(--sf-blue);">Agents</div>
+                <div style="font-size:13px;color:var(--body);">Custom subagents with their own system prompt, tool restrictions, and model</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 2fr;padding:14px 20px;border-bottom:1px solid var(--gray-200);background:rgba(212,98,42,0.03);">
+                <div style="font-size:13px;font-weight:700;color:var(--accent);">Hooks</div>
+                <div style="font-size:13px;color:var(--body);">Event-driven scripts on SessionStart, PreToolUse, PostToolUse, etc.</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 2fr;padding:14px 20px;border-bottom:1px solid var(--gray-200);">
+                <div style="font-size:13px;font-weight:700;color:var(--sf-blue);">MCPs</div>
+                <div style="font-size:13px;color:var(--body);">Live connections to tools and data — Slack, Salesforce, code search, and more</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 2fr;padding:14px 20px;">
+                <div style="font-size:13px;font-weight:700;color:var(--accent);">Commands</div>
+                <div style="font-size:13px;color:var(--body);">User-invoked slash commands — /grill-me, /decktools, /sf-deploy</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: where to get them -->
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="padding:20px 24px;background:var(--off-white);border-radius:12px;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Internal</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="font-size:13px;color:var(--body);">AI Marketplace — browse + install team plugins</div>
+                <div style="font-size:13px;color:var(--body);">What is a plugin — full component reference</div>
+                <div style="font-size:13px;color:var(--body);">Create a plugin — build your own in minutes</div>
+              </div>
+            </div>
+            <div style="padding:20px 24px;background:var(--off-white);border-radius:12px;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Upstream (Anthropic)</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="font-size:13px;color:var(--body);">Claude Code plugins — official docs</div>
+                <div style="font-size:13px;color:var(--body);">Marketplaces — community plugin registry</div>
+                <div style="font-size:13px;color:var(--body);">Cursor plugins — cross-editor compatibility</div>
+              </div>
+            </div>
+            <div style="padding:16px 20px;background:rgba(2,42,192,0.05);border:1px solid rgba(2,42,192,0.12);border-radius:10px;">
+              <div style="font-size:13px;color:var(--sf-blue);font-weight:600;">Ask the Slackbot or ask Claude directly — takes 10 minutes to install.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE · SKILLS + PLUGINS REFERENCE ──────────────────────── -->
+    <div class="slide" data-section="Starter Kit">
+      <div class="slide-body">
+        <div class="eyebrow">Take this with you</div>
+        <div class="section-title">Your starter kit.<br/>Install once, use forever.</div>
+        <div class="section-sub">These are the skills and plugins that made the last 3 weeks work. All available now.</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:36px;">
+
+          <!-- Skills column -->
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">Skills — slash commands</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:var(--off-white);border-radius:10px;">
+                <code style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;min-width:90px;">/grill-me</code>
+                <span style="font-size:13px;color:var(--body);">Interview → PRD before any build. Prevents wrong-thing-built-beautifully.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:var(--off-white);border-radius:10px;">
+                <code style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;min-width:90px;">/decktools</code>
+                <span style="font-size:13px;color:var(--body);">Scaffold a Salesforce narrative deck with brand tokens and components pre-loaded.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:var(--off-white);border-radius:10px;">
+                <code style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;min-width:90px;">/gsd-debug</code>
+                <span style="font-size:13px;color:var(--body);">Scientific debug loop — isolates root cause before touching code.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:var(--off-white);border-radius:10px;">
+                <code style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;min-width:90px;">/sf-lwc</code>
+                <span style="font-size:13px;color:var(--body);">LWC generation with Salesforce conventions baked in — no boilerplate hunting.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:var(--off-white);border-radius:10px;">
+                <code style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;min-width:90px;">/sf-deploy</code>
+                <span style="font-size:13px;color:var(--body);">Validate + deploy Salesforce metadata in one shot with pre-flight checks.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:var(--off-white);border-radius:10px;">
+                <code style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap;min-width:90px;">/idea-refine</code>
+                <span style="font-size:13px;color:var(--body);">Turn a rough idea into a scoped brief with goals, constraints, and success criteria.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- MCP Plugins column -->
+          <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--sf-blue);margin-bottom:16px;">MCP Plugins — live connections</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:rgba(2,42,192,0.04);border-radius:10px;border:1px solid rgba(2,42,192,0.08);">
+                <span style="font-size:11px;font-weight:700;color:var(--sf-blue);white-space:nowrap;min-width:90px;">Salesforce</span>
+                <span style="font-size:13px;color:var(--body);">Query, deploy, and inspect your org without leaving the terminal.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:rgba(2,42,192,0.04);border-radius:10px;border:1px solid rgba(2,42,192,0.08);">
+                <span style="font-size:11px;font-weight:700;color:var(--sf-blue);white-space:nowrap;min-width:90px;">Slack</span>
+                <span style="font-size:13px;color:var(--body);">Post builds directly to team channels. Claude closes the loop for you.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:rgba(2,42,192,0.04);border-radius:10px;border:1px solid rgba(2,42,192,0.08);">
+                <span style="font-size:11px;font-weight:700;color:var(--sf-blue);white-space:nowrap;min-width:90px;">Google Workspace</span>
+                <span style="font-size:13px;color:var(--body);">Read Docs, write meeting notes, check Calendar — all in-session.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:rgba(2,42,192,0.04);border-radius:10px;border:1px solid rgba(2,42,192,0.08);">
+                <span style="font-size:11px;font-weight:700;color:var(--sf-blue);white-space:nowrap;min-width:90px;">MuleSoft</span>
+                <span style="font-size:13px;color:var(--body);">Anypoint Platform MCP — browse APIs, trigger flows, inspect integrations live.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:rgba(2,42,192,0.04);border-radius:10px;border:1px solid rgba(2,42,192,0.08);">
+                <span style="font-size:11px;font-weight:700;color:var(--sf-blue);white-space:nowrap;min-width:90px;">claude-mem</span>
+                <span style="font-size:13px;color:var(--body);">Persistent memory across sessions. Context that compounds, not resets.</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 16px;background:rgba(2,42,192,0.04);border-radius:10px;border:1px solid rgba(2,42,192,0.08);">
+                <span style="font-size:11px;font-weight:700;color:var(--sf-blue);white-space:nowrap;min-width:90px;">Higgsfield</span>
+                <span style="font-size:13px;color:var(--body);">Generate images and video assets without leaving Claude. No tab switching.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11 · PROMPT TEMPLATE ─────────────────────────────── -->
+    <div class="slide" data-section="Prompt Template">
+      <div class="slide-body">
+        <div class="eyebrow">Take this with you</div>
+        <div class="section-title">The prompt structure<br/>that changes everything</div>
+        <div class="section-sub">Four fields. One clear ask. This is why the PRD was done in 20 minutes and the deck shipped the same morning.</div>
+        <div class="template-wrap">
+
+          <!-- Left: PRD screenshot with Claude Code icon floating above -->
+          <div style="position:relative;padding-top:44px;">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:72px;height:72px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 4px 16px rgba(0,0,0,0.10);border:1px solid rgba(0,0,0,0.06);">
+              <img src="assets/logos/claude-robot-transparent.png" width="46" height="46" alt="Claude Code" style="display:block;" />
+            </div>
+            <div class="how-screenshot">
+              <div class="how-screenshot-header">
+                <div class="how-dot" style="background:#FF5F57;"></div>
+                <div class="how-dot" style="background:#FEBC2E;"></div>
+                <div class="how-dot" style="background:#28C840;"></div>
+                <span style="font-size:11px;color:rgba(255,255,255,0.4);margin-left:8px;">PRD.md — /grill-me output</span>
+              </div>
+              <div class="how-terminal" style="min-height:300px;">
+                <div class="t-output"># PRD: ANZ Smarties Team Meeting</div>
+                <div class="t-output">Date: May 14 2026 · Status: Approved</div>
+                <div class="t-output"> </div>
+                <div class="t-output">Goal: ANZ SE team leaves feeling</div>
+                <div class="t-output">calm and unintimidated.</div>
+                <div class="t-output"> </div>
+                <div class="t-output">Slides: 16 · Presenter: Miles Toolin</div>
+                <div class="t-output">Accent: Claude Code orange #D4622A</div>
+                <div class="t-output">Agenda: 6 items · Builds: 4</div>
+                <div class="t-output"> </div>
+                <div class="t-output">Key slides: Vibe Check, The Setup,</div>
+                <div class="t-output">What I Built, Prompt Template</div>
+                <div class="t-output"> </div>
+                <div class="t-success">Approved → shipped same day</div>
+              </div>
+            </div>
+            <p class="how-caption">Actual PRD from this session — approved before a line of HTML was written</p>
+          </div>
+
+          <!-- Right: template structure -->
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--sf-blue);margin-bottom:16px;letter-spacing:0.04em;">Goal · Context · Ask · Verify</div>
+            <div class="template-field">
+              <div class="template-field-label" style="color:var(--accent);">Goal</div>
+              <div class="template-field-value">What does done look like? "16 slides, Claude Code showcase, team feels calm, May 15th." Specific — not vague.</div>
+            </div>
+            <div class="template-field">
+              <div class="template-field-label" style="color:var(--sf-blue);">Context</div>
+              <div class="template-field-value">Who's it for? Mixed skill level, decktools system, existing memory files, Claude Code orange.</div>
+            </div>
+            <div class="template-field">
+              <div class="template-field-label" style="color:var(--sf-blue-m);">Ask</div>
+              <div class="template-field-value">One action. "/grill-me → PRD → build HTML." Not "help me think" — do the thing.</div>
+            </div>
+            <div class="template-field">
+              <div class="template-field-label" style="color:var(--teal);">Verify</div>
+              <div class="template-field-value">Read the PRD. Does it match what you asked for? Say yes before Claude writes a single line. That's the check.</div>
+            </div>
+            <div style="margin-top:16px;padding:14px 18px;background:rgba(6,165,154,0.06);border:1px solid rgba(6,165,154,0.2);border-radius:8px;">
+              <div style="font-size:12px;color:var(--teal);font-weight:600;">Shipped in 20 minutes.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 (moved) · BREAK — MULLY'S SHOWCASE ─────────────────────── -->
+    <div class="slide" data-section="" data-dark="true">
+      <div class="break-slide">
+        <div class="break-eyebrow">Section 03</div>
+        <h2 class="break-title">Mully's<br/>Showcase</h2>
+        <p class="break-sub">Dan Mulhern</p>
+
+        <img class="break-image-circle" src="assets/smarties-mullys-showcase.jpg" alt="Mully Showcase" />
+      </div>
+    </div>
+
+    <!-- SLIDE 12 · BREAK — CINDY D360 + MCA ────────────────────── -->
+    <div class="slide" data-section="" data-dark="true">
+      <div class="break-slide">
+        <div class="break-eyebrow">Section 04</div>
+        <h2 class="break-title">Cindy Hoang —<br/>D360 & Deploying MCA</h2>
+        <p class="break-sub">&nbsp;</p>
+        <img class="break-image-circle" src="assets/smarties-cindy-d360.jpg" alt="D360 Data" />
+      </div>
+    </div>
+
+    <!-- SLIDE · MARTY'S MIND ────────────────────────────────────── -->
+    <div class="slide" data-section="Marty's Mind">
+      <div class="slide-body">
+        <div class="eyebrow eyebrow-accent">From the desk of Marty</div>
+        <div class="section-title">Three things on<br/>Marty's mind</div>
+
+        <div class="card-grid-3" style="margin-top:40px;">
+
+          <div class="card" style="border-radius:16px;padding:32px 24px;">
+            <div class="card-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--sf-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="card-title">Claude Vibes</div>
+            <div class="card-body">
+              Are you set up? Using it? <strong>DeckTools is a live example</strong> — built with Claude Code in a week. Collaboration matters: use Slack Canvas as Claude input so the whole team benefits, not just the builder. Share what you make. Security first — password protect, don't leave things up forever. <strong>#Trust is always at heart.</strong>
+            </div>
+          </div>
+
+          <div class="card" style="border-radius:16px;padding:32px 24px;">
+            <div class="card-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="card-title">Prioritise the Big Deals</div>
+            <div class="card-body">
+              Top 20 Cross Cloud, Top 30 Marketing — your patch, your focus. Work at 80% capacity max so you can pivot, respond, and enable. <strong>Run rate deals under $100k</strong> — question the urgency, redirect to shared resources in au-entr-digi. Say YES AND: point to the resource, the alternative, or the rescheduled time.
+            </div>
+          </div>
+
+          <div class="card" style="border-radius:16px;padding:32px 24px;">
+            <div class="card-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="card-title">AI Tools — Share &amp; Learn</div>
+            <div class="card-body">
+              Slackbot skills that are helping NOW — Activity Tracking, Handover, SE Notes. <strong>Roadmap Skill and RFX Investment Review</strong> just shipped. What's the next skill you need? Every team meeting has an AI tip/share. If you haven't spoken to Marty about Claude, MeshMesh, or Figma Make — it's on the 1:1 agenda.
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:32px;padding:16px 24px;background:rgba(2,42,192,0.04);border:1px solid rgba(2,42,192,0.1);border-radius:10px;display:flex;align-items:center;gap:16px;">
+          <div style="font-size:22px;font-weight:700;color:var(--sf-blue);">TL;DR</div>
+          <div style="width:1px;height:32px;background:var(--gray-200);"></div>
+          <div style="font-size:14px;color:var(--body);line-height:1.6;">Claude vibes &nbsp;·&nbsp; Prioritise the key deals, scale the run rate &nbsp;·&nbsp; AI tools — discuss Slackbot skills that are helping NOW &nbsp;·&nbsp; <strong>GIS — please submit!</strong> (then we can have that team lunch)</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SLIDE 13 · CLOSING ───────────────────────────────────────── -->
+    <div class="slide" data-section="" data-dark="true">
+      <div class="closing-full">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent-l);margin-bottom:32px;">ANZ Smarties · May 2026</div>
+          <h1 class="closing-q">What would you build<br/>if it took <em>3 hours</em><br/>instead of 3 days?</h1>
+          <div style="margin-top:48px;font-size:14px;color:rgba(255,255,255,0.3);letter-spacing:0.04em;">
+            Deck built by Claude Code · <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.45);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.15);">Miles Toolin</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slide-deck -->
+
+  <!-- ─── NAVIGATION ────────────────────────────────────────────── -->
+  <div class="slide-dots" id="dots"></div>
+  <div class="slide-controls">
+    <button class="slide-btn" id="prev" title="Previous (←)">&#8592;</button>
+    <span class="slide-counter" id="counter">1 / 13</span>
+    <button class="slide-btn" id="next" title="Next (→)">&#8594;</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dotsEl = document.getElementById('dots');
+    const counterEl = document.getElementById('counter');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const sectionLabel = document.getElementById('section-label');
+    const navLight = document.getElementById('nav-light');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => go(i));
+      dotsEl.appendChild(d);
+    });
+
+    function go(n) {
+      slides[current].classList.remove('active');
+      document.querySelectorAll('.dot')[current].classList.remove('active');
+      current = Math.max(0, Math.min(n, slides.length - 1));
+      slides[current].classList.add('active');
+      slides[current].scrollTop = 0;
+      document.querySelectorAll('.dot')[current].classList.add('active');
+      counterEl.textContent = `${current + 1} / ${slides.length}`;
+      sectionLabel.textContent = slides[current].dataset.section || '';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+
+      // Hide nav pill and section label on dark/break slides
+      const isDark = slides[current].dataset.dark === 'true';
+      navLight.style.opacity = isDark ? '0' : '1';
+      navLight.style.pointerEvents = isDark ? 'none' : 'auto';
+      sectionLabel.style.opacity = isDark ? '0' : '1';
+    }
+
+    prevBtn.addEventListener('click', () => go(current - 1));
+    nextBtn.addEventListener('click', () => go(current + 1));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(current + 1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(current - 1);
+    });
+
+    go(0);
+
+  </script>
+  <script src="feedback-widget.js"></script>
+
+</body>
+</html>

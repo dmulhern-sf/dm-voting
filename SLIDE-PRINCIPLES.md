@@ -10,7 +10,7 @@ Codified rules for building slide decks using the decktools design system. Every
 Every customer deck is a single HTML file at the root of `decktools/`:
 ```
 priceline.html
-xero.html
+sf-composer.html
 westpac.html   ← example
 ```
 
@@ -21,7 +21,7 @@ Link to the shared stylesheets — never copy tokens or components into the page
 ```
 
 ### The slide engine
-All decks use the keyboard-navigable slide engine from `xero.html`. Copy it verbatim:
+All decks use the keyboard-navigable slide engine from `sf-composer.html`. Use `sf-composer.html` as the slide engine reference:
 - Fixed nav at top (`position: fixed; z-index: 100`)
 - `.slide-deck` fills the viewport
 - Each `.slide` is `display: none` except `.slide.active`
@@ -254,6 +254,7 @@ The `rgba()` values change with `--accent` — manually update the alpha channel
 ## Things never to do in a slide deck
 
 - No emoji as card icons — use `assets/icons/2d/` PNGs/SVGs
+- No one-sided thick borders on cards — no `border-top`, `border-left`, `border-right`, `border-bottom` thicker than 1px on any card, tile, or panel. Use `border: 1px solid var(--gray-200)` only. Stack layer colour identity uses `box-shadow: inset 4px 0 0 <colour>` — never `border-left`.
 - No gradient text — backgrounds yes, text fill no
 - No gradient inside a card interior
 - No drop shadows on dark backgrounds — use subtle borders instead

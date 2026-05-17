@@ -31,6 +31,7 @@ Nav → Hero → Why Now → The Gap → Stack → Beachheads → Scale → Proo
 - 80/20 color rule: 80% primary blues, 20% max secondary/accent
 - Max font-weight: 700 (Bold) — Salesforce Sans has no 800/900
 - 2D icons only in narrative pages — 3D for campaigns/events only
+- **NEVER use `border-left` for accent stripes** — always use `box-shadow: inset 3px 0 0 <color>`. `border-left` adds to box model width, breaks grid alignment, and creates uneven tile edges. `inset` box-shadow is zero-width. This applies to every card, stack layer, flow row, and any component with a left accent.
 
 ## Verification
 Before reporting any task complete:

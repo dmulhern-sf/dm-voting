@@ -213,13 +213,13 @@ hr.divider-navy { border: none; border-top: 1px solid rgba(255,255,255,0.1); }
 .sl-right { padding: 20px 28px; font-size: 13px; color: var(--body); line-height: 1.7; }
 .sl-right strong { color: var(--text); }
 
-.sl-layer-01 { border-left: 4px solid var(--violet); }   .sl-layer-01 .sl-num { color: var(--violet); }
-.sl-layer-02 { border-left: 4px solid var(--sf-blue); }  .sl-layer-02 .sl-num { color: var(--sf-blue); }
-.sl-layer-03 { border-left: 4px solid var(--accent); }   .sl-layer-03 .sl-num { color: var(--accent); }
-.sl-layer-04 { border-left: 4px solid var(--pink); }     .sl-layer-04 .sl-num { color: var(--pink); }
-.sl-layer-05 { border-left: 4px solid var(--yellow); }   .sl-layer-05 .sl-num { color: var(--yellow); }
-.sl-layer-06 { border-left: 4px solid var(--sf-blue-l); }.sl-layer-06 .sl-num { color: var(--sf-blue-l); }
-.sl-layer-07 { border-left: 4px solid var(--teal); }     .sl-layer-07 .sl-num { color: var(--teal); }
+.sl-layer-01 { box-shadow: inset 4px 0 0 var(--violet); }    .sl-layer-01 .sl-num { color: var(--violet); }
+.sl-layer-02 { box-shadow: inset 4px 0 0 var(--sf-blue); }   .sl-layer-02 .sl-num { color: var(--sf-blue); }
+.sl-layer-03 { box-shadow: inset 4px 0 0 var(--accent); }    .sl-layer-03 .sl-num { color: var(--accent); }
+.sl-layer-04 { box-shadow: inset 4px 0 0 var(--pink); }      .sl-layer-04 .sl-num { color: var(--pink); }
+.sl-layer-05 { box-shadow: inset 4px 0 0 var(--yellow); }    .sl-layer-05 .sl-num { color: var(--yellow); }
+.sl-layer-06 { box-shadow: inset 4px 0 0 var(--sf-blue-l); } .sl-layer-06 .sl-num { color: var(--sf-blue-l); }
+.sl-layer-07 { box-shadow: inset 4px 0 0 var(--teal); }      .sl-layer-07 .sl-num { color: var(--teal); }
 
 /* ── BEACHHEAD CARDS ─────────────────────────────────────────── */
 .beach-card {

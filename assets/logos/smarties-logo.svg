@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 32" width="120" height="32">
+  <ellipse cx="16" cy="16" rx="14" ry="10" fill="#E63946"/>
+  <ellipse cx="40" cy="16" rx="14" ry="10" fill="#F4A261"/>
+  <ellipse cx="64" cy="16" rx="14" ry="10" fill="#2EC4B6"/>
+  <ellipse cx="88" cy="16" rx="14" ry="10" fill="#3D85C8"/>
+  <ellipse cx="110" cy="16" rx="8" ry="10" fill="#8338EC"/>
+  <text x="6" y="20" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="white">S</text>
+  <text x="30" y="20" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="white">M</text>
+  <text x="55" y="20" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="white">A</text>
+  <text x="79" y="20" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="white">RT</text>
+</svg>
