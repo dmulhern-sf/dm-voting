@@ -287,8 +287,7 @@
     if (controls) {
       controls.insertBefore(presentBtn, controls.firstChild);
     } else {
-      // Fallback for decks without .slide-controls
-      presentBtn.style.cssText = 'position:fixed;bottom:28px;left:calc(50% - 120px);z-index:9999;';
+      presentBtn.style.cssText = 'position:fixed;bottom:20px;left:62px;z-index:9999;';
       document.body.appendChild(presentBtn);
     }
   }
