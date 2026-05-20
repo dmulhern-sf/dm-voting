@@ -247,7 +247,7 @@
           </div>
           <div>
             <div class="cover-meta-label">Prepared by</div>
-            <div class="cover-meta-value">Miles Toolin<br>Principal Specialist, Salesforce</div>
+            <div class="cover-meta-value">Miles Toolin<br>Principal, Specialist SE — Salesforce</div>
           </div>
           <div>
             <div class="cover-meta-label">Classification</div>
@@ -505,7 +505,7 @@
       <div class="brief-card-grid cols-3">
         <div class="brief-card">
           <div class="brief-card-title">Built on proven platform capabilities</div>
-          <div class="brief-card-body">Data 360 and MCA are the same platforms powering loyalty and engagement for McDonald's across 65+ markets globally — operated via TASK's parent company, PAR Technology.</div>
+          <div class="brief-card-body">Data 360 and MCA are enterprise-grade platforms with a strong track record in QSR loyalty and engagement — including operators that run on TASK's parent company, PAR Technology.</div>
         </div>
         <div class="brief-card">
           <div class="brief-card-title">TASK and Salesforce — proven integration path</div>
@@ -619,7 +619,7 @@
 
       <div class="api-ref" style="margin-top:10px;">
         <div class="api-ref-label">API Reference — Campaign Flow trigger (Step 3)</div>
-        <pre><span class="json-method">POST</span> <span class="json-url">https://[org].salesforce.com/services/data/v66.0/actions/custom/flow/MadBundayFlow</span>
+        <pre><span class="json-method">POST</span> <span class="json-url">https://[org].salesforce.com/services/data/v63.0/actions/custom/flow/MadBundayFlow</span>
 <span class="json-header">Authorization: Bearer {access_token}    Content-Type: application/json</span>
 
 { <span class="json-key">"inputs"</span>: [{ <span class="json-key">"memberId"</span>: <span class="json-str">"GLD_MBR_12345"</span>, <span class="json-key">"winningTeam"</span>: <span class="json-str">"Richmond Tigers"</span>,
@@ -820,7 +820,7 @@
         <text x="362" y="124" font-family="monospace" font-size="9" fill="#444">charityName</text>
         <line x1="494" y1="128" x2="502" y2="128" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
         <polygon points="502,125 508,128 502,131" fill="#ccc"/>
-        <text x="512" y="124" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">"St Kilda Suns FC"</text>
+        <text x="512" y="124" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">"St Kilda Community Kitchen"</text>
         <text x="512" y="135" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">Stamps 1, 5, 7, 8 + donation</text>
 
         <!-- Row 4: spoiler_protection -->
@@ -916,7 +916,7 @@
     <div class="page-content">
       <div class="section-eyebrow">TASK Integration</div>
       <div class="section-h1">How TASK POS connects to Salesforce</div>
-      <p class="section-lead" style="margin-bottom:10px;">TASK is an enterprise cloud POS platform used by McDonald's, Guzman y Gomez, and Bakers Delight across Australia and globally. TASK's API-first architecture — RESTful APIs, event webhooks, and real-time transaction streaming — integrates directly with the D360 Streaming Ingestion API. No middleware required for the core event flow.</p>
+      <p class="section-lead" style="margin-bottom:10px;">TASK is an enterprise cloud POS platform used by major QSR operators across Australia and globally, including Guzman y Gomez and Bakers Delight. TASK's API-first architecture — RESTful APIs, event webhooks, and real-time transaction streaming — integrates directly with the D360 Streaming Ingestion API. No middleware required for the core event flow.</p>
 
       <div class="int-flow">
         <div class="int-step">
@@ -959,7 +959,7 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 1 — Stamp scan event (UC#5)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
 
 { <span class="json-key">"data"</span>: [{
@@ -968,7 +968,7 @@
   <span class="json-key">"stamp_number"</span>:    <span class="json-num">5</span>,
   <span class="json-key">"total_stamps"</span>:    <span class="json-num">5</span>,
   <span class="json-key">"restaurant_id"</span>:   <span class="json-str">"GRILD_ST_KILDA"</span>,
-  <span class="json-key">"charity_assignment"</span>: <span class="json-str">"St Kilda Suns FC"</span>,
+  <span class="json-key">"charity_assignment"</span>: <span class="json-str">"St Kilda Community Kitchen"</span>,
   <span class="json-key">"scanned_at"</span>:      <span class="json-str">"2026-08-12T13:04:22Z"</span>,
   <span class="json-key">"transaction_id"</span>:  <span class="json-str">"TXN_88291"</span>
 }]}</pre>
@@ -977,7 +977,7 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 2 — AFL game result (UC#4)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
 
 { <span class="json-key">"data"</span>: [{
@@ -994,7 +994,7 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 3 — Redemption confirmation (UC#4)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
 
 { <span class="json-key">"data"</span>: [{
@@ -1010,13 +1010,13 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 4 — Donation confirmation (UC#5)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
 
 { <span class="json-key">"data"</span>: [{
   <span class="json-key">"member_id"</span>:       <span class="json-str">"GLD_MBR_00123"</span>,
   <span class="json-key">"event_type"</span>:      <span class="json-str">"donation_confirmed"</span>,
-  <span class="json-key">"charity_name"</span>:    <span class="json-str">"St Kilda Suns FC"</span>,
+  <span class="json-key">"charity_name"</span>:    <span class="json-str">"St Kilda Community Kitchen"</span>,
   <span class="json-key">"donation_amount"</span>: <span class="json-num">2.00</span>,
   <span class="json-key">"restaurant_id"</span>:   <span class="json-str">"GRILD_ST_KILDA"</span>,
   <span class="json-key">"confirmed_at"</span>:    <span class="json-str">"2026-08-14T18:45:00Z"</span>
@@ -1026,7 +1026,7 @@
       </div>
 
       <div class="callout green" style="margin-top:8px;">
-        <strong>TASK + Salesforce — proven integration context:</strong> TASK (now part of PAR Technology since 2024) powered the McDonald's loyalty platform across 65+ markets via its Plexure entity. The D360 Ingestion API is designed for exactly this pattern — high-volume, real-time event streaming from POS systems. Salesforce will provide the exact schema specification and endpoint configuration as part of the technical onboarding process.
+        <strong>TASK + Salesforce — integration context:</strong> TASK (part of PAR Technology) is an enterprise cloud POS platform with an API-first, RESTful architecture purpose-built for real-time event streaming. The D360 Ingestion API is designed for exactly this pattern — high-volume event streaming from POS systems at scale. Salesforce will provide the exact schema specification and endpoint configuration as part of the technical onboarding process.
       </div>
     </div>
     <div class="page-footer">
@@ -1061,8 +1061,8 @@
           <div class="stat-label">UI for marketers. API + CLI for developers. No trade-off.</div>
         </div>
         <div class="stat-cell">
-          <div class="stat-val">60+</div>
-          <div class="stat-label">MCP tools exposing D360 and MCA to any development agent</div>
+          <div class="stat-val">API-first</div>
+          <div class="stat-label">Every D360 and MCA capability accessible via REST API, CLI, and MCP tooling</div>
         </div>
         <div class="stat-cell">
           <div class="stat-val">90 days</div>
@@ -1109,7 +1109,7 @@
           <tr style="background:#fafafa;">
             <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Testing and A/B</td>
             <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">A/B test message variants in MCA — charity-led vs reward-led copy for stamp milestones</td>
-            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Testing Center API (May 2026+) — test variants programmatically, score results, iterate without UI</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Programmatic A/B testing via MCA API — test variants, score results, and iterate without touching the UI</td>
           </tr>
           <tr>
             <td style="padding:7px 12px;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Reporting and analytics</td>
