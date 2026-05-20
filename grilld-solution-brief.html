@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en" data-deck-name="grilld-solution-brief">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salesforce — Grill'd Solution Architecture</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    :root {
+      --grilld-red:      #e7141a;
+      --grilld-red-l:    #ff4444;
+      --grilld-red-bg:   rgba(231,20,26,0.05);
+      --grilld-green:    #008135;
+      --grilld-cream:    #fbfaf8;
+      --grilld-dark:     #141414;
+      --accent:          #e7141a;
+      --accent-l:        #ff4444;
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      html, body { width: 210mm; }
+      nav, .export-bar, #dt-fab { display: none !important; }
+      .page {
+        width: 210mm !important; height: 297mm !important;
+        min-height: unset !important; max-height: 297mm !important;
+        overflow: hidden !important; margin: 0 !important;
+        box-shadow: none !important;
+        page-break-after: always; break-after: page;
+      }
+      .page:last-child { page-break-after: avoid; break-after: avoid; }
+    }
+
+    body { background: #e0e0e0; font-family: var(--font-body, 'Salesforce Sans', system-ui, sans-serif); margin: 0; }
+
+    .page { width: 210mm; min-height: 297mm; background: white; margin: 20px auto; box-shadow: 0 4px 28px rgba(0,0,0,0.16); position: relative; }
+
+    .export-bar { width: 210mm; margin: 0 auto; padding: 10px 0 0; display: flex; gap: 8px; }
+    .export-bar button { padding: 7px 18px; background: var(--sf-navy,#001E5B); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .export-bar button:hover { background: var(--grilld-red); }
+
+    /* ── COVER ─────────────────────────────────────────────────── */
+    .cover { width: 210mm; height: 297mm; background: var(--grilld-cream); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .cover-top-bar { height: 5px; background: linear-gradient(90deg, var(--grilld-red) 0%, #9b0004 100%); flex-shrink: 0; }
+    .cover-body { flex: 1; display: flex; flex-direction: column; padding: 44px 52px 44px; position: relative; z-index: 1; }
+    .cover-logos { display: flex; align-items: center; gap: 20px; margin-bottom: auto; }
+    .cover-logos img { height: 34px; width: auto; display: block; }
+    .cover-logo-divider { width: 1px; height: 34px; background: rgba(0,0,0,0.12); }
+    .cover-bg-orb1 { position: absolute; bottom: -80px; right: -80px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(231,20,26,0.06) 0%, transparent 65%); pointer-events: none; }
+    .cover-bg-orb2 { position: absolute; top: 100px; right: 30px; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(0,129,53,0.05) 0%, transparent 70%); pointer-events: none; }
+    .cover-main { margin-top: auto; }
+    .cover-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grilld-red); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .cover-eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--grilld-red); border-radius: 2px; flex-shrink: 0; }
+    .cover h1 { font-family: var(--font-display, system-ui); font-size: 34px; font-weight: 700; color: var(--grilld-dark); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 10px; }
+    .cover h1 em { font-style: normal; color: var(--grilld-red); }
+    .cover-subtitle { font-size: 13.5px; color: #555; line-height: 1.65; max-width: 420px; margin-bottom: 40px; }
+    .cover-meta { border-top: 1px solid rgba(0,0,0,0.1); padding-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .cover-meta-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #aaa; margin-bottom: 3px; }
+    .cover-meta-value { font-size: 12px; color: var(--grilld-dark); line-height: 1.5; font-weight: 500; }
+
+    /* ── CONTENT PAGES ─────────────────────────────────────────── */
+    .content-page { width: 210mm; min-height: 297mm; position: relative; }
+    .page-header { background: var(--sf-navy,#001E5B); padding: 14px 38px; display: flex; align-items: center; justify-content: space-between; }
+    .page-header-logos { display: flex; align-items: center; gap: 12px; }
+    .page-header img { height: 17px; width: auto; }
+    .page-header-div { width: 1px; height: 18px; background: rgba(255,255,255,0.18); }
+    .page-header-right { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .page-footer { background: var(--sf-navy,#001E5B); padding: 9px 38px; display: flex; align-items: center; justify-content: space-between; position: absolute; bottom: 0; left: 0; right: 0; }
+    .page-footer-left { font-size: 9.5px; color: rgba(255,255,255,0.28); }
+    .page-footer-right { font-size: 9.5px; color: rgba(255,255,255,0.28); }
+    .page-content { padding: 24px 38px 62px; }
+
+    /* ── TYPOGRAPHY ────────────────────────────────────────────── */
+    .section-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grilld-red); margin-bottom: 4px; display: flex; align-items: center; gap: 7px; }
+    .section-eyebrow::before { content: ''; width: 13px; height: 2px; background: var(--grilld-red); border-radius: 2px; flex-shrink: 0; }
+    .section-h1 { font-family: var(--font-display, system-ui); font-size: 20px; font-weight: 700; color: var(--sf-navy,#001E5B); letter-spacing: -0.01em; line-height: 1.25; margin: 0 0 5px; }
+    .section-h1 em { font-style: normal; color: var(--grilld-red); }
+    .section-lead { font-size: 11.5px; color: #666; line-height: 1.7; max-width: 560px; margin: 0 0 18px; }
+    .section-h2 { font-family: var(--font-display, system-ui); font-size: 12px; font-weight: 700; color: var(--sf-navy,#001E5B); margin: 14px 0 7px; }
+    .divider { border: none; border-top: 1px solid #efefef; margin: 14px 0; }
+
+    /* ── STAT STRIP ────────────────────────────────────────────── */
+    .stat-strip { display: grid; gap: 0; border: 1px solid #e8e8e8; border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+    .stat-strip.cols-4 { grid-template-columns: repeat(4,1fr); }
+    .stat-strip.cols-3 { grid-template-columns: repeat(3,1fr); }
+    .stat-cell { padding: 14px 12px; border-right: 1px solid #e8e8e8; text-align: center; background: var(--grilld-cream); }
+    .stat-cell:last-child { border-right: none; }
+    .stat-val { font-family: var(--font-display, system-ui); font-size: 24px; font-weight: 700; color: var(--grilld-red); line-height: 1; margin-bottom: 3px; }
+    .stat-label { font-size: 9.5px; color: #888; line-height: 1.4; }
+
+    /* ── SCOPE TABLE ───────────────────────────────────────────── */
+    .scope-table { width: 100%; border-collapse: collapse; font-size: 10.5px; margin-bottom: 14px; }
+    .scope-table th { padding: 7px 12px; text-align: left; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 2px solid #e8e8e8; }
+    .scope-table th.sf-col { color: var(--sf-navy,#001E5B); }
+    .scope-table th.task-col { color: #555; }
+    .scope-table th.both-col { color: #888; }
+    .scope-table td { padding: 7px 12px; vertical-align: top; border-bottom: 1px solid #f0f0f0; color: #444; line-height: 1.5; }
+    .scope-table tr:last-child td { border-bottom: none; }
+    .scope-table td.sf-col { background: rgba(0,30,91,0.03); }
+    .scope-table td.task-col { background: rgba(0,0,0,0.015); }
+    .scope-table td strong { color: var(--sf-navy,#001E5B); font-weight: 600; font-size: 10.5px; display: block; margin-bottom: 2px; }
+
+    /* ── ARCH DIAGRAM ──────────────────────────────────────────── */
+    .arch-pane { border: 1px solid #e8e8e8; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+    .arch-pane-head { background: var(--sf-navy,#001E5B); padding: 9px 16px; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.65); display: flex; align-items: center; justify-content: space-between; }
+    .arch-pane-head span { font-size: 9px; font-weight: 400; letter-spacing: 0; text-transform: none; color: rgba(255,255,255,0.3); }
+    .arch-pane-body { padding: 14px 16px 12px; background: #fafafa; }
+    .arch-layer-row { display: flex; align-items: stretch; gap: 7px; margin-bottom: 5px; }
+    .arch-layer-label { width: 88px; flex-shrink: 0; font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #555; display: flex; flex-direction: column; justify-content: center; }
+    .arch-layer-desc { font-size: 8px; font-weight: 400; color: #888; letter-spacing: 0; text-transform: none; margin-top: 2px; }
+    .arch-blocks-row { flex: 1; display: flex; gap: 6px; }
+    .arch-blk { flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 5px; padding: 7px 10px; display: flex; align-items: center; gap: 8px; }
+    .arch-blk img { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+    .arch-blk-name { font-size: 10px; font-weight: 700; color: var(--sf-navy,#001E5B); line-height: 1.2; }
+    .arch-blk-sub { font-size: 8.5px; color: #999; margin-top: 1px; line-height: 1.3; }
+    .arch-blk.sf { border-color: rgba(2,42,192,0.25); background: rgba(2,42,192,0.03); }
+    .arch-blk.sf .arch-blk-name { color: var(--sf-blue,#022AC0); }
+    .arch-blk.red { border-color: rgba(231,20,26,0.25); background: rgba(231,20,26,0.03); }
+    .arch-blk.red .arch-blk-name { color: var(--grilld-red); }
+    .arch-blk.green { border-color: rgba(0,129,53,0.25); background: rgba(0,129,53,0.03); }
+    .arch-blk.green .arch-blk-name { color: var(--grilld-green); }
+    .arch-arrow-row { padding: 2px 0 2px 95px; }
+    .arch-arrow-inner { display: flex; align-items: center; gap: 0; }
+    .arch-arrow-line { flex: 1; height: 1px; background: repeating-linear-gradient(90deg, #ddd 0, #ddd 4px, transparent 4px, transparent 8px); }
+    .arch-arrow-dot { font-size: 8px; color: #ccc; margin: 0 4px; }
+
+    /* ── VERTICAL JOURNEY ──────────────────────────────────────── */
+    .journey-v { border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; }
+    .journey-v-col-heads { display: grid; grid-template-columns: 1fr 32px 1fr; }
+    .journey-v-col-head { padding: 7px 13px; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    .journey-v-col-head.cx { background: var(--grilld-red); color: white; }
+    .journey-v-col-head.mid { background: #f0f0f0; }
+    .journey-v-col-head.ex { background: var(--sf-navy,#001E5B); color: rgba(255,255,255,0.65); text-align: right; }
+    .journey-v-row { display: grid; grid-template-columns: 1fr 32px 1fr; border-top: 1px solid #ebebeb; }
+    .journey-v-cx { padding: 9px 13px; background: #fff8f8; font-size: 10.5px; color: #444; line-height: 1.5; }
+    .journey-v-mid { display: flex; align-items: center; justify-content: center; background: #f5f5f5; border-left: 1px solid #e8e8e8; border-right: 1px solid #e8e8e8; position: relative; }
+    .journey-v-mid::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: repeating-linear-gradient(180deg, #ddd 0, #ddd 4px, transparent 4px, transparent 8px); }
+    .journey-v-ex { padding: 9px 13px; background: #f7f8fc; font-size: 10.5px; color: #444; line-height: 1.5; }
+    .journey-v-cx-title { font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--grilld-red); margin-bottom: 3px; }
+    .journey-v-ex-title { font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--sf-navy,#001E5B); margin-bottom: 3px; }
+    .step-num { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: var(--grilld-red); color: white; font-size: 9px; font-weight: 700; position: relative; z-index: 1; }
+    .badge-chip { display: inline-block; font-size: 7.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 5px; border-radius: 3px; margin-top: 4px; margin-right: 2px; }
+    .chip-d360 { background: rgba(6,106,254,0.1); color: #022AC0; }
+    .chip-mca  { background: rgba(231,20,26,0.08); color: #a00; }
+    .chip-task { background: rgba(0,0,0,0.07); color: #333; }
+    .chip-api  { background: rgba(0,129,53,0.1); color: var(--grilld-green); }
+    .chip-flow { background: rgba(0,30,91,0.08); color: var(--sf-navy,#001E5B); }
+
+    /* ── API REFERENCE BOX ─────────────────────────────────────── */
+    .api-ref { background: #0d1117; border-radius: 6px; padding: 12px 16px; margin-top: 10px; overflow: hidden; }
+    .api-ref-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; }
+    .api-ref pre { margin: 0; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 9.5px; line-height: 1.6; color: #e6edf3; white-space: pre-wrap; word-break: break-all; }
+    .api-ref .json-key { color: #79c0ff; }
+    .api-ref .json-str { color: #a5d6ff; }
+    .api-ref .json-num { color: #ff9f43; }
+    .api-ref .json-method { color: #7ee787; }
+    .api-ref .json-url { color: #d2a8ff; }
+    .api-ref .json-header { color: #6b7280; }
+
+    /* ── DATA LINEAGE DIAGRAM ──────────────────────────────────── */
+    .lineage-wrap { border: 1px solid #e8e8e8; border-radius: 6px; overflow: hidden; }
+    .lineage-col-heads { display: grid; grid-template-columns: 140px 28px 160px 28px 120px 28px 160px; background: var(--grilld-cream); border-bottom: 2px solid #e8e8e8; }
+    .lineage-col-head { padding: 8px 10px; font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; }
+    .lineage-col-head.src { color: var(--grilld-red); }
+    .lineage-col-head.d360 { color: var(--sf-navy,#001E5B); }
+    .lineage-col-head.empty { background: transparent; }
+    .lineage-row { display: grid; grid-template-columns: 140px 28px 160px 28px 120px 28px 160px; border-top: 1px solid #f0f0f0; align-items: center; }
+    .lineage-row:first-child { border-top: none; }
+    .lineage-row:nth-child(even) .lineage-cell { background: #fafafa; }
+    .lineage-cell { padding: 7px 10px; font-size: 10px; color: #444; line-height: 1.4; }
+    .lineage-cell code { background: #f0f0f0; border-radius: 3px; padding: 1px 4px; font-size: 9px; font-family: monospace; color: #333; }
+    .lineage-cell strong { color: var(--sf-navy,#001E5B); font-weight: 600; }
+    .lineage-arrow { display: flex; align-items: center; justify-content: center; font-size: 12px; color: #ccc; }
+    .lineage-use { font-size: 9.5px; color: #666; font-style: italic; line-height: 1.4; }
+
+    /* ── BRIEF CARDS ───────────────────────────────────────────── */
+    .brief-card-grid { display: grid; gap: 10px; }
+    .brief-card-grid.cols-3 { grid-template-columns: repeat(3,1fr); }
+    .brief-card-grid.cols-2 { grid-template-columns: repeat(2,1fr); }
+    .brief-card { border: 1px solid #e8e8e8; border-radius: 6px; padding: 11px 13px; background: white; }
+    .brief-card.red-tint  { background: var(--grilld-red-bg); border-color: rgba(231,20,26,0.18); }
+    .brief-card.navy-tint { background: rgba(0,30,91,0.03); border-color: rgba(0,30,91,0.12); }
+    .brief-card.green-tint { background: rgba(0,129,53,0.04); border-color: rgba(0,129,53,0.18); }
+    .brief-card-title { font-size: 10.5px; font-weight: 700; color: var(--sf-navy,#001E5B); margin-bottom: 4px; }
+    .brief-card.red-tint .brief-card-title { color: #a00; }
+    .brief-card.green-tint .brief-card-title { color: var(--grilld-green); }
+    .brief-card-body { font-size: 10px; color: #666; line-height: 1.55; }
+
+    /* ── CALLOUT ───────────────────────────────────────────────── */
+    .callout { border: 1px solid rgba(0,30,91,0.1); border-radius: 5px; padding: 9px 13px; margin: 10px 0; font-size: 10.5px; color: #444; line-height: 1.6; background: rgba(0,30,91,0.03); }
+    .callout strong { color: var(--sf-navy,#001E5B); }
+    .callout.red { background: var(--grilld-red-bg); border-color: rgba(231,20,26,0.14); }
+    .callout.red strong { color: #900; }
+    .callout.green { background: rgba(0,129,53,0.04); border-color: rgba(0,129,53,0.15); }
+    .callout.green strong { color: var(--grilld-green); }
+
+    /* ── TASK INTEGRATION PAGE ─────────────────────────────────── */
+    .task-logo-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--grilld-red); color: white; border-radius: 5px; padding: 5px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 14px; }
+    .int-flow { display: flex; align-items: center; gap: 0; margin: 14px 0; overflow: hidden; border: 1px solid #e8e8e8; border-radius: 6px; }
+    .int-step { flex: 1; padding: 10px 12px; text-align: center; background: white; }
+    .int-step:nth-child(even) { background: #fafafa; }
+    .int-step-label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #555; margin-bottom: 3px; }
+    .int-step-val { font-size: 10.5px; font-weight: 700; color: var(--sf-navy,#001E5B); line-height: 1.3; }
+    .int-step-sub { font-size: 9px; color: #888; margin-top: 2px; line-height: 1.3; }
+    .int-arrow { flex-shrink: 0; padding: 0 4px; font-size: 14px; color: #ccc; background: white; }
+    .payload-tabs { display: flex; gap: 0; border-bottom: 1px solid #e8e8e8; margin-bottom: 0; }
+    .payload-tab { padding: 6px 14px; font-size: 10px; font-weight: 600; color: #888; cursor: default; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+    .payload-tab.active { color: var(--grilld-red); border-bottom-color: var(--grilld-red); }
+    .payload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  </style>
+</head>
+<body>
+
+<div class="export-bar">
+  <button onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 1 — COVER                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-top-bar"></div>
+    <div class="cover-bg-orb1"></div>
+    <div class="cover-bg-orb2"></div>
+    <div class="cover-body">
+      <div class="cover-logos">
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd">
+        <div class="cover-logo-divider"></div>
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-RGB.svg" alt="Salesforce" style="height:26px;">
+      </div>
+      <div class="cover-main">
+        <div class="cover-eyebrow">RFP Response — Confidential · May 2026</div>
+        <h1>A technical solution for<br><em>Grill'd member engagement</em></h1>
+        <p class="cover-subtitle">A comprehensive technical solution overview for Grill'd — how Salesforce delivers real-time, values-driven member communications at scale, integrated with TASK POS.</p>
+        <div class="cover-meta">
+          <div>
+            <div class="cover-meta-label">Prepared for</div>
+            <div class="cover-meta-value">Grill'd Healthy Burgers</div>
+          </div>
+          <div>
+            <div class="cover-meta-label">Date</div>
+            <div class="cover-meta-value">May 2026</div>
+          </div>
+          <div>
+            <div class="cover-meta-label">Prepared by</div>
+            <div class="cover-meta-value">Miles Toolin<br>Principal Specialist, Salesforce</div>
+          </div>
+          <div>
+            <div class="cover-meta-label">Classification</div>
+            <div class="cover-meta-value">Confidential — not for distribution</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 2 — EXECUTIVE SUMMARY                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div class="page-header">
+      <div class="page-header-logos">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" alt="Salesforce">
+        <div class="page-header-div"></div>
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd" style="height:20px;">
+      </div>
+      <div class="page-header-right">Grill'd — Confidential</div>
+    </div>
+    <div class="page-content">
+      <div class="section-eyebrow">Executive Summary</div>
+      <div class="section-h1">What Grill'd is trying to achieve — and how Salesforce delivers it</div>
+      <p class="section-lead">Grill'd has built one of Australia's most values-driven loyalty programs. The ambition in this RFP is to make that program real-time — reacting to what members do, who they support, and what they care about, and delivering the right communication at exactly the right moment. Salesforce is purpose-built for this.</p>
+
+      <div class="brief-card-grid cols-3" style="margin-bottom:16px;">
+        <div class="brief-card navy-tint">
+          <div class="brief-card-title">Unified member data</div>
+          <div class="brief-card-body">Data 360 combines member preferences, stamp activity, nominated AFL team, charity selection, and channel history into a single real-time profile — the foundation every personalised communication is built on.</div>
+        </div>
+        <div class="brief-card navy-tint">
+          <div class="brief-card-title">Real-time event detection</div>
+          <div class="brief-card-body">Streaming Insights evaluate inbound events from TASK POS and external feeds — detecting stamp milestones and AFL game results within milliseconds, and firing the right journey automatically.</div>
+        </div>
+        <div class="brief-card navy-tint">
+          <div class="brief-card-title">Multi-channel journey orchestration</div>
+          <div class="brief-card-body">Marketing Cloud Advanced delivers personalised push notifications, SMS, and email across both use cases — with Salesforce Flow providing the branching logic that handles every member scenario cleanly.</div>
+        </div>
+      </div>
+
+      <div class="section-h2">The two use cases this response covers</div>
+      <div class="brief-card-grid cols-2" style="margin-bottom:14px;">
+        <div class="brief-card red-tint">
+          <div class="brief-card-title">Use Case 4 — Mad Bunday Campaign Journey</div>
+          <div class="brief-card-body">When a member's nominated AFL team wins on Saturday, a personalised coupon lands in their app that evening — redeemable on Monday at any Grill'd location with a minimum spend. Members with Spoiler Protection receive the reveal Monday morning instead. Salesforce handles eligibility evaluation, branching logic, message delivery, and redemption tracking from start to finish.</div>
+        </div>
+        <div class="brief-card red-tint">
+          <div class="brief-card-title">Use Case 5 — 8 &amp; Donate Rewards Journey</div>
+          <div class="brief-card-body">Members collect stamps with every burger. At stamps 1, 5, 7, and 8, progressive communications build anticipation — culminating in a donation to the member's locally nominated charity through Grill'd's Local Matters program. Salesforce detects each milestone in real time and delivers the right message, personalised with the charity name, at every stage.</div>
+        </div>
+      </div>
+
+      <div class="section-h2">Platform foundation and scope</div>
+      <table class="scope-table">
+        <thead>
+          <tr>
+            <th class="sf-col" style="width:34%;">Salesforce owns</th>
+            <th class="task-col" style="width:33%;">TASK + Grill'd own</th>
+            <th class="both-col" style="width:33%;">Integration responsibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sf-col"><strong>Unified member profile</strong>Identity resolution across app, POS, and web using D360.</td>
+            <td class="task-col"><strong>Loyalty ledger</strong>Stamp issuance, stamp count, reward state, coupon validation.</td>
+            <td class="both-col"><strong>TASK → D360 events</strong>Stamp scans, profile updates, and redemption confirmations delivered to D360 Ingestion API by TASK.</td>
+          </tr>
+          <tr>
+            <td class="sf-col"><strong>Milestone detection + Flow triggers</strong>Streaming Insights and Data Actions fire Salesforce Flow entry automatically.</td>
+            <td class="task-col"><strong>Charity assignment</strong>Nominated charity per restaurant managed by TASK — delivered in the stamp event payload.</td>
+            <td class="both-col"><strong>AFL result delivery</strong>Game result event delivered by Grill'd middleware or AFL API to D360. Salesforce provides the ingestion schema.</td>
+          </tr>
+          <tr>
+            <td class="sf-col"><strong>Message delivery</strong>Push, SMS, and email across all milestone and campaign moments.</td>
+            <td class="task-col"><strong>POS coupon redemption</strong>Coupon code validation and minimum spend enforcement at TASK POS.</td>
+            <td class="both-col"><strong>Redemption confirmation</strong>TASK sends redemption event back to D360 to close the loop and update member profiles.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Optionality note:</strong> Where items are noted as TASK-owned today — including coupon generation and stamp ledger management — Salesforce Loyalty Management is capable of owning these natively if Grill'd wishes to consolidate onto a single platform in a future phase. This is not in scope for this response but is available, supported, and used by comparable QSR operators globally.
+      </div>
+    </div>
+    <div class="page-footer">
+      <div class="page-footer-left">Salesforce Confidential — Prepared for Grill'd</div>
+      <div class="page-footer-right">2 / 8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 3 — SOLUTION ARCHITECTURE                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div class="page-header">
+      <div class="page-header-logos">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" alt="Salesforce">
+        <div class="page-header-div"></div>
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd" style="height:20px;">
+      </div>
+      <div class="page-header-right">Grill'd — Confidential</div>
+    </div>
+    <div class="page-content">
+      <div class="section-eyebrow">Solution Architecture</div>
+      <div class="section-h1">Five layers — from POS event to member message</div>
+      <p class="section-lead">The Salesforce platform for Grill'd operates across five layers. TASK POS and the AFL API generate real-time events that flow through Data 360 for unification and processing, into Marketing Cloud Advanced for journey orchestration, and out to the member's device. Every layer is configurable via API — giving Grill'd's development team full control without UI dependency.</p>
+
+      <div class="arch-pane">
+        <div class="arch-pane-head">
+          End-to-end data and communication flow — UC#4 Mad Bunday + UC#5 8 &amp; Donate
+        </div>
+        <div class="arch-pane-body">
+
+          <div class="arch-layer-row">
+            <div class="arch-layer-label">
+              Sources
+              <div class="arch-layer-desc">Events enter the platform here</div>
+            </div>
+            <div class="arch-blocks-row">
+              <div class="arch-blk red">
+                <div style="display:flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--grilld-red);border-radius:4px;flex-shrink:0;"><span style="color:white;font-size:9px;font-weight:700;">TASK</span></div>
+                <div>
+                  <div class="arch-blk-name">TASK POS</div>
+                  <div class="arch-blk-sub">Stamp scans · member records · redemption events · charity assignment</div>
+                </div>
+              </div>
+              <div class="arch-blk green">
+                <div style="display:flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--grilld-green);border-radius:4px;flex-shrink:0;"><span style="color:white;font-size:7.5px;font-weight:700;">AFL</span></div>
+                <div>
+                  <div class="arch-blk-name">AFL API / Grill'd Middleware</div>
+                  <div class="arch-blk-sub">Game results · winning team · result timestamp — UC#4 only</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-arrow-row"><div class="arch-arrow-inner"><div class="arch-arrow-line"></div><div class="arch-arrow-dot">▼</div></div></div>
+
+          <div class="arch-layer-row">
+            <div class="arch-layer-label">
+              Ingest
+              <div class="arch-layer-desc">Events received and stored</div>
+            </div>
+            <div class="arch-blocks-row">
+              <div class="arch-blk sf" style="flex:2;">
+                <img src="assets/icons/2d/Data Cloud.png" alt="Data 360">
+                <div>
+                  <div class="arch-blk-name">Data 360 — Streaming Ingestion API</div>
+                  <div class="arch-blk-sub">RESTful endpoint receiving real-time events from TASK and AFL API · sub-500ms profile update · no UI configuration required</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-arrow-row"><div class="arch-arrow-inner"><div class="arch-arrow-line"></div><div class="arch-arrow-dot">▼</div></div></div>
+
+          <div class="arch-layer-row">
+            <div class="arch-layer-label">
+              Unify &amp; Segment
+              <div class="arch-layer-desc">Profile built, milestones detected</div>
+            </div>
+            <div class="arch-blocks-row">
+              <div class="arch-blk sf">
+                <img src="assets/icons/2d/Data Cloud.png" alt="Data 360">
+                <div>
+                  <div class="arch-blk-name">Identity Resolution</div>
+                  <div class="arch-blk-sub">Unified Individual — matches records across app, POS, web</div>
+                </div>
+              </div>
+              <div class="arch-blk sf">
+                <img src="assets/icons/2d/Data Cloud.png" alt="Data 360">
+                <div>
+                  <div class="arch-blk-name">Streaming Insights</div>
+                  <div class="arch-blk-sub">Real-time milestone queries — stamp thresholds, AFL team matching</div>
+                </div>
+              </div>
+              <div class="arch-blk sf">
+                <img src="assets/icons/2d/Data Cloud.png" alt="Data 360">
+                <div>
+                  <div class="arch-blk-name">Data Actions</div>
+                  <div class="arch-blk-sub">Journey entry triggers fired to MCA on milestone match</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-arrow-row"><div class="arch-arrow-inner"><div class="arch-arrow-line"></div><div class="arch-arrow-dot">▼</div></div></div>
+
+          <div class="arch-layer-row">
+            <div class="arch-layer-label">
+              Orchestrate
+              <div class="arch-layer-desc">Journeys built and executed</div>
+            </div>
+            <div class="arch-blocks-row">
+              <div class="arch-blk sf" style="flex:2;">
+                <img src="assets/icons/2d/Marketing.png" alt="MCA">
+                <div>
+                  <div class="arch-blk-name">Marketing Cloud Advanced — Campaign Flows</div>
+                  <div class="arch-blk-sub">Salesforce Flow — event-driven, multi-channel journey logic · branching for Spoiler Protection, stamp milestones, re-engagement · invocable via REST API</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-arrow-row"><div class="arch-arrow-inner"><div class="arch-arrow-line"></div><div class="arch-arrow-dot">▼</div></div></div>
+
+          <div class="arch-layer-row">
+            <div class="arch-layer-label">
+              Engage
+              <div class="arch-layer-desc">Message reaches the member</div>
+            </div>
+            <div class="arch-blocks-row">
+              <div class="arch-blk sf">
+                <img src="assets/icons/2d/Marketing.png" alt="Push">
+                <div>
+                  <div class="arch-blk-name">Push Notification</div>
+                  <div class="arch-blk-sub">Grill'd app — primary channel</div>
+                </div>
+              </div>
+              <div class="arch-blk sf">
+                <img src="assets/icons/2d/Marketing.png" alt="SMS">
+                <div>
+                  <div class="arch-blk-name">SMS</div>
+                  <div class="arch-blk-sub">Transactional Messaging API</div>
+                </div>
+              </div>
+              <div class="arch-blk sf">
+                <img src="assets/icons/2d/Marketing.png" alt="Email">
+                <div>
+                  <div class="arch-blk-name">Email</div>
+                  <div class="arch-blk-sub">Donation receipts · stamp milestone</div>
+                </div>
+              </div>
+              <div class="arch-blk red">
+                <div style="display:flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--grilld-red);border-radius:4px;flex-shrink:0;"><span style="color:white;font-size:9px;font-weight:700;">TASK</span></div>
+                <div>
+                  <div class="arch-blk-name">TASK POS</div>
+                  <div class="arch-blk-sub">Coupon redemption · in-store confirmation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="brief-card-grid cols-3">
+        <div class="brief-card">
+          <div class="brief-card-title">Built on proven platform capabilities</div>
+          <div class="brief-card-body">Data 360 and MCA are the same platforms powering loyalty and engagement for McDonald's across 65+ markets globally — operated via TASK's parent company, PAR Technology.</div>
+        </div>
+        <div class="brief-card">
+          <div class="brief-card-title">TASK and Salesforce — proven integration path</div>
+          <div class="brief-card-body">TASK's API-first architecture and RESTful event streaming integrates directly with D360 Ingestion API. Grill'd benefits from an established integration pattern between the two platforms.</div>
+        </div>
+        <div class="brief-card">
+          <div class="brief-card-title">Configurable via UI and API</div>
+          <div class="brief-card-body">The full Salesforce stack is accessible via a rich UI for the marketing team — and configurable via API and CLI for the development team. Both paths are fully supported.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-footer-left">Salesforce Confidential — Prepared for Grill'd</div>
+      <div class="page-footer-right">3 / 8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 4 — UC#4: MAD BUNDAY JOURNEY                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div class="page-header">
+      <div class="page-header-logos">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" alt="Salesforce">
+        <div class="page-header-div"></div>
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd" style="height:20px;">
+      </div>
+      <div class="page-header-right">Grill'd — Confidential</div>
+    </div>
+    <div class="page-content">
+      <div class="section-eyebrow">Use Case 4</div>
+      <div class="section-h1">Mad Bunday Campaign Journey</div>
+      <p class="section-lead" style="margin-bottom:10px;">Member's AFL team wins Saturday evening. Eligible members receive a coupon push that night — redeemable on Monday. Members with Spoiler Protection opted in receive the reveal Monday 8AM instead. TASK validates the coupon at POS on redemption.</p>
+
+      <div class="journey-v">
+        <div class="journey-v-col-heads">
+          <div class="journey-v-col-head cx">Customer Experience</div>
+          <div class="journey-v-col-head mid"></div>
+          <div class="journey-v-col-head ex">Headless Execution</div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Member sets up profile</div>
+            Member nominates their AFL team in the Grill'd app — "Richmond Tigers". They've opted in to Mad Bunday offers. Spoiler Protection is off.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">1</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">TASK → D360 profile sync</div>
+            TASK delivers <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">nominated_team</code> and <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">spoiler_protection_opt_in</code> to D360 Ingestion API on registration or profile update. Fields stored on Unified Individual.
+            <div><span class="badge-chip chip-task">TASK</span><span class="badge-chip chip-d360">D360 Ingest</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Team wins Saturday evening</div>
+            Their team wins. The member is watching the game — they have no idea they're about to get a reward.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">2</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">AFL API → D360 Streaming Insight</div>
+            AFL API fires game result to D360 Streaming Ingestion API. Streaming Insight evaluates: <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">WHERE member.nominated_team = game.winner</code>. Eligible cohort identified. Spoiler Protection members flagged separately.
+            <div><span class="badge-chip chip-api">AFL API</span><span class="badge-chip chip-d360">D360 SI</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Push arrives Saturday 9PM</div>
+            "Your Richos won! Here's your Mad Bunday — $X off your next visit. Valid Monday only." Coupon code embedded in the message.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">3</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">Data Action → Campaign Flow</div>
+            Data Action fires. MCA Campaign Flow triggered. Decision split: <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">spoilerProtectionOptIn = false</code> → Saturday 9PM AEST send via Transactional Push + SMS. Coupon code and member first name passed as flow variables.
+            <div><span class="badge-chip chip-d360">D360 DA</span><span class="badge-chip chip-flow">Flow Decision</span><span class="badge-chip chip-mca">Transact API</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Spoiler Protection — Monday reveal</div>
+            No notification Saturday. Monday 8AM — "You won't believe what happened Saturday. Here's your Monday reward." The reveal lands fresh.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">4</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">Flow Wait Step — Monday branch</div>
+            For members where <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">spoilerProtectionOptIn = true</code>, the Flow's wait step holds until Monday 8AM AEST. Separate message definition <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">mad-bunday-spoiler-push</code> fires with reveal copy.
+            <div><span class="badge-chip chip-flow">Flow Wait</span><span class="badge-chip chip-mca">MCA</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Redemption at POS Monday</div>
+            Member visits Grill'd on Monday, scans coupon at POS, minimum $20 spend confirmed, reward applied. Loop closed.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">5</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">TASK validates → D360 confirmation</div>
+            TASK POS validates coupon code and enforces $20 minimum spend. On redemption, TASK fires confirmation event back to D360 Streaming Ingestion API. D360 Calculated Insight updates <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">redemption_count</code>. MCA records engagement via ENS.
+            <div><span class="badge-chip chip-task">TASK POS</span><span class="badge-chip chip-d360">D360 CI</span><span class="badge-chip chip-mca">ENS</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-ref" style="margin-top:10px;">
+        <div class="api-ref-label">API Reference — Campaign Flow trigger (Step 3)</div>
+        <pre><span class="json-method">POST</span> <span class="json-url">https://[org].salesforce.com/services/data/v66.0/actions/custom/flow/MadBundayFlow</span>
+<span class="json-header">Authorization: Bearer {access_token}    Content-Type: application/json</span>
+
+{ <span class="json-key">"inputs"</span>: [{ <span class="json-key">"memberId"</span>: <span class="json-str">"GLD_MBR_12345"</span>, <span class="json-key">"winningTeam"</span>: <span class="json-str">"Richmond Tigers"</span>,
+    <span class="json-key">"couponCode"</span>: <span class="json-str">"BUNDAY-XK29M"</span>, <span class="json-key">"spoilerProtectionOptIn"</span>: <span class="json-num">false</span>,
+    <span class="json-key">"memberFirstName"</span>: <span class="json-str">"Jordan"</span>, <span class="json-key">"expiryDate"</span>: <span class="json-str">"2026-08-11"</span> }] }</pre>
+      </div>
+
+      <div class="callout red" style="margin-top:8px;">
+        <strong>Assumptions to confirm:</strong> Nominated team storage location (TASK or Grill'd app) · Coupon generation ownership (TASK pre-generates, or alternative) · Monday send time (8AM AEST fixed, or per-member timezone) · AFL data source (Grill'd middleware or direct feed).
+      </div>
+    </div>
+    <div class="page-footer">
+      <div class="page-footer-left">Salesforce Confidential — Prepared for Grill'd</div>
+      <div class="page-footer-right">4 / 8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 5 — UC#5: 8 & DONATE JOURNEY                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div class="page-header">
+      <div class="page-header-logos">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" alt="Salesforce">
+        <div class="page-header-div"></div>
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd" style="height:20px;">
+      </div>
+      <div class="page-header-right">Grill'd — Confidential</div>
+    </div>
+    <div class="page-content">
+      <div class="section-eyebrow">Use Case 5</div>
+      <div class="section-h1">8 &amp; Donate Rewards Journey</div>
+      <p class="section-lead" style="margin-bottom:10px;">Members collect stamps with every burger. Salesforce detects stamp milestones in real time — triggering progressive communications at stamps 1, 5, 7, and 8. At stamp 8, TASK processes the donation to the member's locally nominated charity through Local Matters. A re-engagement flow activates if the member goes quiet before completing their cycle.</p>
+
+      <div class="journey-v">
+        <div class="journey-v-col-heads">
+          <div class="journey-v-col-head cx">Customer Experience</div>
+          <div class="journey-v-col-head mid"></div>
+          <div class="journey-v-col-head ex">Headless Execution</div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Stamp 1 — Welcome</div>
+            Member scans their first burger at POS. A welcome message arrives in the app: "Welcome to 8 &amp; Donate — your burgers now support [Charity Name]. Here's how it works."
+          </div>
+          <div class="journey-v-mid"><span class="step-num">1</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">TASK → D360 stamp event</div>
+            TASK fires <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">stamp_scan</code> with <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">stamp_number: 1</code> to D360 Streaming API. Streaming Insight detects milestone. Data Action fires. MCA Welcome Flow triggered with <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">charityName</code> from Unified Profile.
+            <div><span class="badge-chip chip-task">TASK</span><span class="badge-chip chip-d360">D360 SI</span><span class="badge-chip chip-mca">MCA Flow</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Stamp 5 — Halfway</div>
+            "5 down, 3 to go. Your next three burgers help [Charity Name] — keep going." Member sees their progress and the charity name in a single glance.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">2</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">Milestone detection — stamp 5</div>
+            Streaming Insight detects <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">stamp_number = 5</code>. Data Action triggers Halfway Flow. Transactional Push personalised with <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">stampsRemaining: 3</code> and <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">charityName</code> from D360 Unified Profile.
+            <div><span class="badge-chip chip-d360">D360 SI</span><span class="badge-chip chip-mca">Transact Push</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Stamp 7 — One more</div>
+            "One more burger and [Charity Name] gets a donation. You're almost there." Urgency and emotional connection in a single message.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">3</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">Milestone detection — stamp 7</div>
+            Same pattern. <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">stamp_number = 7</code> Streaming Insight fires Data Action → One More Flow. Charity name passed as flow variable to MCA message definition.
+            <div><span class="badge-chip chip-d360">D360 DA</span><span class="badge-chip chip-mca">MCA Flow</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Stamp 8 — Donation confirmed</div>
+            "You did it! Your donation to [Charity Name] is confirmed. Thank you." Push + email arrives with charity name, donation amount, and a receipt. The Local Matters moment.
+          </div>
+          <div class="journey-v-mid"><span class="step-num">4</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">Donation moment flow</div>
+            Streaming Insight detects <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">stamp_number = 8</code>. Donation Moment Flow fires. TASK processes the charity donation. TASK sends donation confirmation event back to D360. MCA sends celebratory push + email with <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">charityName</code> and donation amount.
+            <div><span class="badge-chip chip-task">TASK Donation</span><span class="badge-chip chip-d360">D360</span><span class="badge-chip chip-mca">Push + Email</span></div>
+          </div>
+        </div>
+
+        <div class="journey-v-row">
+          <div class="journey-v-cx">
+            <div class="journey-v-cx-title">Re-engagement — if member goes quiet</div>
+            If no stamp scan in the configured window, a reminder arrives: "Your [Charity Name] is waiting. Come back and finish what you started."
+          </div>
+          <div class="journey-v-mid"><span class="step-num">5</span></div>
+          <div class="journey-v-ex">
+            <div class="journey-v-ex-title">Inactivity Streaming Insight</div>
+            D360 Streaming Insight monitors <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">last_stamp_date</code> against a configured inactivity window. When threshold is breached, Data Action triggers Re-engagement Flow. Message personalised with charity name and stamps remaining.
+            <div><span class="badge-chip chip-d360">D360 SI</span><span class="badge-chip chip-mca">Re-engage Flow</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout red" style="margin-top:8px;">
+        <strong>Assumptions to confirm:</strong> Inactivity window for re-engagement (e.g. 14 days without a stamp scan) · Donation amount per cycle (to include in the confirmation message) · Charity assignment per restaurant — delivered in TASK stamp event payload or pre-loaded on member profile.
+      </div>
+    </div>
+    <div class="page-footer">
+      <div class="page-footer-left">Salesforce Confidential — Prepared for Grill'd</div>
+      <div class="page-footer-right">5 / 8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 6 — DATA LINEAGE                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div class="page-header">
+      <div class="page-header-logos">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" alt="Salesforce">
+        <div class="page-header-div"></div>
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd" style="height:20px;">
+      </div>
+      <div class="page-header-right">Grill'd — Confidential</div>
+    </div>
+    <div class="page-content">
+      <div class="section-eyebrow">Data Lineage</div>
+      <div class="section-h1">From source field to member message</div>
+      <p class="section-lead" style="margin-bottom:12px;">Every personalisation token in a member's message traces directly to a field delivered by TASK or the AFL API. This diagram shows the full lineage — source system, D360 profile field, flow variable, and the message the member reads.</p>
+
+      <!-- SVG LINEAGE DIAGRAM -->
+      <svg width="100%" viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" style="display:block;margin-bottom:12px;">
+        <!-- Column headers -->
+        <rect x="0" y="0" width="680" height="28" fill="#fbfaf8"/>
+        <text x="10" y="18" font-family="system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="1" text-transform="uppercase" fill="#e7141a">SOURCE</text>
+        <text x="180" y="18" font-family="system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#001E5B">D360 UNIFIED PROFILE</text>
+        <text x="360" y="18" font-family="system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#666">FLOW VARIABLE</text>
+        <text x="510" y="18" font-family="system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#444">MESSAGE TOKEN / USE</text>
+        <line x1="0" y1="28" x2="680" y2="28" stroke="#e8e8e8" stroke-width="1.5"/>
+
+        <!-- D360 central node line -->
+        <rect x="168" y="28" width="2" height="292" fill="#e0e0e0"/>
+        <rect x="348" y="28" width="2" height="292" fill="#e0e0e0"/>
+        <rect x="498" y="28" width="2" height="292" fill="#e0e0e0"/>
+
+        <!-- Row 1: stamp_number -->
+        <rect x="0" y="28" width="680" height="40" fill="white"/>
+        <rect x="4" y="34" width="56" height="14" rx="3" fill="#f5e5e5"/>
+        <text x="9" y="44" font-family="monospace" font-size="8" font-weight="700" fill="#e7141a">TASK POS</text>
+        <text x="68" y="44" font-family="monospace" font-size="9" fill="#333">stamp_number</text>
+        <line x1="163" y1="48" x2="172" y2="48" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="172,45 178,48 172,51" fill="#ccc"/>
+        <text x="182" y="44" font-family="system-ui,sans-serif" font-size="9.5" font-weight="600" fill="#001E5B">current_stamp_count</text>
+        <line x1="344" y1="48" x2="352" y2="48" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="352,45 358,48 352,51" fill="#ccc"/>
+        <text x="362" y="44" font-family="monospace" font-size="9" fill="#444">stampsCollected</text>
+        <line x1="494" y1="48" x2="502" y2="48" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="502,45 508,48 502,51" fill="#ccc"/>
+        <text x="512" y="44" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">"5 down, 3 to go"</text>
+        <text x="512" y="55" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">Stamps 5 + 7 messages</text>
+
+        <!-- Row 2: nominated_team -->
+        <rect x="0" y="68" width="680" height="40" fill="#fafafa"/>
+        <rect x="4" y="74" width="56" height="14" rx="3" fill="#f5e5e5"/>
+        <text x="9" y="84" font-family="monospace" font-size="8" font-weight="700" fill="#e7141a">TASK POS</text>
+        <text x="68" y="84" font-family="monospace" font-size="9" fill="#333">nominated_team</text>
+        <line x1="163" y1="88" x2="172" y2="88" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="172,85 178,88 172,91" fill="#ccc"/>
+        <text x="182" y="84" font-family="system-ui,sans-serif" font-size="9.5" font-weight="600" fill="#001E5B">nominated_team</text>
+        <line x1="344" y1="88" x2="352" y2="88" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="352,85 358,88 352,91" fill="#ccc"/>
+        <text x="362" y="84" font-family="monospace" font-size="9" fill="#444">winningTeam</text>
+        <line x1="494" y1="88" x2="502" y2="88" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="502,85 508,88 502,91" fill="#ccc"/>
+        <text x="512" y="84" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">"Your Richos won!"</text>
+        <text x="512" y="95" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">Mad Bunday push + SMS</text>
+
+        <!-- Row 3: charity_assignment -->
+        <rect x="0" y="108" width="680" height="40" fill="white"/>
+        <rect x="4" y="114" width="56" height="14" rx="3" fill="#f5e5e5"/>
+        <text x="9" y="124" font-family="monospace" font-size="8" font-weight="700" fill="#e7141a">TASK POS</text>
+        <text x="68" y="124" font-family="monospace" font-size="9" fill="#333">charity_assignment</text>
+        <line x1="163" y1="128" x2="172" y2="128" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="172,125 178,128 172,131" fill="#ccc"/>
+        <text x="182" y="124" font-family="system-ui,sans-serif" font-size="9.5" font-weight="600" fill="#001E5B">nominated_charity</text>
+        <line x1="344" y1="128" x2="352" y2="128" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="352,125 358,128 352,131" fill="#ccc"/>
+        <text x="362" y="124" font-family="monospace" font-size="9" fill="#444">charityName</text>
+        <line x1="494" y1="128" x2="502" y2="128" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="502,125 508,128 502,131" fill="#ccc"/>
+        <text x="512" y="124" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">"St Kilda Suns FC"</text>
+        <text x="512" y="135" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">Stamps 1, 5, 7, 8 + donation</text>
+
+        <!-- Row 4: spoiler_protection -->
+        <rect x="0" y="148" width="680" height="40" fill="#fafafa"/>
+        <rect x="4" y="154" width="56" height="14" rx="3" fill="#f5e5e5"/>
+        <text x="9" y="164" font-family="monospace" font-size="8" font-weight="700" fill="#e7141a">TASK POS</text>
+        <text x="68" y="164" font-family="monospace" font-size="9" fill="#333">spoiler_protection_opt_in</text>
+        <line x1="163" y1="168" x2="172" y2="168" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="172,165 178,168 172,171" fill="#ccc"/>
+        <text x="182" y="164" font-family="system-ui,sans-serif" font-size="9.5" font-weight="600" fill="#001E5B">spoiler_protection</text>
+        <line x1="344" y1="168" x2="352" y2="168" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="352,165 358,168 352,171" fill="#ccc"/>
+        <text x="362" y="164" font-family="monospace" font-size="9" fill="#444">spoilerProtectionOptIn</text>
+        <line x1="494" y1="168" x2="502" y2="168" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="502,165 508,168 502,171" fill="#ccc"/>
+        <text x="512" y="164" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">Flow branch — Sat vs Mon send</text>
+        <text x="512" y="175" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">No message token. Logic only.</text>
+
+        <!-- Row 5: AFL API winner -->
+        <rect x="0" y="188" width="680" height="40" fill="white"/>
+        <rect x="4" y="194" width="52" height="14" rx="3" fill="#e5f0e5"/>
+        <text x="9" y="204" font-family="monospace" font-size="8" font-weight="700" fill="#008135">Grill'd</text>
+        <text x="62" y="204" font-family="monospace" font-size="9" fill="#333">game.winner</text>
+        <line x1="163" y1="208" x2="172" y2="208" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="172,205 178,208 172,211" fill="#ccc"/>
+        <text x="182" y="204" font-family="system-ui,sans-serif" font-size="9" fill="#aaa" font-style="italic">AFL result via Grill'd data feed — TBC</text>
+        <line x1="344" y1="208" x2="352" y2="208" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="352,205 358,208 352,211" fill="#ccc"/>
+        <text x="362" y="204" font-family="monospace" font-size="9" fill="#444">winningTeam</text>
+        <line x1="494" y1="208" x2="502" y2="208" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="502,205 508,208 502,211" fill="#ccc"/>
+        <text x="512" y="204" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">"Richmond Tigers"</text>
+        <text x="512" y="215" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">Mad Bunday push + SMS header</text>
+
+        <!-- Row 6: last_stamp_date -->
+        <rect x="0" y="228" width="680" height="40" fill="#fafafa"/>
+        <rect x="4" y="234" width="56" height="14" rx="3" fill="#f5e5e5"/>
+        <text x="9" y="244" font-family="monospace" font-size="8" font-weight="700" fill="#e7141a">TASK POS</text>
+        <text x="68" y="244" font-family="monospace" font-size="9" fill="#333">last_stamp_date</text>
+        <line x1="163" y1="248" x2="172" y2="248" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="172,245 178,248 172,251" fill="#ccc"/>
+        <text x="182" y="244" font-family="system-ui,sans-serif" font-size="9.5" font-weight="600" fill="#001E5B">last_stamp_date</text>
+        <line x1="344" y1="248" x2="352" y2="248" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="352,245 358,248 352,251" fill="#ccc"/>
+        <text x="362" y="244" font-family="monospace" font-size="9" fill="#aaa">— (SI threshold only)</text>
+        <line x1="494" y1="248" x2="502" y2="248" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="502,245 508,248 502,251" fill="#ccc"/>
+        <text x="512" y="244" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">Re-engagement trigger</text>
+        <text x="512" y="255" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">Fires Data Action when inactive</text>
+
+        <!-- Row 7: redemption -->
+        <rect x="0" y="268" width="680" height="40" fill="white"/>
+        <rect x="4" y="274" width="56" height="14" rx="3" fill="#f5e5e5"/>
+        <text x="9" y="284" font-family="monospace" font-size="8" font-weight="700" fill="#e7141a">TASK POS</text>
+        <text x="68" y="284" font-family="monospace" font-size="9" fill="#333">redemption event</text>
+        <line x1="163" y1="288" x2="172" y2="288" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="172,285 178,288 172,291" fill="#ccc"/>
+        <text x="182" y="284" font-family="system-ui,sans-serif" font-size="9.5" font-weight="600" fill="#001E5B">redemption_count · last_redemption</text>
+        <line x1="344" y1="288" x2="352" y2="288" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="352,285 358,288 352,291" fill="#ccc"/>
+        <text x="362" y="284" font-family="monospace" font-size="9" fill="#aaa">— (profile enrichment)</text>
+        <line x1="494" y1="288" x2="502" y2="288" stroke="#ccc" stroke-width="1" stroke-dasharray="2,2"/>
+        <polygon points="502,285 508,288 502,291" fill="#ccc"/>
+        <text x="512" y="284" font-family="system-ui,sans-serif" font-size="9" fill="#555" font-style="italic">Segmentation + analytics</text>
+        <text x="512" y="295" font-family="system-ui,sans-serif" font-size="8" fill="#aaa">No direct message token</text>
+      </svg>
+
+      <div class="callout" style="margin-top:4px;">
+        <strong>Integration note:</strong> All <span class="badge-chip chip-task">TASK</span> fields are delivered via <code style="font-size:9px;background:#f0f0f0;padding:1px 4px;border-radius:2px;">POST</code> to the D360 Streaming Ingestion API on each relevant event. AFL result data is delivered by Grill'd's nominated data feed (source TBC). Salesforce provides the exact payload schema and endpoint for both sources.
+      </div>
+    </div>
+    <div class="page-footer">
+      <div class="page-footer-left">Salesforce Confidential — Prepared for Grill'd</div>
+      <div class="page-footer-right">6 / 8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 7 — TASK INTEGRATION                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div class="page-header">
+      <div class="page-header-logos">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" alt="Salesforce">
+        <div class="page-header-div"></div>
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd" style="height:20px;">
+      </div>
+      <div class="page-header-right">Grill'd — Confidential</div>
+    </div>
+    <div class="page-content">
+      <div class="section-eyebrow">TASK Integration</div>
+      <div class="section-h1">How TASK POS connects to Salesforce</div>
+      <p class="section-lead" style="margin-bottom:10px;">TASK is an enterprise cloud POS platform used by McDonald's, Guzman y Gomez, and Bakers Delight across Australia and globally. TASK's API-first architecture — RESTful APIs, event webhooks, and real-time transaction streaming — integrates directly with the D360 Streaming Ingestion API. No middleware required for the core event flow.</p>
+
+      <div class="int-flow">
+        <div class="int-step">
+          <div style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--grilld-red);border-radius:5px;margin:0 auto 5px;"><span style="color:white;font-size:9px;font-weight:700;">TASK</span></div>
+          <div class="int-step-label">Event Source</div>
+          <div class="int-step-val">TASK POS</div>
+          <div class="int-step-sub">Stamp scan · profile update · redemption</div>
+        </div>
+        <div class="int-arrow">→</div>
+        <div class="int-step">
+          <div style="display:flex;align-items:center;justify-content:center;margin:0 auto 5px;"><img src="assets/icons/2d/Data Cloud.png" style="width:28px;height:28px;object-fit:contain;" alt="D360"></div>
+          <div class="int-step-label">Transport</div>
+          <div class="int-step-val">D360 Streaming API</div>
+          <div class="int-step-sub">RESTful · JSON · authenticated</div>
+        </div>
+        <div class="int-arrow">→</div>
+        <div class="int-step">
+          <div style="display:flex;align-items:center;justify-content:center;margin:0 auto 5px;"><img src="assets/icons/2d/Data Cloud.png" style="width:28px;height:28px;object-fit:contain;" alt="D360"></div>
+          <div class="int-step-label">Destination</div>
+          <div class="int-step-val">D360 Unified Profile</div>
+          <div class="int-step-sub">POST per event · sub-500ms update</div>
+        </div>
+        <div class="int-arrow">→</div>
+        <div class="int-step">
+          <div style="display:flex;align-items:center;justify-content:center;margin:0 auto 5px;"><img src="assets/icons/2d/Data Cloud.png" style="width:28px;height:28px;object-fit:contain;" alt="SI"></div>
+          <div class="int-step-label">Detect</div>
+          <div class="int-step-val">Streaming Insight</div>
+          <div class="int-step-sub">Milestone detected · Data Action fired</div>
+        </div>
+        <div class="int-arrow">→</div>
+        <div class="int-step">
+          <div style="display:flex;align-items:center;justify-content:center;margin:0 auto 5px;"><img src="assets/icons/2d/Marketing.png" style="width:28px;height:28px;object-fit:contain;" alt="MCA"></div>
+          <div class="int-step-label">Trigger</div>
+          <div class="int-step-val">Salesforce Flow</div>
+          <div class="int-step-sub">Journey logic · message delivery</div>
+        </div>
+      </div>
+
+      <div class="payload-grid">
+        <div>
+          <div class="api-ref">
+            <div class="api-ref-label">Payload 1 — Stamp scan event (UC#5)</div>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+<span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+
+{ <span class="json-key">"data"</span>: [{
+  <span class="json-key">"member_id"</span>:       <span class="json-str">"GLD_MBR_00123"</span>,
+  <span class="json-key">"event_type"</span>:      <span class="json-str">"stamp_scan"</span>,
+  <span class="json-key">"stamp_number"</span>:    <span class="json-num">5</span>,
+  <span class="json-key">"total_stamps"</span>:    <span class="json-num">5</span>,
+  <span class="json-key">"restaurant_id"</span>:   <span class="json-str">"GRILD_ST_KILDA"</span>,
+  <span class="json-key">"charity_assignment"</span>: <span class="json-str">"St Kilda Suns FC"</span>,
+  <span class="json-key">"scanned_at"</span>:      <span class="json-str">"2026-08-12T13:04:22Z"</span>,
+  <span class="json-key">"transaction_id"</span>:  <span class="json-str">"TXN_88291"</span>
+}]}</pre>
+          </div>
+        </div>
+        <div>
+          <div class="api-ref">
+            <div class="api-ref-label">Payload 2 — AFL game result (UC#4)</div>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+<span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+
+{ <span class="json-key">"data"</span>: [{
+  <span class="json-key">"game_id"</span>:         <span class="json-str">"AFL_2026_R18_RICH_v_COLL"</span>,
+  <span class="json-key">"home_team"</span>:        <span class="json-str">"RICH"</span>,
+  <span class="json-key">"away_team"</span>:        <span class="json-str">"COLL"</span>,
+  <span class="json-key">"winner"</span>:           <span class="json-str">"RICH"</span>,
+  <span class="json-key">"winner_name"</span>:      <span class="json-str">"Richmond Tigers"</span>,
+  <span class="json-key">"game_date"</span>:        <span class="json-str">"2026-08-09"</span>,
+  <span class="json-key">"result_confirmed"</span>: <span class="json-str">"2026-08-09T22:14:00Z"</span>
+}]}</pre>
+          </div>
+        </div>
+        <div>
+          <div class="api-ref">
+            <div class="api-ref-label">Payload 3 — Redemption confirmation (UC#4)</div>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+<span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+
+{ <span class="json-key">"data"</span>: [{
+  <span class="json-key">"member_id"</span>:       <span class="json-str">"GLD_MBR_12345"</span>,
+  <span class="json-key">"event_type"</span>:      <span class="json-str">"coupon_redemption"</span>,
+  <span class="json-key">"coupon_code"</span>:     <span class="json-str">"BUNDAY-XK29M"</span>,
+  <span class="json-key">"transaction_total"</span>: <span class="json-num">24.50</span>,
+  <span class="json-key">"restaurant_id"</span>:   <span class="json-str">"GRILD_RICHMOND"</span>,
+  <span class="json-key">"redeemed_at"</span>:     <span class="json-str">"2026-08-11T12:31:00Z"</span>
+}]}</pre>
+          </div>
+        </div>
+        <div>
+          <div class="api-ref">
+            <div class="api-ref-label">Payload 4 — Donation confirmation (UC#5)</div>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v66.0/ssot/.../streamingIngest</span>
+<span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+
+{ <span class="json-key">"data"</span>: [{
+  <span class="json-key">"member_id"</span>:       <span class="json-str">"GLD_MBR_00123"</span>,
+  <span class="json-key">"event_type"</span>:      <span class="json-str">"donation_confirmed"</span>,
+  <span class="json-key">"charity_name"</span>:    <span class="json-str">"St Kilda Suns FC"</span>,
+  <span class="json-key">"donation_amount"</span>: <span class="json-num">2.00</span>,
+  <span class="json-key">"restaurant_id"</span>:   <span class="json-str">"GRILD_ST_KILDA"</span>,
+  <span class="json-key">"confirmed_at"</span>:    <span class="json-str">"2026-08-14T18:45:00Z"</span>
+}]}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout green" style="margin-top:8px;">
+        <strong>TASK + Salesforce — proven integration context:</strong> TASK (now part of PAR Technology since 2024) powered the McDonald's loyalty platform across 65+ markets via its Plexure entity. The D360 Ingestion API is designed for exactly this pattern — high-volume, real-time event streaming from POS systems. Salesforce will provide the exact schema specification and endpoint configuration as part of the technical onboarding process.
+      </div>
+    </div>
+    <div class="page-footer">
+      <div class="page-footer-left">Salesforce Confidential — Prepared for Grill'd</div>
+      <div class="page-footer-right">7 / 8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PAGE 8 — SPEED TO MARKET                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="content-page">
+    <div class="page-header">
+      <div class="page-header-logos">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Horiz-White-RGB.svg" alt="Salesforce">
+        <div class="page-header-div"></div>
+        <img src="assets/logos/grilld-logo.svg" alt="Grill'd" style="height:20px;">
+      </div>
+      <div class="page-header-right">Grill'd — Confidential</div>
+    </div>
+    <div class="page-content">
+      <div class="section-eyebrow">Speed to Market</div>
+      <div class="section-h1">How Grill'd gets to execution faster</div>
+      <p class="section-lead">The Salesforce platform gives Grill'd's team two paths to configure and iterate on these use cases — a full visual UI for the marketing team, and a complete API and tooling layer for the development team. Both are equally supported.</p>
+
+      <div class="stat-strip cols-3" style="margin-bottom:16px;">
+        <div class="stat-cell">
+          <div class="stat-val">2 paths</div>
+          <div class="stat-label">UI for marketers. API + CLI for developers. No trade-off.</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">60+</div>
+          <div class="stat-label">MCP tools exposing D360 and MCA to any development agent</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">90 days</div>
+          <div class="stat-label">Target to first use case live — UC#5 recommended as beachhead</div>
+        </div>
+      </div>
+
+      <div class="section-h2">Two ways to work — your team's choice</div>
+      <div class="brief-card-grid cols-2" style="margin-bottom:14px;">
+        <div class="brief-card navy-tint">
+          <div class="brief-card-title">Visual UI — for the Grill'd marketing team</div>
+          <div class="brief-card-body">All journey configuration, message templates, segmentation, and campaign reporting is accessible through Salesforce's standard UI. The Grill'd marketing team can build, test, and modify journeys, update stamp milestone copy, and review member engagement reports — without engineering involvement for day-to-day changes.</div>
+        </div>
+        <div class="brief-card navy-tint">
+          <div class="brief-card-title">API + CLI — for the Grill'd development team</div>
+          <div class="brief-card-body">Every element of the platform — D360 data streams, Streaming Insight thresholds, Campaign Flow logic, message templates — is also accessible via REST API and CLI. This means the development team can deploy via CI/CD pipelines, write automated tests, and iterate on journey logic at the pace of their engineering workflow, without waiting on UI-based configuration cycles.</div>
+        </div>
+      </div>
+
+      <table style="width:100%;border-collapse:collapse;font-size:10.5px;">
+        <thead>
+          <tr style="background:var(--sf-navy,#001E5B);">
+            <th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);width:25%;">Capability</th>
+            <th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);width:35%;">For the Grill'd marketing team</th>
+            <th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);width:40%;">For the Grill'd development team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Flow configuration</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Salesforce Flows built and modified in the MCA visual UI — drag, drop, deploy</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Flows deployed via <code style="font-size:9px;background:#f0f0f0;padding:1px 4px;border-radius:2px;">POST /actions/custom/flow/{name}</code> — version-controlled and CI/CD compatible</td>
+          </tr>
+          <tr style="background:#fafafa;">
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Message copy updates</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Marketing team edits stamp milestone and campaign copy directly in Content Builder</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">MCA Content REST API — templates manageable programmatically or via a connected CMS</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Milestone logic changes</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Streaming Insight thresholds updated in the D360 UI — e.g. adding a new milestone at stamp 3</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">D360 REST API — Streaming Insight queries updated via code, deployed without touching a browser</td>
+          </tr>
+          <tr style="background:#fafafa;">
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Testing and A/B</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">A/B test message variants in MCA — charity-led vs reward-led copy for stamp milestones</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Testing Center API (May 2026+) — test variants programmatically, score results, iterate without UI</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 12px;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Reporting and analytics</td>
+            <td style="padding:7px 12px;color:#444;font-size:10.5px;">Engagement dashboards in MCA — open rates, redemption rates, milestone completion by cohort</td>
+            <td style="padding:7px 12px;color:#444;font-size:10.5px;">D360 Calculated Insights and Data Warehouse — full analytics API for integration with Grill'd's BI tools</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="page-footer">
+      <div class="page-footer-left">Salesforce Confidential — Prepared for Grill'd</div>
+      <div class="page-footer-right">8 / 8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE TRACKING SHIM ───────────────────────────────── -->
+<script>
+(function() {
+  var pages = document.querySelectorAll('.page');
+  pages.forEach(function(p) {
+    p.classList.add('slide');
+    var eyebrow = p.querySelector('.section-eyebrow, .cover-eyebrow');
+    p.dataset.section = eyebrow ? eyebrow.textContent.trim() : '';
+  });
+  var wrapper = document.createElement('div');
+  wrapper.className = 'slide-deck';
+  wrapper.style.cssText = 'width:100%;';
+  pages[0].parentNode.insertBefore(wrapper, pages[0]);
+  pages.forEach(function(p) { wrapper.appendChild(p); });
+  if (pages[0]) pages[0].classList.add('active');
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.intersectionRatio > 0.4) {
+        document.querySelectorAll('.slide-deck .slide.active').forEach(function(s) { s.classList.remove('active'); });
+        e.target.classList.add('active');
+      }
+    });
+  }, { threshold: [0.4] });
+  pages.forEach(function(p) { obs.observe(p); });
+})();
+</script>
+
+<!-- ─── FEEDBACK WIDGET ────────────────────────────────────── -->
+<script src="feedback-widget.js" data-deck-name="grilld-solution-brief" data-feedback-repo=""></script>
+
+</body>
+</html>
