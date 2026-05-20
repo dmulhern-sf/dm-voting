@@ -289,7 +289,7 @@
         </div>
         <div class="brief-card navy-tint">
           <div class="brief-card-title">Multi-channel journey orchestration</div>
-          <div class="brief-card-body">Marketing Cloud Advanced delivers personalised push notifications, SMS, and email across both use cases — with Salesforce Flow providing the branching logic that handles every member scenario cleanly.</div>
+          <div class="brief-card-body">Marketing Cloud (Next) delivers personalised push notifications, SMS, and email across both use cases — with Salesforce Flow providing the branching logic that handles every member scenario cleanly.</div>
         </div>
       </div>
 
@@ -361,7 +361,7 @@
     <div class="page-content">
       <div class="section-eyebrow">Solution Architecture</div>
       <div class="section-h1">Five layers — from POS event to member message</div>
-      <p class="section-lead">The Salesforce platform for Grill'd operates across five layers. TASK POS and the AFL API generate real-time events that flow through Data 360 for unification and processing, into Marketing Cloud Advanced for journey orchestration, and out to the member's device. Every layer is configurable via API — giving Grill'd's development team full control without UI dependency.</p>
+      <p class="section-lead">The Salesforce platform for Grill'd operates across five layers. TASK POS and the AFL API generate real-time events that flow through Data 360 for unification and processing, into Marketing Cloud (Next) for journey orchestration, and out to the member's device. Every layer is configurable via API — giving Grill'd's development team full control without UI dependency.</p>
 
       <div class="arch-pane">
         <div class="arch-pane-head">
@@ -404,7 +404,7 @@
                 <img src="assets/icons/2d/Data Cloud.png" alt="Data 360">
                 <div>
                   <div class="arch-blk-name">Data 360 — Streaming Ingestion API</div>
-                  <div class="arch-blk-sub">RESTful endpoint receiving real-time events from TASK and AFL API · sub-500ms profile update · no UI configuration required</div>
+                  <div class="arch-blk-sub">RESTful endpoint receiving real-time events from TASK and Grill'd data feeds · asynchronous profile update · no UI configuration required</div>
                 </div>
               </div>
             </div>
@@ -436,7 +436,7 @@
                 <img src="assets/icons/2d/Data Cloud.png" alt="Data 360">
                 <div>
                   <div class="arch-blk-name">Data Actions</div>
-                  <div class="arch-blk-sub">Journey entry triggers fired to MCA on milestone match</div>
+                  <div class="arch-blk-sub">Platform events fired on milestone match — consumed by Salesforce Flow to trigger MCA</div>
                 </div>
               </div>
             </div>
@@ -453,7 +453,7 @@
               <div class="arch-blk sf" style="flex:2;">
                 <img src="assets/icons/2d/Marketing.png" alt="MCA">
                 <div>
-                  <div class="arch-blk-name">Marketing Cloud Advanced — Campaign Flows</div>
+                  <div class="arch-blk-name">Marketing Cloud Next — Flows</div>
                   <div class="arch-blk-sub">Salesforce Flow — event-driven, multi-channel journey logic · branching for Spoiler Protection, stamp milestones, re-engagement · invocable via REST API</div>
                 </div>
               </div>
@@ -505,7 +505,7 @@
       <div class="brief-card-grid cols-3">
         <div class="brief-card">
           <div class="brief-card-title">Built on proven platform capabilities</div>
-          <div class="brief-card-body">Data 360 and MCA are enterprise-grade platforms with a strong track record in QSR loyalty and engagement — including operators that run on TASK's parent company, PAR Technology.</div>
+          <div class="brief-card-body">Data 360 and Marketing Cloud Next are enterprise-grade platforms with a strong track record in QSR loyalty and engagement programs at scale.</div>
         </div>
         <div class="brief-card">
           <div class="brief-card-title">TASK and Salesforce — proven integration path</div>
@@ -585,7 +585,7 @@
           <div class="journey-v-mid"><span class="step-num">3</span></div>
           <div class="journey-v-ex">
             <div class="journey-v-ex-title">Data Action → Campaign Flow</div>
-            Data Action fires. MCA Campaign Flow triggered. Decision split: <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">spoilerProtectionOptIn = false</code> → Saturday 9PM AEST send via Transactional Push + SMS. Coupon code and member first name passed as flow variables.
+            Data Action fires platform event. Salesforce Flow consumes event and triggers MCA. Decision split: <code style="font-size:9px;background:#eef;padding:1px 4px;border-radius:2px;">spoilerProtectionOptIn = false</code> → Saturday 9PM AEST send via Transactional Push + SMS. Coupon code and member first name passed as flow variables.
             <div><span class="badge-chip chip-d360">D360 DA</span><span class="badge-chip chip-flow">Flow Decision</span><span class="badge-chip chip-mca">Transact API</span></div>
           </div>
         </div>
@@ -916,7 +916,7 @@
     <div class="page-content">
       <div class="section-eyebrow">TASK Integration</div>
       <div class="section-h1">How TASK POS connects to Salesforce</div>
-      <p class="section-lead" style="margin-bottom:10px;">TASK is an enterprise cloud POS platform used by major QSR operators across Australia and globally, including Guzman y Gomez and Bakers Delight. TASK's API-first architecture — RESTful APIs, event webhooks, and real-time transaction streaming — integrates directly with the D360 Streaming Ingestion API. No middleware required for the core event flow.</p>
+      <p class="section-lead" style="margin-bottom:10px;">TASK is an enterprise cloud POS platform used by major QSR operators across Australia and globally, including Guzman y Gomez and Bakers Delight. TASK's API-first architecture — RESTful APIs, event webhooks, and real-time transaction streaming — integrates directly with the D360 Streaming Ingestion API. Middleware may not be required for the core ingestion path, subject to TASK endpoint configuration and operational requirements such as auth, retries, and schema mapping.</p>
 
       <div class="int-flow">
         <div class="int-step">
@@ -937,7 +937,7 @@
           <div style="display:flex;align-items:center;justify-content:center;margin:0 auto 5px;"><img src="assets/icons/2d/Data Cloud.png" style="width:28px;height:28px;object-fit:contain;" alt="D360"></div>
           <div class="int-step-label">Destination</div>
           <div class="int-step-val">D360 Unified Profile</div>
-          <div class="int-step-sub">POST per event · sub-500ms update</div>
+          <div class="int-step-sub">POST per event · asynchronous profile update</div>
         </div>
         <div class="int-arrow">→</div>
         <div class="int-step">
@@ -959,8 +959,9 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 1 — Stamp scan event (UC#5)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/DataIngestionApi/v1/rateLimit/{objectName}</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+<span class="json-header"># Endpoint URL downloaded from Data 360 Setup (object-specific)</span>
 
 { <span class="json-key">"data"</span>: [{
   <span class="json-key">"member_id"</span>:       <span class="json-str">"GLD_MBR_00123"</span>,
@@ -977,8 +978,9 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 2 — AFL game result (UC#4)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/DataIngestionApi/v1/rateLimit/{objectName}</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+<span class="json-header"># Endpoint URL downloaded from Data 360 Setup (object-specific)</span>
 
 { <span class="json-key">"data"</span>: [{
   <span class="json-key">"game_id"</span>:         <span class="json-str">"AFL_2026_R18_RICH_v_COLL"</span>,
@@ -994,8 +996,9 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 3 — Redemption confirmation (UC#4)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/DataIngestionApi/v1/rateLimit/{objectName}</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+<span class="json-header"># Endpoint URL downloaded from Data 360 Setup (object-specific)</span>
 
 { <span class="json-key">"data"</span>: [{
   <span class="json-key">"member_id"</span>:       <span class="json-str">"GLD_MBR_12345"</span>,
@@ -1010,8 +1013,9 @@
         <div>
           <div class="api-ref">
             <div class="api-ref-label">Payload 4 — Donation confirmation (UC#5)</div>
-            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/.../streamingIngest</span>
+            <pre><span class="json-method">POST</span> <span class="json-url">/services/data/v63.0/ssot/DataIngestionApi/v1/rateLimit/{objectName}</span>
 <span class="json-header">Authorization: Bearer {token}    Content-Type: application/json</span>
+<span class="json-header"># Endpoint URL downloaded from Data 360 Setup (object-specific)</span>
 
 { <span class="json-key">"data"</span>: [{
   <span class="json-key">"member_id"</span>:       <span class="json-str">"GLD_MBR_00123"</span>,
@@ -1109,7 +1113,7 @@
           <tr style="background:#fafafa;">
             <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Testing and A/B</td>
             <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">A/B test message variants in MCA — charity-led vs reward-led copy for stamp milestones</td>
-            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">Programmatic A/B testing via MCA API — test variants, score results, and iterate without touching the UI</td>
+            <td style="padding:7px 12px;border-bottom:1px solid #f0f0f0;color:#444;font-size:10.5px;">A/B test variants via Marketing Cloud API — score results and iterate without touching the UI (subject to Salesforce roadmap confirmation)</td>
           </tr>
           <tr>
             <td style="padding:7px 12px;font-weight:600;color:var(--sf-navy,#001E5B);font-size:10.5px;">Reporting and analytics</td>
