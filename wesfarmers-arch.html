@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wesfarmers · Data &amp; Loyalty Platform</title>
+  <link rel="stylesheet" href="tokens.css"/>
+  <link rel="stylesheet" href="components.css"/>
+  <style>
+    html, body { height: 100%; overflow: hidden; margin: 0; background: #fff; }
+    .slide-deck { width: 100vw; height: 100vh; position: relative; }
+    .slide { position: absolute; inset: 0; overflow-y: auto; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+    .slide.active { opacity: 1; pointer-events: all; }
+
+    /* ── Fixed chrome ── */
+    .cobrand-pill { position: fixed; top: 16px; left: 22px; background: rgba(255,255,255,0.95); border-radius: 6px; padding: 7px 16px; display: flex; align-items: center; gap: 10px; z-index: 400; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+    .cobrand-pill span { font-size: 12px; font-weight: 700; color: var(--text); font-family: var(--font-body); }
+    .cobrand-divider { width: 1px; height: 20px; background: #E0E0E0; }
+    .vtag { position: fixed; top: 20px; right: 26px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0,30,91,0.3); z-index: 400; font-family: var(--font-body); }
+    .vtag.on-dark { color: rgba(255,255,255,0.28); }
+    .slide-dots { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 400; }
+    .dot { width: 6px; height: 6px; border-radius: 3px; background: rgba(0,30,91,0.16); cursor: pointer; transition: all 0.2s; }
+    .dot.active { background: var(--sf-blue); transform: scale(1.4); }
+    .dot.dk { background: rgba(255,255,255,0.22); }
+    .dot.dk.active { background: #00B3FF; }
+    .slide-controls { position: fixed; bottom: 14px; right: 20px; display: flex; align-items: center; gap: 6px; z-index: 400; }
+    .slide-btn { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--gray-200); background: var(--white); font-size: 12px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-card); transition: all 0.15s; font-family: var(--font-body); }
+    .slide-btn:hover { background: var(--sf-blue); color: #fff; border-color: var(--sf-blue); }
+    .slide-btn:disabled { opacity: 0.2; cursor: default; }
+    .slide-counter { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; min-width: 28px; text-align: center; font-family: var(--font-body); }
+
+    /* ═══════════════════════════════════════════════════════════
+       SHARED: brand dot colours
+    ═══════════════════════════════════════════════════════════ */
+    .bdot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+    .bd-bunnings  { background: #1B7E3C; }
+    .bd-kmart     { background: #DA1710; }
+    .bd-target    { background: #CC0000; }
+    .bd-onepass   { background: #1A1A2E; }
+    .bd-flybuys   { background: #007CC2; }
+    .bd-offworks  { background: #E4070B; }
+    .bd-priceline { background: #E91E8C; }
+
+    /* ═══════════════════════════════════════════════════════════
+       SLIDE 1 — ECOSYSTEM MAP  (light)
+
+       Flat 8-row × 7-col grid.
+       Row 0 = zone headers.  Rows 1-7 = one per brand.
+       Cols:  1=brand  2=conn  3=edp  4=conn  5=sf-platform  6=dec  7=channels
+       Snowflake bg + SF platform + dec + channels span rows 0-8.
+    ═══════════════════════════════════════════════════════════ */
+    .s1 { background: #fff; }
+    .s1-wrap { max-width: 1380px; margin: 0 auto; padding: 52px 32px 80px; }
+
+    .diag-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sf-blue); font-family: var(--font-body); margin-bottom: 3px; }
+    .diag-sub { font-size: 12px; color: var(--muted); font-family: var(--font-body); }
+    .diag-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 16px; }
+    .plat-row { display: flex; align-items: center; gap: 14px; }
+    .plat-badge { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; font-family: var(--font-body); }
+    .plat-badge.snow { color: #1A8CBF; }
+    .plat-badge.sf { color: var(--sf-blue); }
+    .plat-sep { width: 1px; height: 20px; background: var(--gray-200); }
+
+    /* Grid */
+    .s1-grid {
+      display: grid;
+      grid-template-columns: 158px 28px 148px 28px 1fr 34px 206px;
+      grid-template-rows: auto repeat(7, auto);
+      column-gap: 0;
+      row-gap: 5px;
+      position: relative;
+    }
+
+    /* ── Snowflake zone bg: col 3, rows 0-8, z-index 0 ── */
+    .snow-zone-bg {
+      grid-column: 3; grid-row: 1 / 9;
+      background: rgba(41,181,232,0.05); border: 1px solid rgba(41,181,232,0.22);
+      border-radius: 6px; padding: 10px 8px;
+      display: flex; flex-direction: column; gap: 0; z-index: 0;
+    }
+    .snow-zone-hd { display: flex; align-items: center; gap: 7px; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(41,181,232,0.18); }
+    .snow-name { font-size: 13px; font-weight: 700; color: #1A8CBF; font-family: var(--font-body); }
+    .snow-sub { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(26,140,191,0.65); font-family: var(--font-body); margin-top: 1px; }
+
+    /* ── SF Platform: cols 5-6, rows 0-8 ── */
+    .sf-zone {
+      grid-column: 5 / 7; grid-row: 1 / 9;
+      background: #F2F6FF; border: 1px solid rgba(2,42,192,0.12);
+      border-radius: 6px; padding: 10px;
+      display: flex; flex-direction: column; z-index: 0;
+    }
+    .sf-zone-hd { display: flex; align-items: center; gap: 8px; padding-bottom: 8px; margin-bottom: 9px; border-bottom: 1px solid rgba(2,42,192,0.1); }
+    .sf-zone-name { font-size: 13px; font-weight: 700; color: var(--sf-blue); font-family: var(--font-body); }
+    .sf-zone-sub { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-family: var(--font-body); margin-top: 1px; }
+    .sf-inner { display: flex; gap: 9px; flex: 1; }
+
+    .data-zone { background: rgba(2,42,192,0.06); border: 1px solid rgba(2,42,192,0.15); border-radius: 6px; padding: 9px; flex: 1; display: flex; flex-direction: column; }
+    .loy-zone  { background: rgba(115,3,148,0.06); border: 1px solid rgba(115,3,148,0.16); border-radius: 6px; padding: 9px; flex: 1; display: flex; flex-direction: column; }
+    .zone-hd   { display: flex; align-items: center; gap: 5px; padding-bottom: 7px; margin-bottom: 7px; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .zone-hd img { width: 16px; height: 16px; }
+    .zone-hd-name { font-size: 12px; font-weight: 700; font-family: var(--font-body); }
+    .zone-hd-name.d { color: var(--sf-blue); }
+    .zone-hd-name.l { color: var(--violet); }
+    .zone-tag { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; font-family: var(--font-body); }
+    .zpills { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .zpill { background: #fff; border: 1px solid var(--gray-200); border-radius: 6px; height: 27px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text); font-family: var(--font-body); white-space: nowrap; }
+    .zgroup { border: 1.5px dashed rgba(115,3,148,0.28); border-radius: 6px; padding: 5px; display: flex; flex-direction: column; gap: 3px; margin-top: 4px; flex: 1; }
+    .zgroup-pill { background: rgba(115,3,148,0.06); border: 1px solid rgba(115,3,148,0.2); border-radius: 6px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--violet); font-family: var(--font-body); white-space: nowrap; }
+
+    .sf-footer { display: flex; align-items: center; gap: 7px; margin-top: 9px; padding-top: 8px; border-top: 1px solid rgba(2,42,192,0.1); flex-wrap: wrap; }
+    .rep-badge { display: flex; align-items: center; gap: 5px; background: rgba(2,42,192,0.07); border: 1px solid rgba(2,42,192,0.15); border-radius: 6px; padding: 5px 10px; font-size: 10px; font-weight: 700; color: var(--sf-blue); font-family: var(--font-body); white-space: nowrap; }
+    .rep-badge img { width: 13px; height: 13px; }
+    .rep-out { background: #fff; border: 1px solid var(--gray-200); border-radius: 6px; padding: 5px 12px; font-size: 10px; font-weight: 600; color: var(--text); font-family: var(--font-body); white-space: nowrap; }
+
+    /* ── Dec label: now inside sf-zone footer ── */
+    .dec-zone { display: none; }
+    .dec-label { display: none; }
+    .dec-inner { display: flex; align-items: center; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(2,42,192,0.1); }
+    .dec-inner-icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .dec-inner-text { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sf-blue); font-family: var(--font-body); }
+
+    /* ── Channels: col 7, rows 0-8 ── */
+    .chan-zone {
+      grid-column: 7; grid-row: 1 / 9; /* col 6 is now inside sf-zone */
+      display: flex; flex-direction: column; gap: 4px; padding-left: 5px; justify-content: center;
+    }
+    .chan-hd { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; font-family: var(--font-body); }
+    .chan { background: #1D4D42; border-radius: 6px; padding: 6px 10px; }
+    .chan-title { font-size: 11px; font-weight: 700; color: #fff; font-family: var(--font-body); }
+    .chan-desc { font-size: 9px; color: rgba(255,255,255,0.62); margin-top: 1px; line-height: 1.4; font-family: var(--font-body); }
+
+    /* ── Per-row items: cols 1, 2, 4 ── */
+    /* Brand cards */
+    .bc { grid-column: 1; background: #fff; border: 1px solid var(--gray-200); border-radius: 6px; padding: 7px 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 4px; min-height: 40px; }
+    .bc-logo { height: 20px; width: auto; max-width: 120px; object-fit: contain; object-position: left center; }
+    /* OnePass logo wrapper — white logo needs dark bg */
+    .bc-logo-op { height: 20px; width: auto; max-width: 120px; object-fit: contain; background: #1A1A2E; border-radius: 4px; padding: 3px 7px; }
+    .bc-sources { display: flex; flex-wrap: wrap; gap: 2px; }
+    .bc-src { background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 3px; padding: 1px 5px; font-size: 7.5px; font-weight: 700; color: var(--muted); font-family: var(--font-body); }
+    .bc-stack { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .bc-sap { background: #1B4F9B; border-radius: 4px; padding: 2px 7px; font-size: 8px; font-weight: 700; color: #fff; font-family: var(--font-body); white-space: nowrap; }
+    .bc-sfsub { background: rgba(2,42,192,0.07); border: 1px solid rgba(2,42,192,0.18); border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight: 700; color: var(--sf-blue); font-family: var(--font-body); white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+    .bc-arr { font-size: 9px; color: var(--gray-500); }
+
+    /* Connector cells — full height of their row, arrow centered */
+    .conn-l { grid-column: 2; display: flex; align-items: center; justify-content: center; z-index: 1; }
+    .conn-r { grid-column: 4; display: flex; align-items: center; justify-content: center; z-index: 1; }
+    .arr-solid { width: 100%; height: 1.5px; background: #C8C8C8; position: relative; }
+    .arr-solid::after { content:''; position:absolute; right:-6px; top:-4px; border-top:4.5px solid transparent; border-bottom:4.5px solid transparent; border-left:6px solid #C8C8C8; }
+    .arr-dashed { width: 100%; height: 0; border-top: 1.5px dashed #BBBFC8; position: relative; }
+    .arr-dashed::after { content:''; position:absolute; right:-6px; top:-4px; border-top:4.5px solid transparent; border-bottom:4.5px solid transparent; border-left:6px solid #BBBFC8; }
+
+    /* EDP pills — inside snow zone bg, z-index 1 so they show above bg */
+    .edp { grid-column: 3; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 0 8px; }
+    .edp-pill { background: #fff; border: 1px solid rgba(41,181,232,0.35); border-radius: 6px; height: 32px; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #1A8CBF; font-family: var(--font-body); white-space: nowrap; }
+
+    /* ── Legend ── */
+    .legend { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 12px; padding: 8px 13px; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 6px; }
+    .legend-title { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-family: var(--font-body); }
+    .legend-item { display: flex; align-items: center; gap: 7px; }
+    .leg-solid { width: 28px; height: 1.5px; background: #999; flex-shrink: 0; position: relative; }
+    .leg-solid::after { content:''; position:absolute; right:-5px; top:-3px; border-top:3.5px solid transparent; border-bottom:3.5px solid transparent; border-left:5px solid #999; }
+    .leg-dashed { width: 28px; height: 0; border-top: 1.5px dashed #BBBFC8; flex-shrink: 0; position: relative; }
+    .leg-dashed::after { content:''; position:absolute; right:-5px; top:-3px; border-top:3.5px solid transparent; border-bottom:3.5px solid transparent; border-left:5px solid #BBBFC8; }
+    .leg-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+    .leg-label { font-size: 10px; color: var(--body); font-family: var(--font-body); white-space: nowrap; }
+    .leg-sep { width: 1px; height: 18px; background: var(--gray-200); }
+
+    /* ═══════════════════════════════════════════════════════════
+       SLIDE 2 — DARK
+    ═══════════════════════════════════════════════════════════ */
+    .s2 { background: var(--sf-navy); }
+    .s2-wrap { max-width: 1380px; margin: 0 auto; padding: 52px 32px 80px; }
+
+    .s2-grid {
+      display: grid;
+      grid-template-columns: 158px 28px 148px 28px 1fr 34px 206px;
+      grid-template-rows: auto repeat(7, auto);
+      column-gap: 0; row-gap: 5px; position: relative;
+    }
+
+    .snow-zone-bg-dk { grid-column: 3; grid-row: 1 / 9; background: rgba(41,181,232,0.07); border: 1px solid rgba(41,181,232,0.24); border-radius: 6px; padding: 10px 8px; display: flex; flex-direction: column; z-index: 0; }
+    .sf-zone-dk { grid-column: 5 / 7; grid-row: 1 / 9; background: rgba(0,179,255,0.04); border: 1px solid rgba(0,179,255,0.18); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; z-index: 0; }
+    .dec-zone-dk { display: none; }
+    .dec-label-dk { display: none; }
+    .dec-inner-dk { display: flex; align-items: center; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(0,179,255,0.15); }
+    .dec-inner-text-dk { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #00B3FF; font-family: var(--font-body); }
+    .chan-zone-dk { grid-column: 7; grid-row: 1 / 9; display: flex; flex-direction: column; gap: 4px; padding-left: 5px; justify-content: center; }
+    .chan-hd-dk { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0,179,255,0.55); margin-bottom: 4px; font-family: var(--font-body); }
+    .chan-dk { background: rgba(6,165,154,0.16); border: 1px solid rgba(6,165,154,0.3); border-radius: 6px; padding: 6px 10px; }
+    .chan-title-dk { font-size: 11px; font-weight: 700; color: #fff; font-family: var(--font-body); }
+    .chan-desc-dk { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 1px; line-height: 1.4; font-family: var(--font-body); }
+
+    .bc-dk { grid-column: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 7px 10px; display: flex; flex-direction: column; gap: 4px; min-height: 40px; }
+    .bc-logo-dk { height: 20px; width: auto; max-width: 120px; object-fit: contain; object-position: left center; filter: brightness(0) invert(1); opacity: 0.85; }
+    .bc-logo-op-dk { height: 20px; width: auto; max-width: 120px; object-fit: contain; background: rgba(255,255,255,0.9); border-radius: 4px; padding: 3px 7px; }
+    .bc-src-dk { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 3px; padding: 1px 5px; font-size: 7.5px; font-weight: 700; color: rgba(255,255,255,0.6); font-family: var(--font-body); }
+    .bc-sap-dk { background: #2B6CC4; border-radius: 4px; padding: 2px 7px; font-size: 8px; font-weight: 700; color: #fff; font-family: var(--font-body); white-space: nowrap; }
+    .bc-sfsub-dk { background: rgba(0,179,255,0.14); border: 1px solid rgba(0,179,255,0.28); border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight: 700; color: #00B3FF; font-family: var(--font-body); white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+    .bc-arr-dk { font-size: 9px; color: rgba(0,179,255,0.5); }
+
+    .conn-l-dk { grid-column: 2; display: flex; align-items: center; justify-content: center; z-index: 1; }
+    .conn-r-dk { grid-column: 4; display: flex; align-items: center; justify-content: center; z-index: 1; }
+    .arr-solid-dk { width: 100%; height: 1.5px; background: rgba(0,179,255,0.25); position: relative; }
+    .arr-solid-dk::after { content:''; position:absolute; right:-6px; top:-4px; border-top:4.5px solid transparent; border-bottom:4.5px solid transparent; border-left:6px solid rgba(0,179,255,0.35); }
+    .arr-dashed-dk { width: 100%; height: 0; border-top: 1.5px dashed rgba(0,179,255,0.28); position: relative; }
+    .arr-dashed-dk::after { content:''; position:absolute; right:-6px; top:-4px; border-top:4.5px solid transparent; border-bottom:4.5px solid transparent; border-left:6px solid rgba(0,179,255,0.3); }
+
+    .edp-dk { grid-column: 3; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 0 8px; }
+    .edp-pill-dk { background: rgba(255,255,255,0.07); border: 1px solid rgba(41,181,232,0.32); border-radius: 6px; height: 32px; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #4FCAED; font-family: var(--font-body); white-space: nowrap; }
+
+    /* Dark SF internals */
+    .data-zone-dk { background: rgba(6,106,254,0.14); border: 1px solid rgba(0,179,255,0.22); border-radius: 6px; padding: 9px; flex: 1; display: flex; flex-direction: column; }
+    .loy-zone-dk  { background: rgba(115,3,148,0.2); border: 1px solid rgba(209,125,254,0.22); border-radius: 6px; padding: 9px; flex: 1; display: flex; flex-direction: column; }
+    .zone-hd-dk   { display: flex; align-items: center; gap: 5px; padding-bottom: 7px; margin-bottom: 7px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .zone-hd-name-d-dk { font-size: 12px; font-weight: 700; color: var(--sf-blue-l); font-family: var(--font-body); }
+    .zone-hd-name-l-dk { font-size: 12px; font-weight: 700; color: var(--violet-l); font-family: var(--font-body); }
+    .zone-tag-dk { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 7px; font-family: var(--font-body); }
+    .zpill-dk { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.14); border-radius: 6px; height: 27px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.88); font-family: var(--font-body); white-space: nowrap; }
+    .zgroup-dk { border: 1.5px dashed rgba(209,125,254,0.35); border-radius: 6px; padding: 5px; display: flex; flex-direction: column; gap: 3px; margin-top: 4px; flex: 1; }
+    .zgroup-pill-dk { background: rgba(115,3,148,0.2); border: 1px solid rgba(209,125,254,0.25); border-radius: 6px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--violet-l); font-family: var(--font-body); white-space: nowrap; }
+
+    .legend-dk { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 12px; padding: 8px 13px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 6px; }
+    .leg-label-dk { font-size: 10px; color: rgba(255,255,255,0.62); font-family: var(--font-body); white-space: nowrap; }
+    .leg-title-dk { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); font-family: var(--font-body); }
+    .leg-solid-dk { width: 28px; height: 1.5px; background: rgba(255,255,255,0.35); flex-shrink: 0; position: relative; }
+    .leg-solid-dk::after { content:''; position:absolute; right:-5px; top:-3px; border-top:3.5px solid transparent; border-bottom:3.5px solid transparent; border-left:5px solid rgba(255,255,255,0.35); }
+    .leg-dashed-dk { width: 28px; height: 0; border-top: 1.5px dashed rgba(255,255,255,0.28); flex-shrink: 0; position: relative; }
+    .leg-dashed-dk::after { content:''; position:absolute; right:-5px; top:-3px; border-top:3.5px solid transparent; border-bottom:3.5px solid transparent; border-left:5px solid rgba(255,255,255,0.28); }
+    .leg-sep-dk { width: 1px; height: 18px; background: rgba(255,255,255,0.1); }
+    .leg-swatch-dk { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ═══════════════════════════════════════════════════════════
+       SLIDE 3 — BRAND LANES
+    ═══════════════════════════════════════════════════════════ */
+    .s3 { background: var(--off-white); }
+    .s3-wrap { max-width: 1380px; margin: 0 auto; padding: 52px 32px 80px; }
+    .s3-col-bar { display: grid; grid-template-columns: 168px 10px 118px 10px 108px 10px 148px 10px 208px; margin-bottom: 6px; }
+    .s3-ch { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; padding: 3px 0; font-family: var(--font-body); }
+    .s3-ch.bl { text-align: left; }
+    .s3-ch.sc { color: #1A8CBF; } .s3-ch.dc { color: var(--sf-blue); } .s3-ch.lc { color: var(--violet); } .s3-ch.cc { color: #1D4D42; }
+    .s3-lanes { display: flex; flex-direction: column; gap: 5px; }
+    .s3-lane { display: grid; grid-template-columns: 168px 10px 118px 10px 108px 10px 148px 10px 208px; align-items: center; background: #fff; border: 1px solid var(--gray-200); border-radius: 6px; padding: 7px 9px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .s3-brand { display: flex; flex-direction: column; gap: 3px; }
+    .s3-brand-row { display: flex; align-items: center; gap: 7px; }
+    .s3-logo { height: 22px; width: auto; max-width: 100px; object-fit: contain; object-position: left center; }
+    .s3-logo-op { height: 22px; width: auto; max-width: 100px; object-fit: contain; background: #1A1A2E; border-radius: 4px; padding: 3px 7px; }
+    .s3-sub { font-size: 8px; color: var(--muted); font-family: var(--font-body); }
+    .s3-arr { font-size: 10px; color: var(--gray-500); text-align: center; }
+    .s3-edp { background: rgba(41,181,232,0.07); border: 1px solid rgba(41,181,232,0.28); border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; color: #1A8CBF; text-align: center; font-family: var(--font-body); white-space: nowrap; }
+    .s3-ds { background: rgba(2,42,192,0.06); border: 1px solid rgba(2,42,192,0.16); border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 600; color: var(--sf-blue); text-align: center; font-family: var(--font-body); white-space: nowrap; }
+    .s3-prog { display: flex; flex-direction: column; gap: 3px; }
+    .s3-pp { background: rgba(115,3,148,0.07); border: 1px solid rgba(115,3,148,0.2); border-radius: 6px; padding: 3px 8px; font-size: 9px; font-weight: 600; color: var(--violet); text-align: center; font-family: var(--font-body); white-space: nowrap; }
+    .s3-pn { font-size: 9px; color: var(--muted); font-style: italic; text-align: center; font-family: var(--font-body); }
+    .s3-chans { display: flex; flex-wrap: wrap; gap: 3px; }
+    .s3-chip { background: rgba(29,77,66,0.09); border: 1px solid rgba(29,77,66,0.2); border-radius: 4px; padding: 2px 6px; font-size: 8.5px; font-weight: 600; color: #1D4D42; font-family: var(--font-body); }
+    .s3-chip.all { background: rgba(6,165,154,0.09); border-color: rgba(6,165,154,0.22); color: #06A59A; }
+    .s3-footer { display: flex; align-items: center; gap: 10px; margin-top: 13px; justify-content: center; }
+    .s3-rep { display: flex; align-items: center; gap: 6px; background: rgba(2,42,192,0.08); border: 1px solid rgba(2,42,192,0.16); border-radius: 6px; padding: 6px 12px; font-size: 10px; font-weight: 700; color: var(--sf-blue); font-family: var(--font-body); }
+    .s3-rep img { width: 13px; height: 13px; }
+    .s3-out { background: #fff; border: 1px solid var(--gray-200); border-radius: 6px; padding: 5px 13px; font-size: 10px; font-weight: 600; color: var(--text); font-family: var(--font-body); }
+  </style>
+</head>
+<body>
+
+<div class="cobrand-pill">
+  <img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="22" height="22" alt="Salesforce"/>
+  <div class="cobrand-divider"></div>
+  <span>Wesfarmers · Data &amp; Loyalty Platform</span>
+</div>
+<div class="vtag" id="vtag">Version 1 of 3 — Ecosystem Map</div>
+<div class="slide-dots" id="dots"></div>
+<div class="slide-controls">
+  <button class="slide-btn" id="btn-prev">‹</button>
+  <span class="slide-counter" id="counter">1 / 3</span>
+  <button class="slide-btn" id="btn-next">›</button>
+</div>
+
+<div class="slide-deck">
+
+<!-- ═══════════════════ SLIDE 1 — ECOSYSTEM MAP ═══════════════════ -->
+<div class="slide s1 active" id="slide-0">
+<div class="s1-wrap">
+  <div class="diag-header">
+    <div>
+      <div class="diag-eyebrow">Ecosystem Map · Data &amp; Loyalty Architecture</div>
+      <div class="diag-sub">Source systems → Snowflake EDPs → Salesforce platform → Offer execution</div>
+    </div>
+    <div class="plat-row">
+      <div class="plat-badge snow">❄ Snowflake</div>
+      <div class="plat-sep"></div>
+      <div class="plat-badge sf"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="16" height="16" alt="SF"/> Salesforce</div>
+    </div>
+  </div>
+
+  <div class="s1-grid">
+
+    <!-- SPANNING: Snowflake bg -->
+    <div class="snow-zone-bg">
+      <div class="snow-zone-hd">
+        <span style="font-size:18px;line-height:1;">❄</span>
+        <div><div class="snow-name">Snowflake</div><div class="snow-sub">Enterprise Data Platform</div></div>
+      </div>
+    </div>
+
+    <!-- SPANNING: SF Platform -->
+    <div class="sf-zone">
+      <div class="sf-zone-hd">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="20" height="20" alt="Salesforce"/>
+        <div><div class="sf-zone-name">Salesforce</div><div class="sf-zone-sub">Data &amp; Loyalty</div></div>
+      </div>
+      <div class="sf-inner">
+        <div class="data-zone">
+          <div class="zone-hd"><img src="assets/icons/2d/Data Cloud.png" width="16" height="16" alt="Data Cloud"/><span class="zone-hd-name d">Data360</span></div>
+          <div class="zone-tag">Data Spaces</div>
+          <div class="zpills">
+            <div class="zpill">Bunnings</div>
+            <div class="zgroup">
+              <div class="zgroup-pill">Kmart</div>
+              <div class="zgroup-pill">Target</div>
+              <div class="zgroup-pill">OnePass</div>
+              <div class="zgroup-pill">Flybuys</div>
+              <div class="zgroup-pill">Officeworks</div>
+              <div class="zgroup-pill">Priceline</div>
+            </div>
+          </div>
+        </div>
+        <div class="loy-zone">
+          <div class="zone-hd"><img src="assets/icons/2d/Loyalty Management.svg" width="16" height="16" alt="Loyalty"/><span class="zone-hd-name l">Loyalty &amp; Promos</span><img src="assets/icons/2d/Agentforce.svg" width="16" height="16" alt="Agentforce" style="margin-left:auto;opacity:0.8;"/></div>
+          <div class="zone-tag">Programs</div>
+          <div class="zpills">
+            <div class="zpill">Bunnings PPNG</div>
+            <div class="zpill">Bunnings NZ</div>
+            <div class="zpill">OnePass</div>
+            <div class="zpill">Flybuys</div>
+            <div class="zpill">Officeworks</div>
+            <div class="zpill">Priceline 2.0</div>
+          </div>
+        </div>
+      </div>
+      <div class="dec-inner">
+        <img src="assets/icons/2d/Agentforce.svg" class="dec-inner-icon" alt="Agentforce"/>
+        <span class="dec-inner-text">Offer Decisioning &amp; Delivery</span>
+      </div>
+      <div class="sf-footer">
+        <div class="rep-badge"><img src="assets/icons/2d/Tableau.png" width="13" height="13" alt="Reporting"/>Group &amp; Brand Reporting</div>
+        <span style="font-size:11px;color:var(--muted);">→</span>
+        <div class="rep-out">Retail Media Plans</div>
+      </div>
+    </div>
+
+    <!-- SPANNING: Dec label (hidden — now inside sf-zone) -->
+    <div class="dec-zone"><div class="dec-label">Offer Decisioning &amp; Delivery</div></div>
+
+    <!-- SPANNING: Channels -->
+    <div class="chan-zone">
+      <div class="chan-hd">Offer &amp; Media Executions</div>
+      <div class="chan"><div class="chan-title">Web</div><div class="chan-desc">Dynamic homepage, product recs, browse abandonment</div></div>
+      <div class="chan"><div class="chan-title">Email (MCE+)</div><div class="chan-desc">Personalised content, cross-sell, suppression</div></div>
+      <div class="chan"><div class="chan-title">Mobile App</div><div class="chan-desc">Unified Engagement SDK — low-code (June 2026)</div></div>
+      <div class="chan"><div class="chan-title">Sales &amp; Service Cloud</div><div class="chan-desc">High-intent alerts, real-time recs to reps</div></div>
+      <div class="chan"><div class="chan-title">Advertising</div><div class="chan-desc">Adaptive Media Buying, Pacing, Suppression</div></div>
+      <div class="chan"><div class="chan-title">POS</div><div class="chan-desc">Offer decisioning in-store</div></div>
+      <div class="chan"><div class="chan-title">Retail Media</div><div class="chan-desc">First-party → Google/Meta &amp; On-Property Display</div></div>
+      <div class="chan"><div class="chan-title">Gemini Agents</div><div class="chan-desc">AI-powered agent "Buddy"</div></div>
+    </div>
+
+    <!-- ROW 1: Bunnings -->
+    <div class="bc" style="grid-row:2">
+      <img src="assets/brands/bunnings.svg" class="bc-logo" alt="Bunnings"/>
+      <div class="bc-sources"><span class="bc-src">WEB</span><span class="bc-src">APP</span><span class="bc-src">POS</span><span class="bc-src">OMS</span><span class="bc-src">Pricing</span><span class="bc-src">PIM</span></div>
+      <div class="bc-stack"><span class="bc-arr">↓</span><span class="bc-sap">SAP ECC ERP</span><span class="bc-arr">→</span><span class="bc-sfsub"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="9" height="9" alt=""/>Sales &amp; Svc</span></div>
+    </div>
+    <div class="conn-l" style="grid-row:2"><div class="arr-solid"></div></div>
+    <div class="edp" style="grid-row:2"><div class="edp-pill">Bunnings EDP</div></div>
+    <div class="conn-r" style="grid-row:2"><div class="arr-solid"></div></div>
+
+    <!-- ROW 2: Kmart -->
+    <div class="bc" style="grid-row:3"><img src="assets/brands/kmart-op.svg" class="bc-logo" alt="Kmart"/></div>
+    <div class="conn-l" style="grid-row:3"><div class="arr-solid"></div></div>
+    <div class="edp" style="grid-row:3"><div class="edp-pill">Kmart EDP</div></div>
+    <div class="conn-r" style="grid-row:3"><div class="arr-solid"></div></div>
+
+    <!-- ROW 3: Target -->
+    <div class="bc" style="grid-row:4"><img src="assets/brands/target-op.svg" class="bc-logo" alt="Target"/></div>
+    <div class="conn-l" style="grid-row:4"><div class="arr-solid"></div></div>
+    <div class="edp" style="grid-row:4"><div class="edp-pill">Target EDP</div></div>
+    <div class="conn-r" style="grid-row:4"><div class="arr-solid"></div></div>
+
+    <!-- ROW 4: OnePass — dashed (also direct SF) -->
+    <div class="bc" style="grid-row:5">
+      <img src="assets/brands/onepass.svg" class="bc-logo-op" alt="OnePass"/>
+      <div class="bc-stack"><span class="bc-sfsub"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="9" height="9" alt=""/>Sales &amp; Svc</span></div>
+    </div>
+    <div class="conn-l" style="grid-row:5"><div class="arr-dashed"></div></div>
+    <div class="edp" style="grid-row:5"><div class="edp-pill">OnePass EDP</div></div>
+    <div class="conn-r" style="grid-row:5"><div class="arr-solid"></div></div>
+
+    <!-- ROW 5: Flybuys -->
+    <div class="bc" style="grid-row:6"><img src="assets/brands/flybuys-op.svg" class="bc-logo" alt="Flybuys"/></div>
+    <div class="conn-l" style="grid-row:6"><div class="arr-solid"></div></div>
+    <div class="edp" style="grid-row:6"><div class="edp-pill">Flybuys EDP</div></div>
+    <div class="conn-r" style="grid-row:6"><div class="arr-solid"></div></div>
+
+    <!-- ROW 6: Officeworks — dashed (also direct SF) -->
+    <div class="bc" style="grid-row:7">
+      <img src="assets/brands/officeworks-op.svg" class="bc-logo" alt="Officeworks"/>
+      <div class="bc-stack"><span class="bc-sfsub"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-RBG.svg" width="9" height="9" alt=""/>Sales &amp; Svc</span></div>
+    </div>
+    <div class="conn-l" style="grid-row:7"><div class="arr-dashed"></div></div>
+    <div class="edp" style="grid-row:7"><div class="edp-pill">Officeworks EDP</div></div>
+    <div class="conn-r" style="grid-row:7"><div class="arr-solid"></div></div>
+
+    <!-- ROW 7: Priceline -->
+    <div class="bc" style="grid-row:8"><img src="assets/brands/priceline.svg" class="bc-logo" alt="Priceline Pharmacy"/></div>
+    <div class="conn-l" style="grid-row:8"><div class="arr-solid"></div></div>
+    <div class="edp" style="grid-row:8"><div class="edp-pill">Priceline EDP</div></div>
+    <div class="conn-r" style="grid-row:8"><div class="arr-solid"></div></div>
+
+  </div><!-- /s1-grid -->
+
+  <div class="legend">
+    <span class="legend-title">Legend</span>
+    <div class="legend-item"><div class="leg-solid"></div><span class="leg-label">Primary data flow</span></div>
+    <div class="legend-item"><div class="leg-dashed"></div><span class="leg-label">Also via direct SF integration</span></div>
+    <div class="leg-sep"></div>
+    <div class="legend-item"><div class="leg-swatch" style="background:rgba(41,181,232,0.1);border:1px solid rgba(41,181,232,0.25);"></div><span class="leg-label">Snowflake EDP zone</span></div>
+    <div class="legend-item"><div class="leg-swatch" style="background:rgba(2,42,192,0.09);border:1px solid rgba(2,42,192,0.2);"></div><span class="leg-label">Salesforce Data360</span></div>
+    <div class="legend-item"><div class="leg-swatch" style="background:rgba(115,3,148,0.09);border:1px solid rgba(115,3,148,0.2);"></div><span class="leg-label">Loyalty &amp; Promos</span></div>
+    <div class="leg-sep"></div>
+    <div class="legend-item"><div style="width:28px;height:0;flex-shrink:0;border-top:1.5px dashed rgba(115,3,148,0.35);"></div><span class="leg-label">Dashed border = cross-brand shared spaces</span></div>
+  </div>
+</div>
+</div><!-- /slide 1 -->
+
+
+<!-- ═══════════════════ SLIDE 2 — DARK ═══════════════════ -->
+<div class="slide s2" id="slide-1">
+<div class="s2-wrap">
+  <div class="diag-header">
+    <div>
+      <div class="diag-eyebrow" style="color:#00B3FF;">Platform Architecture · Data &amp; Loyalty</div>
+      <div class="diag-sub" style="color:rgba(255,255,255,0.38);">Snowflake EDPs → Salesforce Data360 + Loyalty · unified offer decisioning</div>
+    </div>
+    <div class="plat-row">
+      <div class="plat-badge snow">❄ Snowflake</div>
+      <div class="plat-sep" style="background:rgba(255,255,255,0.12);"></div>
+      <div class="plat-badge sf" style="color:#00B3FF;"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" width="16" height="16" alt="SF"/> Salesforce</div>
+    </div>
+  </div>
+
+  <div class="s2-grid">
+
+    <div class="snow-zone-bg-dk">
+      <div style="display:flex;align-items:center;gap:7px;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid rgba(41,181,232,0.18);">
+        <span style="font-size:18px;line-height:1;">❄</span>
+        <div><div style="font-size:13px;font-weight:700;color:#4FCAED;font-family:var(--font-body);">Snowflake</div><div style="font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(79,202,237,0.6);font-family:var(--font-body);margin-top:1px;">Enterprise Data Platform</div></div>
+      </div>
+    </div>
+
+    <div class="sf-zone-dk">
+      <div style="display:flex;align-items:center;gap:8px;padding-bottom:8px;margin-bottom:9px;border-bottom:1px solid rgba(0,179,255,0.1);">
+        <img src="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" width="20" height="20" alt="Salesforce"/>
+        <div><div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.82);font-family:var(--font-body);">Salesforce</div><div style="font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.32);font-family:var(--font-body);margin-top:1px;">Data &amp; Loyalty</div></div>
+      </div>
+      <div style="display:flex;gap:9px;flex:1;">
+        <div class="data-zone-dk">
+          <div class="zone-hd-dk"><img src="assets/icons/2d/Data Cloud.png" width="16" height="16" alt="Data Cloud"/><span class="zone-hd-name-d-dk">Data360</span></div>
+          <div class="zone-tag-dk">Data Spaces</div>
+          <div class="zpills">
+            <div class="zpill-dk">Bunnings</div>
+            <div class="zgroup-dk">
+              <div class="zgroup-pill-dk">Kmart</div>
+              <div class="zgroup-pill-dk">Target</div>
+              <div class="zgroup-pill-dk">OnePass</div>
+              <div class="zgroup-pill-dk">Flybuys</div>
+              <div class="zgroup-pill-dk">Officeworks</div>
+              <div class="zgroup-pill-dk">Priceline</div>
+            </div>
+          </div>
+        </div>
+        <div class="loy-zone-dk">
+          <div class="zone-hd-dk"><img src="assets/icons/2d/Loyalty Management.svg" width="16" height="16" alt="Loyalty"/><span class="zone-hd-name-l-dk">Loyalty &amp; Promos</span><img src="assets/icons/2d/Agentforce.svg" width="16" height="16" alt="Agentforce" style="margin-left:auto;opacity:0.85;filter:brightness(0) invert(1);"/></div>
+          <div class="zone-tag-dk">Programs</div>
+          <div class="zpills">
+            <div class="zpill-dk">Bunnings PPNG</div>
+            <div class="zpill-dk">Bunnings NZ</div>
+            <div class="zpill-dk">OnePass</div>
+            <div class="zpill-dk">Flybuys</div>
+            <div class="zpill-dk">Officeworks</div>
+            <div class="zpill-dk">Priceline 2.0</div>
+          </div>
+        </div>
+      </div>
+      <div class="dec-inner-dk">
+        <img src="assets/icons/2d/Agentforce.svg" width="18" height="18" alt="Agentforce" style="filter:brightness(0) invert(1);opacity:0.85;flex-shrink:0;"/>
+        <span class="dec-inner-text-dk">Offer Decisioning &amp; Delivery</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;margin-top:9px;padding-top:8px;border-top:1px solid rgba(0,179,255,0.1);flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:5px;background:rgba(6,106,254,0.18);border:1px solid rgba(0,179,255,0.28);border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#00B3FF;font-family:var(--font-body);white-space:nowrap;"><img src="assets/icons/2d/Tableau.png" width="13" height="13" alt="Reporting"/>Group &amp; Brand Reporting</div>
+        <span style="font-size:11px;color:rgba(255,255,255,0.25);">→</span>
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:6px;padding:5px 12px;font-size:10px;font-weight:600;color:rgba(255,255,255,0.75);font-family:var(--font-body);white-space:nowrap;">Retail Media Plans</div>
+      </div>
+    </div>
+
+    <div class="dec-zone-dk"><div class="dec-label-dk">Offer Decisioning &amp; Delivery</div></div>
+
+    <div class="chan-zone-dk">
+      <div class="chan-hd-dk">Offer &amp; Media Executions</div>
+      <div class="chan-dk"><div class="chan-title-dk">Web</div><div class="chan-desc-dk">Dynamic homepage, product recs, browse abandonment</div></div>
+      <div class="chan-dk"><div class="chan-title-dk">Email (MCE+)</div><div class="chan-desc-dk">Personalised content, cross-sell, suppression</div></div>
+      <div class="chan-dk"><div class="chan-title-dk">Mobile App</div><div class="chan-desc-dk">Unified Engagement SDK — low-code (June 2026)</div></div>
+      <div class="chan-dk"><div class="chan-title-dk">Sales &amp; Service Cloud</div><div class="chan-desc-dk">High-intent alerts, real-time recs to reps</div></div>
+      <div class="chan-dk"><div class="chan-title-dk">Advertising</div><div class="chan-desc-dk">Adaptive Media Buying, Pacing, Suppression</div></div>
+      <div class="chan-dk"><div class="chan-title-dk">POS</div><div class="chan-desc-dk">Offer decisioning in-store</div></div>
+      <div class="chan-dk"><div class="chan-title-dk">Retail Media</div><div class="chan-desc-dk">First-party → Google/Meta &amp; On-Property Display</div></div>
+      <div class="chan-dk"><div class="chan-title-dk">Gemini Agents</div><div class="chan-desc-dk">AI-powered agent "Buddy"</div></div>
+    </div>
+
+    <!-- Rows 2-8 dark -->
+    <div class="bc-dk" style="grid-row:2">
+      <img src="assets/brands/bunnings.svg" class="bc-logo-dk" alt="Bunnings"/>
+      <div class="bc-sources"><span class="bc-src-dk">WEB</span><span class="bc-src-dk">APP</span><span class="bc-src-dk">POS</span><span class="bc-src-dk">OMS</span><span class="bc-src-dk">Pricing</span><span class="bc-src-dk">PIM</span></div>
+      <div class="bc-stack"><span class="bc-arr-dk">↓</span><span class="bc-sap-dk">SAP ECC ERP</span><span class="bc-arr-dk">→</span><span class="bc-sfsub-dk"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" width="9" height="9" alt=""/>Sales &amp; Svc</span></div>
+    </div>
+    <div class="conn-l-dk" style="grid-row:2"><div class="arr-solid-dk"></div></div>
+    <div class="edp-dk" style="grid-row:2"><div class="edp-pill-dk">Bunnings EDP</div></div>
+    <div class="conn-r-dk" style="grid-row:2"><div class="arr-solid-dk"></div></div>
+
+    <div class="bc-dk" style="grid-row:3"><img src="assets/brands/kmart-op.svg" class="bc-logo-dk" alt="Kmart"/></div>
+    <div class="conn-l-dk" style="grid-row:3"><div class="arr-solid-dk"></div></div>
+    <div class="edp-dk" style="grid-row:3"><div class="edp-pill-dk">Kmart EDP</div></div>
+    <div class="conn-r-dk" style="grid-row:3"><div class="arr-solid-dk"></div></div>
+
+    <div class="bc-dk" style="grid-row:4"><img src="assets/brands/target-op.svg" class="bc-logo-dk" alt="Target"/></div>
+    <div class="conn-l-dk" style="grid-row:4"><div class="arr-solid-dk"></div></div>
+    <div class="edp-dk" style="grid-row:4"><div class="edp-pill-dk">Target EDP</div></div>
+    <div class="conn-r-dk" style="grid-row:4"><div class="arr-solid-dk"></div></div>
+
+    <div class="bc-dk" style="grid-row:5">
+      <img src="assets/brands/onepass.svg" class="bc-logo-op-dk" alt="OnePass"/>
+      <div class="bc-stack"><span class="bc-sfsub-dk"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" width="9" height="9" alt=""/>Sales &amp; Svc</span></div>
+    </div>
+    <div class="conn-l-dk" style="grid-row:5"><div class="arr-dashed-dk"></div></div>
+    <div class="edp-dk" style="grid-row:5"><div class="edp-pill-dk">OnePass EDP</div></div>
+    <div class="conn-r-dk" style="grid-row:5"><div class="arr-solid-dk"></div></div>
+
+    <div class="bc-dk" style="grid-row:6"><img src="assets/brands/flybuys-op.svg" class="bc-logo-dk" alt="Flybuys"/></div>
+    <div class="conn-l-dk" style="grid-row:6"><div class="arr-solid-dk"></div></div>
+    <div class="edp-dk" style="grid-row:6"><div class="edp-pill-dk">Flybuys EDP</div></div>
+    <div class="conn-r-dk" style="grid-row:6"><div class="arr-solid-dk"></div></div>
+
+    <div class="bc-dk" style="grid-row:7">
+      <img src="assets/brands/officeworks-op.svg" class="bc-logo-dk" alt="Officeworks"/>
+      <div class="bc-stack"><span class="bc-sfsub-dk"><img src="assets/logos/Salesforce-Corporate-Logo-Cloud-White-RBG.svg" width="9" height="9" alt=""/>Sales &amp; Svc</span></div>
+    </div>
+    <div class="conn-l-dk" style="grid-row:7"><div class="arr-dashed-dk"></div></div>
+    <div class="edp-dk" style="grid-row:7"><div class="edp-pill-dk">Officeworks EDP</div></div>
+    <div class="conn-r-dk" style="grid-row:7"><div class="arr-solid-dk"></div></div>
+
+    <div class="bc-dk" style="grid-row:8"><img src="assets/brands/priceline.svg" class="bc-logo-dk" alt="Priceline"/></div>
+    <div class="conn-l-dk" style="grid-row:8"><div class="arr-solid-dk"></div></div>
+    <div class="edp-dk" style="grid-row:8"><div class="edp-pill-dk">Priceline EDP</div></div>
+    <div class="conn-r-dk" style="grid-row:8"><div class="arr-solid-dk"></div></div>
+
+  </div><!-- /s2-grid -->
+
+  <div class="legend-dk">
+    <span class="leg-title-dk">Legend</span>
+    <div class="legend-item"><div class="leg-solid-dk"></div><span class="leg-label-dk">Primary data flow</span></div>
+    <div class="legend-item"><div class="leg-dashed-dk"></div><span class="leg-label-dk">Also via direct SF integration</span></div>
+    <div class="leg-sep-dk"></div>
+    <div class="legend-item"><div class="leg-swatch-dk" style="background:rgba(41,181,232,0.12);border:1px solid rgba(41,181,232,0.25);"></div><span class="leg-label-dk">Snowflake EDP</span></div>
+    <div class="legend-item"><div class="leg-swatch-dk" style="background:rgba(6,106,254,0.2);border:1px solid rgba(0,179,255,0.25);"></div><span class="leg-label-dk">Salesforce Data360</span></div>
+    <div class="legend-item"><div class="leg-swatch-dk" style="background:rgba(115,3,148,0.25);border:1px solid rgba(209,125,254,0.25);"></div><span class="leg-label-dk">Loyalty &amp; Promos</span></div>
+    <div class="leg-sep-dk"></div>
+    <div class="legend-item"><div style="width:28px;height:0;flex-shrink:0;border-top:1.5px dashed rgba(209,125,254,0.45);"></div><span class="leg-label-dk">Dashed border = cross-brand shared spaces</span></div>
+  </div>
+</div>
+</div><!-- /slide 2 -->
+
+
+<!-- ═══════════════════ SLIDE 3 — BRAND LANES ═══════════════════ -->
+<div class="slide s3" id="slide-2">
+<div class="s3-wrap">
+  <div class="diag-header">
+    <div>
+      <div class="diag-eyebrow">Brand Lanes · End-to-End Data Flow</div>
+      <div class="diag-sub">Source systems → Snowflake EDP → Data360 space → loyalty program → channel</div>
+    </div>
+  </div>
+
+  <div class="s3-col-bar">
+    <div class="s3-ch bl">Brand / Sources</div><div></div>
+    <div class="s3-ch sc">❄ Snowflake EDP</div><div></div>
+    <div class="s3-ch dc">Data360</div><div></div>
+    <div class="s3-ch lc" style="display:flex;align-items:center;justify-content:center;gap:5px;"><img src="assets/icons/2d/Agentforce.svg" width="13" height="13" alt="Agentforce" style="opacity:0.75;"/>Program</div><div></div>
+    <div class="s3-ch cc">Execution Channels</div>
+  </div>
+
+  <div class="s3-lanes">
+    <div class="s3-lane">
+      <div class="s3-brand"><div class="s3-brand-row"><img src="assets/brands/bunnings.svg" class="s3-logo" alt="Bunnings"/></div><div class="s3-sub">WEB · APP · POS · OMS → SAP ECC ERP</div></div>
+      <div class="s3-arr">›</div><div class="s3-edp">Bunnings EDP</div><div class="s3-arr">›</div>
+      <div class="s3-ds">Bunnings</div><div class="s3-arr">›</div>
+      <div class="s3-prog"><div class="s3-pp">Bunnings PPNG</div><div class="s3-pp">Bunnings NZ</div></div>
+      <div class="s3-arr">›</div><div class="s3-chans"><div class="s3-chip all">All channels</div></div>
+    </div>
+    <div class="s3-lane">
+      <div class="s3-brand"><div class="s3-brand-row"><img src="assets/brands/kmart-op.svg" class="s3-logo" alt="Kmart"/></div></div>
+      <div class="s3-arr">›</div><div class="s3-edp">Kmart EDP</div><div class="s3-arr">›</div>
+      <div class="s3-ds">Kmart</div><div class="s3-arr">›</div>
+      <div class="s3-prog"><div class="s3-pn">Cross-brand</div></div>
+      <div class="s3-arr">›</div><div class="s3-chans"><div class="s3-chip">Web</div><div class="s3-chip">Email</div><div class="s3-chip">Mobile</div><div class="s3-chip">Advertising</div><div class="s3-chip">POS</div></div>
+    </div>
+    <div class="s3-lane">
+      <div class="s3-brand"><div class="s3-brand-row"><img src="assets/brands/target-op.svg" class="s3-logo" alt="Target"/></div></div>
+      <div class="s3-arr">›</div><div class="s3-edp">Target EDP</div><div class="s3-arr">›</div>
+      <div class="s3-ds">Target</div><div class="s3-arr">›</div>
+      <div class="s3-prog"><div class="s3-pn">Cross-brand</div></div>
+      <div class="s3-arr">›</div><div class="s3-chans"><div class="s3-chip">Web</div><div class="s3-chip">Email</div><div class="s3-chip">Mobile</div><div class="s3-chip">Advertising</div><div class="s3-chip">POS</div></div>
+    </div>
+    <div class="s3-lane">
+      <div class="s3-brand"><div class="s3-brand-row"><img src="assets/brands/onepass.svg" class="s3-logo-op" alt="OnePass"/></div><div class="s3-sub">+ Sales &amp; Service Cloud</div></div>
+      <div class="s3-arr">›</div><div class="s3-edp">OnePass EDP</div><div class="s3-arr">›</div>
+      <div class="s3-ds">OnePass</div><div class="s3-arr">›</div>
+      <div class="s3-prog"><div class="s3-pp">OnePass</div></div>
+      <div class="s3-arr">›</div><div class="s3-chans"><div class="s3-chip">Web</div><div class="s3-chip">Email</div><div class="s3-chip">Mobile</div><div class="s3-chip">Sales &amp; Svc</div><div class="s3-chip">Retail Media</div></div>
+    </div>
+    <div class="s3-lane">
+      <div class="s3-brand"><div class="s3-brand-row"><img src="assets/brands/flybuys-op.svg" class="s3-logo" alt="Flybuys"/></div></div>
+      <div class="s3-arr">›</div><div class="s3-edp">Flybuys EDP</div><div class="s3-arr">›</div>
+      <div class="s3-ds">Flybuys</div><div class="s3-arr">›</div>
+      <div class="s3-prog"><div class="s3-pp">Flybuys</div></div>
+      <div class="s3-arr">›</div><div class="s3-chans"><div class="s3-chip all">All channels</div></div>
+    </div>
+    <div class="s3-lane">
+      <div class="s3-brand"><div class="s3-brand-row"><img src="assets/brands/officeworks-op.svg" class="s3-logo" alt="Officeworks"/></div><div class="s3-sub">+ Sales &amp; Service Cloud</div></div>
+      <div class="s3-arr">›</div><div class="s3-edp">Officeworks EDP</div><div class="s3-arr">›</div>
+      <div class="s3-ds">Officeworks</div><div class="s3-arr">›</div>
+      <div class="s3-prog"><div class="s3-pp">Officeworks</div></div>
+      <div class="s3-arr">›</div><div class="s3-chans"><div class="s3-chip">Web</div><div class="s3-chip">Email</div><div class="s3-chip">Mobile</div><div class="s3-chip">Sales &amp; Svc</div><div class="s3-chip">POS</div><div class="s3-chip">Retail Media</div></div>
+    </div>
+    <div class="s3-lane">
+      <div class="s3-brand"><div class="s3-brand-row"><img src="assets/brands/priceline.svg" class="s3-logo" alt="Priceline"/></div></div>
+      <div class="s3-arr">›</div><div class="s3-edp">Priceline EDP</div><div class="s3-arr">›</div>
+      <div class="s3-ds">Priceline</div><div class="s3-arr">›</div>
+      <div class="s3-prog"><div class="s3-pp">Priceline 2.0</div></div>
+      <div class="s3-arr">›</div><div class="s3-chans"><div class="s3-chip all">All channels</div></div>
+    </div>
+  </div>
+
+  <div class="s3-footer">
+    <div class="s3-rep"><img src="assets/icons/2d/Tableau.png" width="13" height="13" alt="Reporting"/>Group &amp; Brand Reporting</div>
+    <span style="font-size:12px;color:var(--muted);">→</span>
+    <div class="s3-out">Retail Media Plans</div>
+  </div>
+</div>
+</div><!-- /slide 3 -->
+
+</div><!-- /slide-deck -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const vtag = document.getElementById('vtag');
+  const vnames = ['Ecosystem Map', 'Platform Architecture', 'Brand Lanes'];
+  let current = 0;
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = `dot${i===0?' active':''}${i===1?' dk':''}`;
+    d.onclick = () => go(i);
+    dotsEl.appendChild(d);
+  });
+  function go(n) {
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    current = Math.max(0, Math.min(slides.length-1, n));
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    dotsEl.children[current].classList.add('active');
+    counter.textContent = `${current+1} / ${slides.length}`;
+    vtag.textContent = `Version ${current+1} of 3 — ${vnames[current]}`;
+    vtag.className = current===1 ? 'vtag on-dark' : 'vtag';
+    document.getElementById('btn-prev').disabled = current===0;
+    document.getElementById('btn-next').disabled = current===slides.length-1;
+  }
+  document.getElementById('btn-prev').onclick = () => go(current-1);
+  document.getElementById('btn-next').onclick = () => go(current+1);
+  document.addEventListener('keydown', e => {
+    if (e.key==='ArrowRight'||e.key==='ArrowDown') go(current+1);
+    if (e.key==='ArrowLeft'||e.key==='ArrowUp') go(current-1);
+  });
+  go(0);
+</script>
+</body>
+</html>
