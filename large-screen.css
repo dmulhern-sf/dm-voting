@@ -1,0 +1,52 @@
+/* ─────────────────────────────────────────────────────────────────
+   large-screen.css — EXPERIMENTAL opt-in large-display scaling
+   ─────────────────────────────────────────────────────────────────
+   Companion to large-screen.js. The script locks .slide-deck to a
+   1600×1000 design canvas and scales via transform. This stylesheet
+   centers the canvas in the viewport and overrides slide-engine
+   viewport-relative min-heights.
+
+   Body background stays whatever the deck declares (typically white)
+   so white sections inside slides keep their intended look. The
+   letterbox area around the scaled canvas inherits that body bg.
+
+   ── How to opt in ─────────────────────────────────────────────
+   Add stylesheet near end of <head>, script before </body>:
+     <link rel="stylesheet" href="large-screen.css" />
+     <script src="large-screen.js"></script>
+
+   ── Status: EXPERIMENTAL ──────────────────────────────────────
+   ───────────────────────────────────────────────────────────── */
+
+@media (min-width: 1600px) {
+  /* Center the design canvas in the viewport on large screens.
+     Body bg is left to the deck's existing rules (don't override). */
+  body {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Slide engine often declares min-height: 100vh on hero/closing.
+     With our canvas locked to 1000px, those would stretch past the
+     canvas and require scrolling. Clamp to canvas height. */
+  .slide-hero .hero,
+  .slide-closing .slide-body { min-height: 1000px !important; }
+
+  /* Some decks use inline min-height: 100vh on the slide's direct
+     child div (e.g. sf-composer's thank-you slide). The JS handles
+     those by computed-style match — this is the CSS belt-and-braces
+     for any descendant explicitly tagged. */
+  .slide-deck.lscaled .slide > div[data-canvas-fill],
+  .slide-deck.lscaled .slide > section[data-canvas-fill] {
+    min-height: 1000px !important;
+    height: 1000px !important;
+  }
+
+  /* Hide unscaled flash before JS computes transform. */
+  .slide-deck { visibility: hidden; }
+  .slide-deck.lscaled {
+    visibility: visible;
+    box-shadow: 0 24px 96px rgba(0,0,0,0.30);
+  }
+}
