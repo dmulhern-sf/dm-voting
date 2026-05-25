@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cast your vote</title>
+  <link rel="stylesheet" href="/tokens.css" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body), -apple-system, sans-serif;
+      background: var(--cloud-95);
+      color: var(--sf-navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 30, 91, 0.15);
+      padding: 32px 24px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-family: var(--font-display), var(--font-body), sans-serif;
+      color: var(--sf-blue);
+      margin: 0 0 24px;
+      font-size: 1.6rem;
+    }
+    .options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .options button {
+      font-size: 1.1rem;
+      padding: 16px;
+      border-radius: 10px;
+      border: 2px solid var(--cloud-80);
+      background: white;
+      color: var(--sf-navy);
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 80ms, background 120ms, border-color 120ms;
+    }
+    .options button:hover { border-color: var(--sf-blue-m); }
+    .options button:active { transform: scale(0.98); }
+    .options button.selected {
+      background: var(--sf-blue);
+      color: white;
+      border-color: var(--sf-blue);
+      font-weight: 600;
+    }
+    .status { color: var(--gray-500); min-height: 1.4em; margin: 0; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1 id="topicTitle">Loading…</h1>
+    <div id="options" class="options"></div>
+    <p id="status" class="status"></p>
+  </main>
+  <script src="/voting/static/vote.js"></script>
+</body>
+</html>

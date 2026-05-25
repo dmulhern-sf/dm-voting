@@ -1,5 +1,7 @@
 const express = require('express');
+const http = require('http');
 const path = require('path');
+const { registerVoting } = require('./voting');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -32,6 +34,12 @@ app.post('/collaborate', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+const server = http.createServer(app);
+
+registerVoting(app, server).catch(err => {
+  console.error('[voting] failed to register:', err);
+});
+
+server.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

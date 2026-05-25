@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live Voting — Decktools</title>
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/components.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: var(--font-body), -apple-system, sans-serif;
+      background: var(--cloud-95);
+      color: var(--sf-navy);
+      min-height: 100vh;
+    }
+    .slide {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 48px;
+    }
+    .eyebrow {
+      color: var(--sf-blue);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    h1 {
+      font-family: var(--font-display, var(--font-body));
+      color: var(--sf-navy);
+      font-size: 2.6rem;
+      margin: 8px 0 32px;
+    }
+    .lede { color: var(--gray-500); max-width: 640px; margin-bottom: 32px; }
+  </style>
+</head>
+<body>
+  <section class="slide">
+    <div class="eyebrow">Audience pulse</div>
+    <h1>What does the room think?</h1>
+    <p class="lede">Scan, vote, watch the bars move. One vote per device — change your mind any time.</p>
+
+    <div data-vote-topic="cats-vs-dogs"></div>
+  </section>
+
+  <script src="/voting/static/voting-widget.js"></script>
+</body>
+</html>

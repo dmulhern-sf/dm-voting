@@ -1,0 +1,9 @@
+{
+  "topics": [
+    {
+      "id": "cats-vs-dogs",
+      "title": "Cats vs Dogs",
+      "options": ["Cats", "Dogs"]
+    }
+  ]
+}

@@ -52,6 +52,10 @@ Every section is optional — delete what you don't need.
 
 See `examples/` for reference decks and component showcases.
 
+## Live audience voting
+
+Embed a QR-driven live vote in any slide — phones scan, results stream back via WebSockets and update bars in place. Drop `<div data-vote-topic="my-topic"></div>` into a slide and load `/voting/static/voting-widget.js`. Topics live in `voting/topics.json`. See `voting/README.md` and `voting-demo.html`.
+
 ## Docs
 
 - `STYLE-GUIDE.md` — page structure, copy lengths, voice, persuasion rules
