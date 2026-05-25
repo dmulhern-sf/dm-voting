@@ -192,7 +192,52 @@ Ask which animated slides to include. Show all options, let the user pick any co
 
 For each selected animation, tailor the content to the customer's use case using the narrative answers already collected (e.g. the AI in Action simulation should show the actual beachhead use case, not a generic example). Reference `sf-composer.html` slides 4–6 for the exact animation patterns to copy.
 
-**14. Target display (experimental large-screen scaling)**
+**14. Live audience voting (optional)**
+Ask:
+> "Do you want a live audience voting slide in this deck? Audience scans a QR code on the slide and votes from their phones — bars update on screen in real time as votes come in."
+
+Options:
+- **Yes — add a voting slide** — inserts a slide between Roadmap and Closing where the room votes on whatever question the user wants
+- **No — skip voting** — default; deck has no voting slide
+
+If **yes**, ask the user to define the voting topic. Use AskUserQuestion for the framing pick, then collect title and options as free-text follow-ups so the user shapes both the question and the choices.
+
+**Step 14a — what kind of question?**
+Use AskUserQuestion with these starting points (the user can pick "Other" and free-type their own framing):
+- **Outcome priority** — "Which outcome matters most to {Customer Name}?" (suggest seeding options from question 7's hero KPIs)
+- **Priority beachhead / next step** — "Where should we start?" (suggest seeding options from question 9 + a "Both, sequenced" option)
+- **Biggest concern or risk** — "What concern do you want us to address first?" (typical: cost, change management, integration risk, time-to-value)
+- **Sentiment / pulse check** — "How are you feeling about this direction?" (typical: Energised / Curious / Skeptical / Need more info)
+- **Custom** — anything else the user wants to ask the room
+
+**Step 14b — confirm the exact title.**
+Ask via free text:
+> "What's the exact question the audience should see on the slide?"
+Use the user's wording verbatim — do not rephrase. Defaults from 14a are *suggestions* the user can accept, edit, or replace entirely.
+
+**Step 14c — confirm the options.**
+Ask via free text:
+> "What 2–6 options should the audience be able to vote between? List them comma-separated, or describe and let me draft them."
+If the user picked one of the defaults in 14a and has not edited the suggested options, offer the seeded list and ask if they want to keep, edit, or replace it. Always end with the user's exact list — never inject options the user didn't approve.
+
+Store the result as:
+```
+voting: {
+  enabled: true,
+  topicId: "{slug}-{kebab-question-summary}",   // unique, deck-slug-prefixed
+  title:   "{exact title from 14b}",
+  options: ["{opt1}", "{opt2}", "..."]
+}
+```
+
+Topic ID rules:
+- Must be unique across all decks served by the same voting backend (the topic store is shared)
+- Prefix with the deck slug (e.g. `nbn-outcome-priority`, `westpac-readiness-pulse`)
+- Kebab-case, ≤ 40 chars, derived from a 1–3 word summary of the title — never auto-generated from option text
+
+**Voting requires the Decktools Express server** (port 3000) to render the QR code and stream tallies — note this in the post-interview summary so the user starts the server before presenting (`npm start` from the Decktools dir, deck must be served from `http://localhost:3000/{slug}.html` rather than `file://`).
+
+**15. Target display (experimental large-screen scaling)**
 Ask:
 > "Will this deck be presented on a large display (4K monitor, conference TV, projector)?"
 - **No / laptop / standard monitor** — default behavior (1200–1440px container)
@@ -200,7 +245,7 @@ Ask:
 
 If yes, store as `large_screen: true` and include `large-screen.css` in the scaffold (see Step 4 above).
 
-**15. GitHub setup**
+**16. GitHub setup**
 - What slug should the repo use? (e.g. `deck-westpac` → `{their-username}/deck-westpac`)
 - Ask: "Do you want the repo public or private?"
 
@@ -212,12 +257,13 @@ After collecting animation choices, note which slides to build and which `sf-com
 2. Copy `sf-composer.html` as `{slug}.html` into the new repo directory
 3. Copy `tokens.css`, `components.css`, `animation.css`, `animation-interactions.css`, `animation.js`, `feedback-widget.js`, and `assets/` into the new repo
 4. **If `large_screen: true`** — also copy `large-screen.css` and add `<link rel="stylesheet" href="large-screen.css" />` after `components.css` in the deck `<head>`
-5. Set `<html>` attributes: `data-feedback-repo`, `data-deck-name`
-6. Set `--accent` / `--accent-l` to the customer's brand hex in `<head>`
-7. Replace all copy using the narrative answers above — apply all Bowden principles
-8. Replace cobrand pill with customer name
-9. Commit and push: `git add -A && git commit -m "Init {Customer Name} deck" && git push`
-10. Ping the usage tracker with full context (fire-and-forget):
+5. **If `voting.enabled: true`** — see "Voting slide scaffold" below
+6. Set `<html>` attributes: `data-feedback-repo`, `data-deck-name`
+7. Set `--accent` / `--accent-l` to the customer's brand hex in `<head>`
+8. Replace all copy using the narrative answers above — apply all Bowden principles
+9. Replace cobrand pill with customer name
+10. Commit and push: `git add -A && git commit -m "Init {Customer Name} deck" && git push`
+11. Ping the usage tracker with full context (fire-and-forget):
 ```
 POST https://decktools-tracker.mtoolin.workers.dev/track
 {
@@ -231,10 +277,63 @@ POST https://decktools-tracker.mtoolin.workers.dev/track
   "accent":        "{customer brand hex e.g. #DA1710}",
   "story_arc":     "{one-line goal statement from interview}",
   "repo":          "{owner}/{slug}",
+  "voting":        {{true if voting.enabled, else false}},
   "ts":            "{ISO timestamp}"
 }
 ```
-11. Open the HTML file in the browser for the user to review
+12. Open the HTML file in the browser for the user to review. If voting is enabled, instruct the user to run `npm start` and open the deck via `http://localhost:3000/{slug}.html` so the QR + live tally render.
+
+---
+
+### Voting slide scaffold
+
+Trigger: interview question 14 set `voting.enabled: true`.
+
+The voting widget already lives in the Decktools repo at `voting/voting-widget.js` + `voting/voting-widget.css` and is served by the Express backend (`server.js`) at `/voting/static/voting-widget.js`. The skill MUST NOT re-implement it.
+
+Steps:
+
+1. **Register the topic.** Edit `voting/topics.json` and append a new entry using the values captured in question 14 (`voting.topicId`, `voting.title`, `voting.options`). Use the user's exact title and options — do not rephrase. Example shape:
+   ```json
+   {
+     "id": "{voting.topicId}",
+     "title": "{voting.title}",
+     "options": ["{option 1}", "{option 2}", "..."]
+   }
+   ```
+   Keep the existing topics in the file — append, do not overwrite.
+
+2. **Load the widget assets in the deck `<head>`** alongside the existing stylesheet links:
+   ```html
+   <link rel="stylesheet" href="voting/voting-widget.css" />
+   ```
+
+3. **Insert a new slide between Roadmap and Closing** (becomes slide 11 of 13 in a standard deck). The widget renders its own title from the topic registered in `topics.json`, so the slide chrome is intentionally lightweight — eyebrow + a one-line subhead that frames *why* the room is voting:
+   ```html
+   <!-- SLIDE · Audience Vote -->
+   <div class="slide" data-section="Your Take">
+     <div class="slide-body">
+       <div class="eyebrow" data-animate="fade-up" data-anim-delay="0">Your Take</div>
+       <div class="section-title" data-animate="fade-up" data-anim-delay="60">{voting.title}</div>
+       <div class="section-sub" data-animate="fade-up" data-anim-delay="120" style="margin-bottom:32px;">Scan the QR code, cast your vote. Bars update as the room responds.</div>
+       <div data-animate="fade-up" data-anim-delay="180" data-vote-topic="{voting.topicId}"></div>
+       <div style="margin-top:28px;font-size:12px;color:var(--muted);font-style:italic;text-align:center;" data-animate="fade-up" data-anim-delay="240">One vote per device — change your mind any time.</div>
+     </div>
+   </div>
+   ```
+   The `section-title` should mirror `voting.title` so the slide chrome reads correctly even before the widget loads (the widget renders its own title inside the card; the slide H1 is what the audience sees first).
+
+4. **Load the widget script** alongside `feedback-widget.js`, before `large-screen.js`:
+   ```html
+   <script src="/voting/static/voting-widget.js"></script>
+   ```
+   The absolute path (`/voting/static/...`) is required — the script is served by the Express backend, not the deck directory.
+
+5. **Update the slide counter total** in the page-engine script (`<span class="slide-counter">1 / N</span>`) to reflect the new slide count.
+
+6. **Update any animation MutationObserver selectors** that reference subsequent slides by `data-section` (e.g. closing/thank-you) — they still match by name, so no change needed unless slide insertion shifted a section the observer watches by index.
+
+**Critical: voting requires the Express server.** Note in the post-interview summary that the user must run `npm start` from the Decktools dir and open the deck at `http://localhost:3000/{slug}.html`. The widget makes XHR + WebSocket calls to `/api/voting/*` and `/voting/socket.io` — these only resolve when the deck is served by the backend, not when opened via `file://`.
 
 ---
 
