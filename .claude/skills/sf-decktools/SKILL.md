@@ -63,7 +63,36 @@ Flag any missing file before proceeding.
 - All `<img>` tags have descriptive `alt` attributes
 - Every deck's final slide attribution line reads: `Designed by Decktools · Built by <a href="https://www.linkedin.com/in/milestoolin/" target="_blank" rel="noopener">Miles Toolin</a>` — never omit this
 
-## Step 4 — Feedback widget + GitHub repo
+## Step 4 — Optional: large-display scaling (experimental)
+
+Decktools is designed for laptop / standard-monitor presenting (~1440px container). If the deck will be presented on a **4K monitor, conference TV, or projector**, ask the user during `/decktools new`:
+
+> "Will this deck be presented on a large display (4K monitor, TV, projector)?"
+
+If yes, opt in by adding **two files** to the deck. Stylesheet near the end of `<head>`, after `components.css`:
+
+```html
+<!-- EXPERIMENTAL: large-display scaling — pairs with large-screen.js -->
+<link rel="stylesheet" href="large-screen.css" />
+```
+
+And the script just before `</body>`, after `feedback-widget.js`:
+
+```html
+<script src="large-screen.js"></script>
+```
+
+**What it does** — locks `.slide-deck` to a 1600×1000 design canvas, then uses `transform: scale()` to fit that canvas to the actual viewport on screens 1600px+ wide. The whole deck — typography, padding, demo panels, animations, SVGs, score rings, fill bars — scales as one unit. Below 1600px viewport, the script no-ops and the deck renders at native size. The script also clamps any inline `min-height: 100vh` / `height: 100vh` inside slides to canvas height, so full-bleed slides don't force scrolling.
+
+**Status: experimental.** Verify per deck:
+- Animations using `transform: translate/scale` still play correctly (they compose with the parent scale)
+- Fixed-position cobrand pill / slide controls / dots stay anchored to viewport corners (they live outside `.slide-deck`)
+- PDF export likely won't honour the transform — toggle off both files for export
+- Hit-testing on demo controls works (clicks land on the right targets at all scales)
+
+**Do NOT add this to existing decks** without testing on the actual target display — it changes how the slide engine resolves dimensions above 1600px viewport.
+
+## Step 5 — Feedback widget + GitHub repo
 
 Every deck scaffolded with `/decktools new` has these attributes on the `<html>` tag:
 
@@ -163,7 +192,15 @@ Ask which animated slides to include. Show all options, let the user pick any co
 
 For each selected animation, tailor the content to the customer's use case using the narrative answers already collected (e.g. the AI in Action simulation should show the actual beachhead use case, not a generic example). Reference `sf-composer.html` slides 4–6 for the exact animation patterns to copy.
 
-**14. GitHub setup**
+**14. Target display (experimental large-screen scaling)**
+Ask:
+> "Will this deck be presented on a large display (4K monitor, conference TV, projector)?"
+- **No / laptop / standard monitor** — default behavior (1200–1440px container)
+- **Yes — opt in to experimental large-screen scaling** — adds `large-screen.css` with CSS `zoom` tiers at 1600/1920/2560/3200/3840px viewports
+
+If yes, store as `large_screen: true` and include `large-screen.css` in the scaffold (see Step 4 above).
+
+**15. GitHub setup**
 - What slug should the repo use? (e.g. `deck-westpac` → `{their-username}/deck-westpac`)
 - Ask: "Do you want the repo public or private?"
 
@@ -174,7 +211,8 @@ After collecting animation choices, note which slides to build and which `sf-com
 1. Run: `gh repo create {username}/{slug} --{public|private} --description "Decktools deck — {Customer Name}"` then `gh repo clone {username}/{slug} ~/claude/{slug}/`
 2. Copy `sf-composer.html` as `{slug}.html` into the new repo directory
 3. Copy `tokens.css`, `components.css`, `animation.css`, `animation-interactions.css`, `animation.js`, `feedback-widget.js`, and `assets/` into the new repo
-4. Set `<html>` attributes: `data-feedback-repo`, `data-deck-name`
+4. **If `large_screen: true`** — also copy `large-screen.css` and add `<link rel="stylesheet" href="large-screen.css" />` after `components.css` in the deck `<head>`
+5. Set `<html>` attributes: `data-feedback-repo`, `data-deck-name`
 6. Set `--accent` / `--accent-l` to the customer's brand hex in `<head>`
 7. Replace all copy using the narrative answers above — apply all Bowden principles
 8. Replace cobrand pill with customer name
