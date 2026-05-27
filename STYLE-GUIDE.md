@@ -232,9 +232,9 @@ Customer accents seen so far:
 | `icon-platform.png` | Platform capabilities |
 | `icon-salesrevenue.png` | Sales Cloud / revenue use cases |
 | `icon-slack.png` | Slack integrations |
-| `xero-einstein-icon.png` | Einstein Studio (the icon name is a legacy — re-use anywhere) |
-| `xero-perso-icon.png` | Personalisation |
-| `xero-rtom-icon.png` | Real-Time Orchestration |
+| `icon-einstein.png` | Einstein Studio — re-use anywhere |
+| `icon-perso.png` | Personalisation |
+| `icon-rtom.png` | Real-Time Orchestration |
 | `dc-logo.png` | Data Cloud standalone |
 | `char-agent-astro-*.png` | Astro-as-agent moments — hero accents, feature cards |
 | `char-agent-einstein-1.png` | Einstein-as-agent moments |
