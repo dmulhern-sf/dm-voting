@@ -7,11 +7,14 @@ Codified rules for building slide decks using the decktools design system. Every
 ## Architecture
 
 ### File structure
-Every customer deck is a single HTML file at the root of `decktools/`:
+Every customer deck scaffolds into its own repo cloned to `~/claude/{slug}/`. The deck is a single HTML file `{slug}.html` at the root of that repo, alongside the copied design-system files (`tokens.css`, `components.css`, `assets/`, etc.). The `decktools/` repo itself is the toolkit; reference decks live in `decktools/examples/` and are not copied into new builds.
+
 ```
-priceline.html
-sf-composer.html
-westpac.html   ← example
+~/claude/deck-westpac/
+  westpac.html
+  tokens.css
+  components.css
+  assets/
 ```
 
 Link to the shared stylesheets — never copy tokens or components into the page:

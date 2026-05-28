@@ -257,7 +257,6 @@ Customer accents seen so far:
 | `icon-einstein.png` | Einstein Studio — re-use anywhere |
 | `icon-perso.png` | Personalisation |
 | `icon-rtom.png` | Real-Time Orchestration |
-| `dc-logo.png` | Data Cloud standalone |
 | `char-agent-astro-*.png` | Astro-as-agent moments — hero accents, feature cards |
 | `char-agent-einstein-1.png` | Einstein-as-agent moments |
 | `char-astro-jumping.png` | Kinetic moments — closing CTAs, excitement |

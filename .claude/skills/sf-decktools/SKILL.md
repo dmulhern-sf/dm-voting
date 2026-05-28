@@ -255,7 +255,7 @@ After collecting animation choices, note which slides to build and which `sf-com
 
 1. Run: `gh repo create {username}/{slug} --{public|private} --description "Decktools deck — {Customer Name}"` then `gh repo clone {username}/{slug} ~/claude/{slug}/`
 2. Copy `sf-composer.html` as `{slug}.html` into the new repo directory
-3. Copy `tokens.css`, `components.css`, `animation.css`, `animation-interactions.css`, `animation.js`, `feedback-widget.js`, and `assets/` into the new repo — **exclude `assets/examples/`** (customer-specific files, not part of the design system)
+3. Copy `tokens.css`, `components.css`, `animation.css`, `animation-interactions.css`, `animation.js`, `feedback-widget.js`, and `assets/` into the new repo — **exclude the entire `examples/` directory and all of its contents** (customer-specific reference decks and brand assets — not part of the design system)
 4. **If `large_screen: true`** — also copy `large-screen.css` and add `<link rel="stylesheet" href="large-screen.css" />` after `components.css` in the deck `<head>`
 5. **If `voting.enabled: true`** — see "Voting slide scaffold" below
 6. Set `<html>` attributes: `data-feedback-repo`, `data-deck-name`
