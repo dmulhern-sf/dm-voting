@@ -16,6 +16,7 @@ Vanilla HTML/CSS/JS — no build tool, no framework, no CMS.
 - `assets/` — characters, graphics, icons, logos, screenshots
   - `assets/icons/2d/` — 2D full colour product icons (use in narrative pages)
   - `assets/icons/3d/` — 3D icons (campaigns/events only, NOT in narrative pages)
+  - For non-Salesforce generic icons: embed inline SVG from Phosphor Icons (phosphoricons.com) — no CDN, inline paths only
   - `assets/logos/` — official SVG logos (use these, not legacy JPEGs)
   - `assets/fonts/` — Salesforce Sans (all weights) + Trailhead + Avant Garde For Salesforce Demi (display headings)
 

@@ -143,6 +143,28 @@ Never use both Astro and Agent Astro on the same page.
 
 For narrative pages: use 2D multicolor product icons (`icon-agentforce.png`, `icon-data360.png`, etc.) in card icons. Never 3D in a document context.
 
+### Non-Salesforce icons — Phosphor Icons
+
+For generic UI icons (arrows, checkmarks, settings, users, etc.) outside the Salesforce product icon set, use **Phosphor Icons** (https://phosphoricons.com/).
+
+**Rules:**
+- Embed SVG paths inline — no CDN, no external requests. Files must remain self-contained.
+- Default weight: **Regular**. Use **Bold** for emphasis or when the icon sits on a dark background.
+- Size: `20px` × `20px` for inline card icons; `24px` × `24px` for standalone/feature icons.
+- Apply color via CSS (`fill` or `stroke`) — never hardcode color attributes on the SVG element.
+- Do not mix Phosphor icons with emoji — pick one system per page.
+
+**Usage pattern:**
+```html
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" class="icon">
+  <!-- paste Phosphor path here -->
+</svg>
+```
+
+```css
+.icon { fill: var(--sf-blue); }
+```
+
 ### Accessibility
 
 - Minimum contrast ratio: **4.5:1** for all text on backgrounds

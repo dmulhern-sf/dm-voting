@@ -253,7 +253,7 @@ The `rgba()` values change with `--accent` — manually update the alpha channel
 
 ## Things never to do in a slide deck
 
-- No emoji as card icons — use `assets/icons/2d/` PNGs/SVGs
+- No emoji as card icons — use `assets/icons/2d/` PNGs/SVGs for Salesforce product icons; use inline Phosphor SVGs (phosphoricons.com) for generic UI icons
 - No one-sided thick borders on cards — no `border-top`, `border-left`, `border-right`, `border-bottom` thicker than 1px on any card, tile, or panel. Use `border: 1px solid var(--gray-200)` only. Stack layer colour identity uses `box-shadow: inset 4px 0 0 <colour>` — never `border-left`.
 - No gradient text — backgrounds yes, text fill no
 - No gradient inside a card interior
