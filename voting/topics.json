@@ -1,6 +1,67 @@
 {
   "topics": [
     {
+      "id": "fc-q1",
+      "title": "What's sitting at the top of your marketing team's agenda right now?",
+      "options": [
+        "Doing more with the tools and data we already have",
+        "Creating more relevant, personalised experiences for customers",
+        "Proving the value and ROI of what marketing delivers",
+        "Keeping up with how fast customer expectations are changing"
+      ]
+    },
+    {
+      "id": "fc-q2",
+      "title": "What would an extra 8 hours a week back for your team make possible?",
+      "options": [
+        "More creative work — campaigns, content, ideas",
+        "Better reporting and proving marketing's value",
+        "Actually personalising our customer communications",
+        "Getting on top of the basics we never have time for"
+      ]
+    },
+    {
+      "id": "fc-q3",
+      "title": "Which marketing channel do you think is changing the fastest right now?",
+      "options": [
+        "Social media",
+        "Search and SEO",
+        "Email",
+        "Video and content"
+      ]
+    },
+    {
+      "id": "slide-1",
+      "title": "What's your #1 marketing challenge?",
+      "options": [
+        "Getting sales to follow up on leads",
+        "Proving ROI to the business",
+        "Personalising at scale",
+        "Keeping data clean"
+      ]
+    },
+    {
+      "id": "slide-2",
+      "title": "5 things you wish you knew about marketing automation",
+      "options": [
+        "Your CRM data is already a goldmine",
+        "Lead scoring means sales only calls hot prospects",
+        "Every email click signals buying intent",
+        "Progressive profiling builds profiles without long forms",
+        "AI can predict who's about to buy before they know it"
+      ]
+    },
+    {
+      "id": "slide-3",
+      "title": "What does your team spend the most time on?",
+      "options": [
+        "🔨 Building & sending emails",
+        "📊 Reporting & proving ROI",
+        "🎯 Segmenting audiences",
+        "📞 Chasing sales to follow up"
+      ]
+    },
+    {
       "id": "cats-vs-dogs",
       "title": "Cats vs Dogs",
       "options": ["Cats", "Dogs"]

@@ -46,6 +46,21 @@ class RedisStore {
   }
 }
 
+MemoryStore.prototype.resetTopic = async function resetTopic(topicId) {
+  const counts = this.tallies.get(topicId);
+  if (counts) {
+    for (const key of Object.keys(counts)) counts[key] = 0;
+  }
+  const voters = this.voters.get(topicId);
+  if (voters) voters.clear();
+  return this.getCounts(topicId);
+};
+
+RedisStore.prototype.resetTopic = async function resetTopic(topicId) {
+  await this.redis.del(`vote:counts:${topicId}`, `vote:voters:${topicId}`);
+  return this.getCounts(topicId);
+};
+
 async function createStore(topics) {
   const url = process.env.REDIS_URL;
   if (!url) {

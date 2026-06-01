@@ -24,6 +24,14 @@ async function registerVoting(app, server) {
   const topics = loadTopics();
   const topicById = new Map(topics.map(t => [t.id, t]));
   const store = await createStore(topics);
+  const conferenceQuestionIds = ['fc-q1', 'fc-q2', 'fc-q3'];
+  const conferenceSessionState = {
+    started: false,
+    sessionId: Date.now(),
+    activeIndex: 0,
+    questionIds: conferenceQuestionIds,
+    updatedAt: Date.now()
+  };
 
   const io = new Server(server, { path: '/voting/socket.io' });
 
@@ -39,6 +47,86 @@ async function registerVoting(app, server) {
   app.get('/vote/:topicId', (req, res) => {
     if (!topicById.has(req.params.topicId)) return res.status(404).send('Unknown topic');
     res.sendFile(path.join(__dirname, 'vote.html'));
+  });
+  app.get('/vote-live', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'conference-live.html'));
+  });
+
+  app.get('/api/voting/conference/state', (_req, res) => {
+    const activeTopicId = conferenceSessionState.started
+      ? (conferenceSessionState.questionIds[conferenceSessionState.activeIndex] || null)
+      : null;
+    res.json({
+      ...conferenceSessionState,
+      activeTopicId,
+      done: conferenceSessionState.started
+        ? conferenceSessionState.activeIndex >= conferenceSessionState.questionIds.length
+        : false
+    });
+  });
+
+  app.post('/api/voting/conference/advance', require('express').json(), (req, res) => {
+    const action = req.body?.action || 'next';
+    if (action === 'reset') {
+      conferenceSessionState.started = false;
+      conferenceSessionState.sessionId = Date.now();
+      conferenceSessionState.activeIndex = 0;
+      conferenceSessionState.updatedAt = Date.now();
+      Promise.all(conferenceSessionState.questionIds.map(topicId => store.resetTopic(topicId)))
+        .then(results => {
+          conferenceSessionState.questionIds.forEach((topicId, idx) => {
+            io.emit('voting:tally', { topicId, counts: results[idx] || {} });
+          });
+          const activeTopicId = conferenceSessionState.questionIds[conferenceSessionState.activeIndex] || null;
+          const payload = {
+            ...conferenceSessionState,
+            activeTopicId: conferenceSessionState.started ? activeTopicId : null,
+            done: conferenceSessionState.started
+              ? conferenceSessionState.activeIndex >= conferenceSessionState.questionIds.length
+              : false
+          };
+          io.emit('voting:conference_state', payload);
+          return res.json({ ok: true, state: payload });
+        })
+        .catch(err => {
+          console.error('[voting] failed to reset conference tallies:', err);
+          return res.status(500).json({ error: 'failed to reset tallies' });
+        });
+      return;
+    } else if (action === 'next') {
+      if (!conferenceSessionState.started) {
+        conferenceSessionState.started = true;
+        conferenceSessionState.activeIndex = 0;
+      } else {
+        conferenceSessionState.activeIndex = Math.min(
+          conferenceSessionState.activeIndex + 1,
+          conferenceSessionState.questionIds.length
+        );
+      }
+      conferenceSessionState.updatedAt = Date.now();
+    } else if (action === 'set') {
+      const requested = Number(req.body?.activeIndex);
+      if (!Number.isInteger(requested) || requested < 0 || requested > conferenceSessionState.questionIds.length) {
+        return res.status(400).json({ error: 'invalid activeIndex' });
+      }
+      conferenceSessionState.started = true;
+      conferenceSessionState.activeIndex = requested;
+      conferenceSessionState.updatedAt = Date.now();
+    } else {
+      return res.status(400).json({ error: 'invalid action' });
+    }
+    const activeTopicId = conferenceSessionState.started
+      ? (conferenceSessionState.questionIds[conferenceSessionState.activeIndex] || null)
+      : null;
+    const payload = {
+      ...conferenceSessionState,
+      activeTopicId,
+      done: conferenceSessionState.started
+        ? conferenceSessionState.activeIndex >= conferenceSessionState.questionIds.length
+        : false
+    };
+    io.emit('voting:conference_state', payload);
+    return res.json({ ok: true, state: payload });
   });
 
   app.get('/api/voting/topics', async (req, res) => {
@@ -95,6 +183,14 @@ async function registerVoting(app, server) {
       counts: await store.getCounts(t.id)
     })));
     socket.emit('voting:snapshot', snapshot);
+    const activeTopicId = conferenceSessionState.questionIds[conferenceSessionState.activeIndex] || null;
+    socket.emit('voting:conference_state', {
+      ...conferenceSessionState,
+      activeTopicId: conferenceSessionState.started ? activeTopicId : null,
+      done: conferenceSessionState.started
+        ? conferenceSessionState.activeIndex >= conferenceSessionState.questionIds.length
+        : false
+    });
   });
 
   console.log(`[voting] registered ${topics.length} topic(s)`);
