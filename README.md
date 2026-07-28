@@ -100,8 +100,41 @@ Hardcoded prose and JSON with no Salesforce org behind it. Every number is
 illustrative. It shows what the capability would look like, not measured
 results. See `DEMO-NOTES.md` for the full list of things to be straight about.
 
+## Password protection
+
+The walkthrough names a real client and real FCTG systems, so any public
+deployment should be gated. Set `DEMO_PASSWORD` and the server requires HTTP
+basic auth on every route, including the dataset:
+
+```bash
+DEMO_PASSWORD=somethingshared npm start     # user: ct
+DEMO_USER=team DEMO_PASSWORD=x npm start    # override the username
+```
+
+Leave `DEMO_PASSWORD` unset and it runs open, so local development is
+unaffected. On Heroku:
+
+```bash
+heroku config:set DEMO_PASSWORD=somethingshared -a <app>
+```
+
 ## Deploying it
 
 Heroku config is included (`Procfile`, `app.json`, `engines` in
-`package.json`). For anything else, the single-file build is a static asset —
-drop it on Netlify, Vercel, S3 or a shared drive.
+`package.json`). Salesforce internal accounts cannot own personal Heroku apps,
+so the app must be created against a team:
+
+```bash
+heroku apps:create <name> --team <team> --stack heroku-24
+heroku git:remote -a <name>
+git push heroku main
+heroku config:set DEMO_PASSWORD=somethingshared -a <name>
+```
+
+Note that deep links use a query parameter (`?slide=5`), not a path, so nothing
+needs server-side routing. That means the app also works on any pure static
+host — but a static host cannot enforce the password, so prefer the Node
+deployment for anything shared externally.
+
+For a zero-infrastructure option, the single-file build in `dist/` is a static
+asset that can be sent directly to whoever needs it.
