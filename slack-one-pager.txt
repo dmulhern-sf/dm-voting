@@ -1,0 +1,59 @@
+*P4 deep dive — platform onboarding & activation nudges*
+
+Built a second click-through, this one narrow instead of broad. It takes one line
+off the P4 slide and follows it end to end for a single account, so the pillar
+stops being a bullet and becomes something Trevor can argue with.
+
+*The story*
+Harlow Engineering Group: 5,000 employees, 2,000 logged into Melon. 40% adoption
+looks like an engagement problem, so the instinct is to email the other 3,000
+harder. It isn't. Six systems each hold one piece of who those people are and
+none holds the whole picture. Once Data 360 resolves them into one profile per
+employee, the 3,000 splits into four cohorts needing four different responses —
+including 700 who should never be contacted, because they don't travel and never
+will.
+
+*The seven screens*
+1. The gap — 40%, and three things Melon on its own cannot tell you
+2. Six systems, six partial answers — Workday, Melon, Lumina, Agent Port, Mel, Mosaic
+3. Unify and segment — the 3,000 breaks into 1,150 / 700 / 450 / 700, click any cohort
+4. Mosaic + Data 360 — Mosaic decides what, Data 360 decides who, where and when
+5. The nudge sequence — Mel push, then email built from her own bookings, then a consultant
+6. Workspace — the consultant sees every message marketing sent, and activates on the call
+7. Outcome — 40% to 78%, and nudges sent going *down* from 5,000 to 2,300
+
+*The two lines that do the work*
+"That join is the product" — the question "which employees travel but have never
+used the platform?" cannot be asked of any single system. It needs Lumina's
+bookings joined to Workday's roster, filtered by Melon's logins.
+
+"The most valuable output isn't who to nudge, it's the 700 we now know to leave
+alone." Every vendor promises better targeting. Almost nobody opens by handing
+over a suppression list.
+
+*What it covers off from the prep call*
+• Mosaic gets its own screen — complementary, bidirectional, not a replacement
+• Lumina, Agent Port and Mel all named properly as source systems
+• Internal activation is a screen, not a footnote — Workspace consultant view
+• The Azure objection gets answered by proxy on the Mosaic screen
+
+*What it is not*
+Hardcoded HTML and a JSON file. No org behind it, every number invented but
+internally consistent, consoles are mock-ups, segment criteria is pseudo-SQL.
+It shows what the capability looks like, not measured results. Doesn't change
+the amber status — if anything it shows why it needs scoping.
+
+*Two things to check before we use it*
+1. Are Lumina / Agent Port / Mel / Mosaic named correctly? If not, it's wrong in
+   the most visible place possible, in front of the person who owns them.
+2. Harlow was 12 travellers in the broad walkthrough and is 5,000 employees here.
+   I've bridged it as "renewal converted to a global mandate, 90 days on" and
+   said so on screen 1, but it's the first thing a careful listener will notice.
+
+*My honest read*
+The best use may not be clicking through all seven. It might be showing screens
+2 and 3, then putting the marker down and asking Trevor which of those cohorts he
+recognises in his own data. Its job is to start the workshop, not be it.
+
+Runs in a browser, single file, works offline. Happy to walk anyone through it,
+or to park it — genuinely low cost either way.

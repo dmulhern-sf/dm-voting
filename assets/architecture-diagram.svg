@@ -1,0 +1,240 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="900" viewBox="0 152 1920 900" role="img" aria-labelledby="title desc">
+  <title id="title">Data Cloud Unified Individual for FCTG Corporate Brands</title>
+  <desc id="desc">Architecture diagram showing source systems, Data Cloud account and individual profiles, a context decision layer, and B2B, corporate traveller, and personal B2C activation tracks.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-25%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#032D60" flood-opacity=".10"/>
+    </filter>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EAF5FE"/>
+      <stop offset="1" stop-color="#F8FCFF"/>
+    </linearGradient>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#1B96FF"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#00A651"/>
+    </marker>
+    <marker id="arrowNavy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#032D60"/>
+    </marker>
+    <style>
+      .f { font-family: Inter, "Salesforce Sans", Arial, sans-serif; }
+      .navy { fill:#032D60; }
+      .muted { fill:#536A7F; }
+      .layer { font-size:16px; font-weight:800; letter-spacing:1.3px; }
+      .cardTitle { font-size:20px; font-weight:800; }
+      .body { font-size:15px; font-weight:500; }
+      .small { font-size:13px; font-weight:550; }
+    </style>
+  </defs>
+
+  <rect width="1920" height="1080" fill="#FFFFFF"/>
+  <rect width="1920" height="12" fill="#032D60"/>
+  <rect x="1510" y="12" width="410" height="5" fill="#00A651"/>
+  <rect x="1735" y="17" width="185" height="5" fill="#E40046"/>
+
+  <!-- Header -->
+  <g class="f">
+    <text x="72" y="50" class="navy" font-size="15" font-weight="800" letter-spacing="2">FCTG CORPORATE BRANDS  |  AI STRATEGY</text>
+    <text x="72" y="99" class="navy" font-size="38" font-weight="850">Data Cloud Unified Individual</text>
+    <text x="72" y="132" class="muted" font-size="19">One system of context &#8212; same traveller, three different relationships, zero crossed wires.</text>
+
+    <!-- Editable brand lockup -->
+    <g transform="translate(1476 51)">
+      <text x="0" y="28" fill="#111111" font-size="32" font-weight="900" letter-spacing="-1">FCM</text>
+      <path d="M73 7h15v19h-9Z" fill="#00A651"/>
+      <line x1="111" y1="0" x2="111" y2="41" stroke="#B9C7D5" stroke-width="2"/>
+      <path d="M141 8l20-8 19 20-21 19-18-10Z" fill="#E40046"/>
+      <text x="193" y="18" class="navy" font-size="14" font-weight="850">CORPORATE</text>
+      <text x="193" y="36" class="navy" font-size="14" font-weight="850">TRAVELLER</text>
+    </g>
+  </g>
+
+  <!-- Layer 1 -->
+  <g class="f">
+    <rect x="72" y="158" width="238" height="29" rx="14.5" fill="#032D60"/>
+    <text x="91" y="178" fill="#FFFFFF" class="layer">01  SOURCE SYSTEMS</text>
+
+    <g filter="url(#shadow)">
+      <rect x="72" y="203" width="336" height="142" rx="17" fill="#FFFFFF" stroke="#CFE2F1" stroke-width="1.5"/>
+      <rect x="432" y="203" width="336" height="142" rx="17" fill="#FFFFFF" stroke="#CFE2F1" stroke-width="1.5"/>
+      <rect x="792" y="203" width="336" height="142" rx="17" fill="#FFFFFF" stroke="#CFE2F1" stroke-width="1.5"/>
+      <rect x="1152" y="203" width="336" height="142" rx="17" fill="#FFFFFF" stroke="#CFE2F1" stroke-width="1.5"/>
+      <rect x="1512" y="203" width="336" height="142" rx="17" fill="#FFFFFF" stroke="#CFE2F1" stroke-width="1.5"/>
+    </g>
+    <!-- Salesforce CRM -->
+    <circle cx="111" cy="248" r="24" fill="#EAF5FE"/>
+    <path d="M95 254c-6 0-6-9 0-10 1-7 11-10 15-4 6-4 13 0 12 6 6 2 4 9-1 9H95Z" fill="#1B96FF"/>
+    <text x="149" y="241" class="navy" font-size="18" font-weight="800">CRM (Salesforce)</text>
+    <text x="149" y="266" font-size="13.5" class="muted">Corporate account data</text>
+    <text x="96" y="310" class="small muted">Company  &#8226;  Booker  &#8226;  Contract</text>
+
+    <!-- Booking -->
+    <circle cx="471" cy="248" r="24" fill="#EBF8F0"/>
+    <path d="M458 252l11-3 8-13 4 1-4 13 9 4-2 4-11-2-6 7-4-1 3-8-8 2Z" fill="#00A651"/>
+    <text x="509" y="241" class="navy" font-size="18" font-weight="800">Booking Platform</text>
+    <text x="509" y="266" font-size="13.5" class="muted">Individual trip records</text>
+    <text x="456" y="291" font-size="12" class="muted">Traveller  &#8226;  Loyalty  &#8226;  Destination</text>
+    <text x="456" y="313" font-size="12" font-weight="700" fill="#007D3C">Booking type: work vs. personal</text>
+    <text x="456" y="329" fill="#536A7F" font-size="9.2" font-style="italic">Signal ingested at booking &#8212; determines context</text>
+    <text x="456" y="340" fill="#536A7F" font-size="9.2" font-style="italic">before activation fires.</text>
+
+    <!-- Marketing -->
+    <circle cx="831" cy="248" r="24" fill="#EAF5FE"/>
+    <rect x="819" y="240" width="24" height="17" rx="3" fill="none" stroke="#1B96FF" stroke-width="3"/>
+    <path d="M821 242l10 8 10-8" fill="none" stroke="#1B96FF" stroke-width="3"/>
+    <text x="869" y="241" class="navy" font-size="18" font-weight="800">Marketing Cloud</text>
+    <text x="869" y="266" font-size="13.5" class="muted">Email &amp; SMS engagement</text>
+    <text x="816" y="310" font-size="12" class="muted">Sends  &#8226;  Opens  &#8226;  Clicks  &#8226;  Journeys</text>
+
+    <!-- Website -->
+    <circle cx="1191" cy="248" r="24" fill="#EDF2F7"/>
+    <rect x="1183" y="233" width="16" height="30" rx="4" fill="none" stroke="#032D60" stroke-width="3"/>
+    <circle cx="1191" cy="257" r="2" fill="#1B96FF"/>
+    <text x="1229" y="241" class="navy" font-size="18" font-weight="800">Website / App</text>
+    <text x="1229" y="266" font-size="13.5" class="muted">Digital behavioural data</text>
+    <text x="1176" y="310" font-size="12" class="muted">Browse  &#8226;  Search  &#8226;  App engagement</text>
+
+    <!-- Azure Data Warehouse -->
+    <circle cx="1551" cy="248" r="24" fill="#E8F4FC"/>
+    <ellipse cx="1551" cy="238" rx="13" ry="5" fill="none" stroke="#0078D4" stroke-width="3"/>
+    <path d="M1538 238v20c0 3 6 5 13 5s13-2 13-5v-20M1538 248c0 3 6 5 13 5s13-2 13-5" fill="none" stroke="#0078D4" stroke-width="3"/>
+    <text x="1589" y="241" class="navy" font-size="17" font-weight="800">Azure Data Warehouse</text>
+    <text x="1589" y="266" font-size="13.5" class="muted">Existing structured data</text>
+    <text x="1536" y="310" font-size="12" class="muted">Reads from  &#8226;  Does not replace</text>
+
+    <!-- Flow -->
+    <path d="M240 347V370H500V389" fill="none" stroke="#1B96FF" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+    <path d="M600 347V389" fill="none" stroke="#00A651" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+    <path d="M960 347V351H1140V389" fill="none" stroke="#1B96FF" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+    <path d="M1320 347V389" fill="none" stroke="#032D60" stroke-width="2.5" marker-end="url(#arrowNavy)"/>
+    <path d="M1680 347V370H1450V389" fill="none" stroke="#0078D4" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+    <rect x="836" y="355" width="248" height="28" rx="14" fill="#FFFFFF" stroke="#CFE2F1"/>
+    <text x="960" y="374" text-anchor="middle" fill="#1B96FF" font-size="13" font-weight="800" letter-spacing=".8">STREAM  &#8226;  MAP  &#8226;  HARMONISE</text>
+  </g>
+
+  <!-- Layer 2 -->
+  <g class="f">
+    <rect x="48" y="390" width="1824" height="315" rx="26" fill="url(#hero)" stroke="#87CFFA" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="72" y="410" width="185" height="29" rx="14.5" fill="#1B96FF"/>
+    <text x="91" y="430" fill="#FFFFFF" class="layer">02  DATA CLOUD</text>
+    <text x="960" y="432" text-anchor="middle" class="navy" font-size="23" font-weight="850">System of Context &#8212; Identity Resolution &amp; Unification</text>
+    <text x="960" y="459" text-anchor="middle" class="muted" font-size="16">Turn disconnected records into a single trusted view of every traveller and their company.</text>
+    <rect x="1477" y="410" width="345" height="29" rx="14.5" fill="#032D60"/>
+    <text x="1649" y="430" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="750">Grounds Agentforce with trusted context</text>
+
+    <!-- Unified Account -->
+    <g filter="url(#shadow)">
+      <rect x="145" y="482" width="618" height="154" rx="20" fill="#FFFFFF" stroke="#1B96FF" stroke-width="2"/>
+    </g>
+    <rect x="170" y="506" width="58" height="58" rx="15" fill="#EAF5FE"/>
+    <path d="M184 553v-28h30v28M192 525v-10h14v10M192 535h4M202 535h4M192 544h4M202 544h4" fill="none" stroke="#1B96FF" stroke-width="3.5" stroke-linecap="round"/>
+    <text x="249" y="511" fill="#1B96FF" font-size="13" font-weight="850" letter-spacing="1">UNIFIED ACCOUNT PROFILE</text>
+    <text x="249" y="540" class="navy" font-size="25" font-weight="850">Corporate Traveller (SMB)</text>
+    <text x="249" y="568" class="body muted">The company, its travel policy and nominated bookers</text>
+    <rect x="249" y="587" width="100" height="27" rx="13.5" fill="#EAF5FE"/>
+    <rect x="359" y="587" width="118" height="27" rx="13.5" fill="#EAF5FE"/>
+    <rect x="487" y="587" width="132" height="27" rx="13.5" fill="#EAF5FE"/>
+    <text x="299" y="605" text-anchor="middle" class="small navy">Company</text>
+    <text x="418" y="605" text-anchor="middle" class="small navy">Travel policy</text>
+    <text x="553" y="605" text-anchor="middle" class="small navy">Booker / admin</text>
+
+    <!-- Unified Individual -->
+    <g filter="url(#shadow)">
+      <rect x="1157" y="482" width="618" height="154" rx="20" fill="#FFFFFF" stroke="#00A651" stroke-width="2"/>
+    </g>
+    <rect x="1182" y="506" width="58" height="58" rx="15" fill="#EBF8F0"/>
+    <circle cx="1211" cy="525" r="9" fill="none" stroke="#00A651" stroke-width="3.5"/>
+    <path d="M1195 554c2-11 9-17 16-17s14 6 16 17" fill="none" stroke="#00A651" stroke-width="3.5" stroke-linecap="round"/>
+    <text x="1261" y="511" fill="#007D3C" font-size="13" font-weight="850" letter-spacing="1">UNIFIED INDIVIDUAL PROFILE</text>
+    <text x="1261" y="540" class="navy" font-size="25" font-weight="850">The Traveller</text>
+    <text x="1261" y="568" class="body muted">e.g. Dan &#8212; Salesforce employee, FCM loyalty member, leisure booker</text>
+    <rect x="1261" y="587" width="82" height="27" rx="13.5" fill="#EBF8F0"/>
+    <rect x="1352" y="587" width="65" height="27" rx="13.5" fill="#EBF8F0"/>
+    <rect x="1426" y="587" width="58" height="27" rx="13.5" fill="#EBF8F0"/>
+    <rect x="1493" y="587" width="72" height="27" rx="13.5" fill="#EBF8F0"/>
+    <rect x="1574" y="587" width="125" height="27" rx="13.5" fill="#EBF8F0"/>
+    <text x="1302" y="605" text-anchor="middle" class="small navy">Booking</text>
+    <text x="1385" y="605" text-anchor="middle" class="small navy">Email</text>
+    <text x="1455" y="605" text-anchor="middle" class="small navy">App</text>
+    <text x="1529" y="605" text-anchor="middle" class="small navy">Loyalty</text>
+    <text x="1636" y="605" text-anchor="middle" class="small navy">Booking context</text>
+
+    <!-- Relationship -->
+    <path d="M763 551H1157" fill="none" stroke="#032D60" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrowNavy)"/>
+    <rect x="805" y="527" width="310" height="48" rx="24" fill="#032D60"/>
+    <text x="960" y="547" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="850">INDIVIDUAL LINKED TO</text>
+    <text x="960" y="565" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="850">CORPORATE ACCOUNT</text>
+
+    <!-- Azure context callout -->
+    <rect x="408" y="653" width="1104" height="68" rx="15" fill="#FFFFFF" stroke="#B8DFF8" stroke-width="1.8"/>
+    <circle cx="442" cy="687" r="16" fill="#1B96FF"/>
+    <text x="442" y="693" text-anchor="middle" fill="#FFFFFF" font-size="19" font-weight="850">i</text>
+    <text x="473" y="680" class="navy" font-size="15" font-weight="850">Not a data warehouse replacement.</text>
+    <text x="473" y="703" class="muted" font-size="15">Reads from Azure. Doesn't move your data. Doesn't replace it.</text>
+  </g>
+
+  <!-- Layer 2.5 Context Decision -->
+  <g class="f">
+    <rect x="48" y="739" width="1824" height="160" rx="22" fill="#F5F7F9" stroke="#9FB2C3" stroke-width="1.8" stroke-dasharray="8 7"/>
+    <rect x="72" y="755" width="205" height="28" rx="14" fill="#032D60"/>
+    <text x="91" y="774" fill="#FFFFFF" class="layer">CONTEXT ENGINE</text>
+    <rect x="729" y="751" width="462" height="42" rx="21" fill="#032D60"/>
+    <text x="960" y="778" text-anchor="middle" fill="#FFFFFF" font-size="19" font-weight="850">Which context is Dan in right now?</text>
+
+    <path d="M960 793V806H349V820" fill="none" stroke="#1B96FF" stroke-width="2.3" marker-end="url(#arrowBlue)"/>
+    <path d="M960 793V820" fill="none" stroke="#032D60" stroke-width="2.3" marker-end="url(#arrowNavy)"/>
+    <path d="M960 793V806H1571V820" fill="none" stroke="#00A651" stroke-width="2.3" marker-end="url(#arrowGreen)"/>
+
+    <!-- Path A -->
+    <rect x="90" y="820" width="518" height="60" rx="14" fill="#FFFFFF" stroke="#1B96FF" stroke-width="1.5"/>
+    <text x="109" y="843" fill="#1B96FF" font-size="13" font-weight="850">PATH A  &#8226;  WORK / ACCOUNT</text>
+    <text x="109" y="865" class="small navy">Booked through Corporate Traveller &#8594; B2B Track</text>
+
+    <!-- Path B context switch -->
+    <rect x="647" y="810" width="626" height="79" rx="15" fill="#FFFFFF" stroke="#032D60" stroke-width="2"/>
+    <text x="665" y="832" fill="#032D60" font-size="12" font-weight="850">PATH B  &#8226;  DIRECT-TO-TRAVELLER (CORPORATE CONTEXT)</text>
+    <text x="665" y="853" class="small navy">Flight disruption  &#8226;  Hotel upsell  &#8226;  Trip summary</text>
+    <text x="665" y="875" fill="#536A7F" font-size="12" font-style="italic">Individual profile activated &#8212; corporate policy and employer relationship intact</text>
+
+    <!-- Path C -->
+    <rect x="1312" y="820" width="518" height="60" rx="14" fill="#FFFFFF" stroke="#00A651" stroke-width="1.5"/>
+    <text x="1331" y="843" fill="#007D3C" font-size="13" font-weight="850">PATH C  &#8226;  PERSONAL / LEISURE</text>
+    <text x="1331" y="865" class="small navy">Booked through Flight Centre leisure &#8594; B2C Track</text>
+
+    <!-- Downstream routes -->
+    <path d="M349 880V922" fill="none" stroke="#1B96FF" stroke-width="3" marker-end="url(#arrowBlue)"/>
+    <path d="M960 889V922" fill="none" stroke="#032D60" stroke-width="3" marker-end="url(#arrowNavy)"/>
+    <path d="M1571 880V922" fill="none" stroke="#00A651" stroke-width="3" marker-end="url(#arrowGreen)"/>
+  </g>
+
+  <!-- Layer 3 -->
+  <g class="f">
+    <rect x="72" y="912" width="172" height="28" rx="14" fill="#032D60"/>
+    <text x="91" y="931" fill="#FFFFFF" class="layer">03  ACTIVATION</text>
+
+    <g filter="url(#shadow)">
+      <rect x="72" y="945" width="555" height="105" rx="18" fill="#FFFFFF" stroke="#1B96FF" stroke-width="1.8"/>
+      <rect x="683" y="945" width="554" height="105" rx="18" fill="#FFFFFF" stroke="#032D60" stroke-width="1.8"/>
+      <rect x="1293" y="945" width="555" height="105" rx="18" fill="#FFFFFF" stroke="#00A651" stroke-width="1.8"/>
+    </g>
+
+    <rect x="94" y="960" width="94" height="26" rx="13" fill="#EAF5FE"/>
+    <text x="141" y="978" text-anchor="middle" fill="#1B96FF" font-size="13" font-weight="850">B2B TRACK</text>
+    <text x="203" y="979" class="navy" font-size="19" font-weight="850">Corporate Booker / Admin</text>
+    <text x="94" y="1016" class="small muted">Account-level nurture  &#8226;  Renewal  &#8226;  Travel-policy insight  &#8226;  Upsell</text>
+
+    <rect x="705" y="960" width="153" height="26" rx="13" fill="#EDF2F7"/>
+    <text x="781" y="978" text-anchor="middle" fill="#032D60" font-size="13" font-weight="850">CONTEXT SWITCH</text>
+    <text x="874" y="979" class="navy" font-size="19" font-weight="850">Traveller (on a work trip)</text>
+    <text x="705" y="1016" class="small muted">Disruption alert  &#8226;  Upgrade offer  &#8226;  Expense-aware messaging</text>
+
+    <rect x="1315" y="960" width="94" height="26" rx="13" fill="#EBF8F0"/>
+    <text x="1362" y="978" text-anchor="middle" fill="#007D3C" font-size="13" font-weight="850">B2C TRACK</text>
+    <text x="1424" y="979" class="navy" font-size="19" font-weight="850">Direct-to-Traveller (Personal)</text>
+    <text x="1315" y="1008" class="small muted">Holiday deals  &#8226;  Loyalty rewards  &#8226;  FCM leisure brand voice</text>
+    <text x="1315" y="1032" fill="#536A7F" font-size="11.5" font-style="italic">Separate data space &#8212; corporate relationship not visible here</text>
+  </g>
+
+</svg>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corporate Traveller · P4 Tech &amp; Product — Onboarding &amp; Activation Nudges</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Backdrop -->
+  <div class="sky-backdrop" aria-hidden="true">
+    <img class="world-mark" src="assets/world-dots.svg" alt="" />
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <svg class="sky-path" viewBox="0 0 1600 900" preserveAspectRatio="none">
+      <path d="M-40 720 C320 700 620 560 900 420 C1120 310 1380 250 1660 210" />
+    </svg>
+  </div>
+
+  <!-- Top brand bar -->
+  <header class="brand-bar" aria-label="Branding">
+    <div class="lockup">
+      <div class="ct-mark">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M4 5h24v11c0 6.6-5.4 11-12 11S4 22.6 4 16z" fill="#E1033E"/>
+          <path d="M16 9.5l7 4.5-7 8-7-8z" fill="#fff"/>
+          <path d="M16 13.5l3.4 2.2L16 19.6l-3.4-3.9z" fill="#E1033E"/>
+        </svg>
+        <div class="ct-word">CORPORATE<br/>TRAVELLER<sup>&#8482;</sup></div>
+      </div>
+      <span class="lk-div"></span>
+      <div class="pbm">
+        <span class="pbm-l">Powered<br/>by</span>
+        <span class="melon-tile sm">m</span>
+        <span class="pbm-w">melon</span>
+      </div>
+      <span class="lk-div"></span>
+      <img class="sf-cloud" src="assets/salesforce-cloud.svg" alt="Salesforce" />
+    </div>
+    <div class="brand-label">P4 &middot; TECH &amp; PRODUCT<span>|</span>USE CASE DEEP DIVE</div>
+  </header>
+
+  <!-- Left adoption timeline -->
+  <aside class="journey" aria-label="Adoption timeline">
+    <div class="journey-header">
+      <div class="journey-title">Adoption Timeline</div>
+    </div>
+    <div class="journey-customer top">
+      <div class="avatar">HE</div>
+      <div class="meta">
+        <div class="name">Harlow Engineering Group</div>
+        <div class="sub">Global mandate · 5,000 employees</div>
+      </div>
+    </div>
+    <div class="journey-feed-wrap">
+      <ol class="journey-feed" id="journey-feed">
+        <!-- Events injected by app.js -->
+      </ol>
+    </div>
+  </aside>
+
+  <!-- Slides (horizontal rail) -->
+  <main class="rail" id="rail">
+
+    <!-- ══════════ SLIDE 1 · THE ADOPTION GAP ══════════ -->
+    <section class="slide" id="slide-0" data-title="The adoption gap">
+      <div class="slide-inner">
+        <div class="eyebrow">P4 &middot; Tech &amp; Product Comms &middot; <span class="amber-pill">&#9888; Amber — can deliver, needs scoping</span></div>
+        <h1>5,000 employees. 2,000 logged in.<br/><em>Where are the other 3,000?</em></h1>
+        <p class="lede">Platform onboarding and activation nudges — the use case, followed all the way through. One account, real systems, and the awkward question nobody can answer from Melon alone.</p>
+
+        <div class="ctx-strip">
+          <div class="ctx-main">
+            <span class="ctx-badge">HE</span>
+            <div>
+              <div class="ctx-name">Harlow Engineering Group <span class="ctx-tag">Global mandate · day 90</span></div>
+              <div class="ctx-sub">CT-02567418 &middot; ANZ · UK · Singapore &middot; programme manager Priya Nair</div>
+            </div>
+          </div>
+          <div class="ctx-prior">
+            <div class="ctx-prior-k">Where we left them</div>
+            <div class="ctx-prior-v">Melbourne managed programme · 12 active travellers. The renewal converted into a global mandate.</div>
+          </div>
+        </div>
+
+        <div class="gap-grid">
+          <div class="gap-dialcard">
+            <div class="gap-dial-label">Melon adoption, day 90</div>
+            <div class="score-ring gap-ring">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" stroke="rgba(0,26,71,0.08)" stroke-width="10" fill="none"/>
+                <circle id="gap-arc" cx="60" cy="60" r="52" stroke="url(#grad-gap)" stroke-width="10" fill="none"
+                  stroke-dasharray="326" stroke-dashoffset="326" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                <defs>
+                  <linearGradient id="grad-gap" x1="0" x2="1">
+                    <stop offset="0" stop-color="#E08A00"/>
+                    <stop offset="1" stop-color="#E1033E"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="score-value" id="gap-value">0%</div>
+            </div>
+            <div class="gap-dial-foot">
+              <b id="gap-count">0</b> of 5,000 employees have ever logged in
+            </div>
+            <div class="gap-split">
+              <div class="gap-split-row">
+                <span class="gs-dot in"></span>
+                <span class="gs-k">Logged in</span>
+                <span class="gs-v">2,000</span>
+              </div>
+              <div class="gap-split-row">
+                <span class="gs-dot out"></span>
+                <span class="gs-k">Never logged in</span>
+                <span class="gs-v hot">3,000</span>
+              </div>
+              <div class="gap-split-row target">
+                <span class="gs-dot tgt"></span>
+                <span class="gs-k">Programme target</span>
+                <span class="gs-v">78%</span>
+              </div>
+            </div>
+            <div class="gap-dial-src">Melon · Workday · joined in Data 360</div>
+          </div>
+
+          <div class="gap-cards">
+            <div class="gap-q">What the platform cannot tell you</div>
+            <article class="gap-card">
+              <div class="gap-num">01</div>
+              <div>
+                <h4>Which of the 3,000 actually travel</h4>
+                <p>Melon only knows the people who showed up. Someone who has never logged in is not a low-engagement user — they are invisible.</p>
+              </div>
+            </article>
+            <article class="gap-card">
+              <div class="gap-num">02</div>
+              <div>
+                <h4>Who is already travelling another way</h4>
+                <p>Bookings made by a consultant over the phone never touch the platform. Those travellers exist, spend money, and look like non-users.</p>
+              </div>
+            </article>
+            <article class="gap-card">
+              <div class="gap-num">03</div>
+              <div>
+                <h4>Who should be left alone</h4>
+                <p>Site engineers who never travel are sitting in the denominator, dragging the adoption number down and receiving nudges they will resent.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="pov-foot">
+          <span class="foot-mark"></span>
+          A 40% adoption number is not an engagement problem. <b>It is a data problem wearing an engagement costume.</b>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 2 · SIX SYSTEMS, SIX PARTIAL ANSWERS ══════════ -->
+    <section class="slide" id="slide-1" data-title="Six partial answers">
+      <div class="slide-inner">
+        <div class="eyebrow">Source systems &middot; what each one holds</div>
+        <h2>Six systems. Six partial answers. <em>No single view.</em></h2>
+        <p class="lede">Every one of these already exists at FCTG today. Each holds a genuine piece of the answer, and not one of them can tell you who to onboard. Click any system to see what it cannot answer.</p>
+
+        <div class="src-grid" id="src-grid">
+          <!-- Cards injected by app.js from data/p4.json -->
+        </div>
+
+        <div class="src-verdict" id="src-verdict">
+          <div class="src-verdict-ico">&#10022;</div>
+          <div>
+            <b>The question — "which employees travel but have never used the platform?" — cannot be asked of any single system.</b>
+            It needs Lumina's bookings joined to Workday's roster, filtered by Melon's login history, qualified by Agent Port entitlement.
+            <em>That join is the product.</em>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 3 · UNIFY AND SEGMENT ══════════ -->
+    <section class="slide" id="slide-2" data-title="Unify and segment">
+      <div class="slide-inner">
+        <div class="eyebrow">Data 360 &middot; identity resolution and segmentation</div>
+        <h2>One profile per employee &rarr; <em>the 3,000 stops being a number</em></h2>
+        <p class="lede">Data 360 resolves the six systems into one profile for every employee — then the gap breaks into four cohorts that each need a completely different response.</p>
+
+        <div class="seg-head">
+          <div class="seg-resolve">
+            <div class="seg-resolve-row">
+              <span class="seg-resolve-k">Profiles resolved</span>
+              <span class="seg-resolve-v"><b id="seg-profiles">0</b> / 5,000</span>
+            </div>
+            <div class="seg-resolve-bar"><span class="seg-resolve-fill" id="seg-fill"></span></div>
+            <div class="seg-resolve-src">matched on employee ID, corporate email and traveller profile across <code>Workday</code> <code>Melon</code> <code>Lumina</code> <code>Agent Port</code> <code>Mel</code></div>
+          </div>
+          <button class="flow-play" id="seg-play">&#9654; Resolve and segment</button>
+        </div>
+
+        <div class="coh-bar" id="coh-bar" role="tablist" aria-label="Cohorts">
+          <!-- Segments injected by app.js -->
+        </div>
+
+        <div class="coh-detail" id="coh-detail" hidden>
+          <div class="coh-detail-main">
+            <div class="coh-detail-head">
+              <span class="coh-detail-size" id="coh-size">0</span>
+              <div>
+                <div class="coh-detail-label" id="coh-label">&mdash;</div>
+                <div class="coh-detail-from" id="coh-from"></div>
+              </div>
+              <span class="coh-verdict" id="coh-verdict"></span>
+            </div>
+            <div class="coh-block">
+              <div class="coh-k">How Data 360 knows</div>
+              <p id="coh-insight">&mdash;</p>
+            </div>
+            <div class="coh-block">
+              <div class="coh-k">Treatment</div>
+              <p id="coh-treatment">&mdash;</p>
+            </div>
+            <div class="coh-logic">
+              <div class="coh-logic-head">
+                <span class="coh-k">Segment criteria</span>
+                <span class="coh-logic-src">Employee_Adoption__dlm</span>
+              </div>
+              <pre id="coh-logic">&mdash;</pre>
+            </div>
+          </div>
+          <div class="coh-detail-side">
+            <div class="coh-tile" id="coh-tile"></div>
+            <div class="coh-block">
+              <div class="coh-k">Channel</div>
+              <p id="coh-channel">&mdash;</p>
+            </div>
+            <div class="coh-block">
+              <div class="coh-k">Why it matters</div>
+              <p id="coh-value">&mdash;</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pov-foot seg-foot">
+          <span class="foot-mark"></span>
+          The most valuable output is not who to nudge. <b>It is the 700 we now know to leave alone.</b>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 4 · MOSAIC + DATA 360 ══════════ -->
+    <section class="slide" id="slide-3" data-title="Mosaic + Data 360">
+      <div class="slide-inner split">
+        <div class="col-left">
+          <div class="eyebrow">Complementary, not competing</div>
+          <h2>Mosaic decides <em>what</em>. Data 360 decides <em>who, where and when</em>.</h2>
+          <p class="lede">Mosaic is Trevor's AI brain, built on Anthropic, and it is good at ranking what to recommend. What it has never had is a unified profile to aim at, or a governed way to deliver.</p>
+          <ul class="bullets">
+            <li><strong>Mosaic</strong> — the recommendation. Which product, which content, what to say next.</li>
+            <li><strong>Data 360</strong> — the context, the audience, the channel and the moment.</li>
+            <li><strong>Bidirectional.</strong> Data 360 enriches what Mosaic can see; Mosaic's recommendation comes back as an action.</li>
+          </ul>
+          <div class="callout">
+            <span class="callout-ico">&#10003;</span>
+            <div>Data 360 does <b>not</b> replace Mosaic — any more than it replaces Azure or Melon. It gives Mosaic eyes and a delivery system.</div>
+          </div>
+        </div>
+        <div class="col-right">
+          <div class="mos-wrap" id="mos-wrap">
+            <div class="pipe-controls">
+              <button class="flow-play" id="mos-play">&#9654; Run the exchange</button>
+              <button class="flow-reset" id="mos-reset">Reset</button>
+            </div>
+
+            <div class="mos-lanes">
+              <div class="mos-lane" id="mos-lane-d360">
+                <div class="mos-lane-ico">&#9729;&#65039;</div>
+                <div class="mos-lane-name">Data 360</div>
+                <div class="mos-lane-role">Unification layer</div>
+              </div>
+              <div class="mos-lane accent" id="mos-lane-mosaic">
+                <div class="mos-lane-ico">&#129504;</div>
+                <div class="mos-lane-name">Mosaic</div>
+                <div class="mos-lane-role">AI brain · Anthropic</div>
+              </div>
+              <div class="mos-lane" id="mos-lane-act">
+                <div class="mos-lane-ico">&#128266;</div>
+                <div class="mos-lane-name">Activation</div>
+                <div class="mos-lane-role">Mel · Melon · MCAE · Workspace</div>
+              </div>
+            </div>
+
+            <ul class="mos-exchange" id="mos-exchange">
+              <!-- Rows injected by app.js -->
+            </ul>
+
+            <div class="mos-verdict" id="mos-verdict">
+              <b>Neither is sufficient alone.</b> Mosaic without Data 360 recommends into the dark. Data 360 without Mosaic delivers beautifully targeted nothing.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 5 · THE NUDGE SEQUENCE ══════════ -->
+    <section class="slide" id="slide-4" data-title="The nudge sequence">
+      <div class="slide-inner split">
+        <div class="col-left">
+          <div class="eyebrow">Cohort 1 &middot; travelling, booking offline &middot; 1,150 people</div>
+          <h2>The nudge, orchestrated &mdash; <em>and it stops when it works</em></h2>
+          <p class="lede">One person from the 1,150. Aisha Rahman has taken four trips this year, every one booked by a consultant over the phone, and has never logged into Melon.</p>
+          <ul class="bullets">
+            <li><strong>Trigger:</strong> a ticketed booking lands in <code>Lumina</code> with no matching Melon session.</li>
+            <li><strong>Proof point:</strong> the nudge leads with <em>her own trip</em>, not a generic feature tour.</li>
+            <li><strong>Escalation:</strong> automated channels first, a human only when they do not land.</li>
+          </ul>
+          <div class="callout">
+            <span class="callout-ico">&#9733;</span>
+            <div>Run <b>Activates on first nudge</b> as well. The sequence cancelling itself is the part that matters — nobody gets chased for something they have already done.</div>
+          </div>
+          <div class="trav-chip" id="trav-chip">
+            <span class="trav-av">AR</span>
+            <div>
+              <div class="trav-name">Aisha Rahman</div>
+              <div class="trav-role">Senior Structural Engineer · Harlow Engineering Group</div>
+              <div class="trav-meta">Last trip: SYD → LHR · 14 nights · booked by phone</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-right">
+          <div class="flow" id="flow-nudge">
+            <div class="flow-brand">
+              <span class="flow-brand-icon">&#10022;</span>
+              <span class="flow-brand-text">Decided by <b>Agentforce</b> &middot; recommended by <b>Mosaic</b> &middot; delivered by <b>Marketing Cloud</b></span>
+            </div>
+            <div class="flow-controls">
+              <button class="flow-play" id="flow-play-full">&#9654; Full sequence</button>
+              <button class="flow-play alt" id="flow-play-early">&#9654; Activates on first nudge</button>
+              <button class="flow-reset" id="flow-reset">Reset</button>
+            </div>
+
+            <div class="flow-node trigger" data-step="1">
+              <div class="node-title">&#9889; Trigger</div>
+              <div class="node-body">Lumina &middot; ticketed booking, consultant-made</div>
+              <div class="node-meta">No Melon session on record &middot; Agent Port profile complete</div>
+            </div>
+            <div class="flow-arrow" data-step="1"></div>
+
+            <div class="flow-node action inapp" data-step="2">
+              <div class="node-title">&#9312; Mel push notification</div>
+              <div class="node-body">&ldquo;Your Sydney–London trip is already in the app. Tap to see it.&rdquo;</div>
+              <div class="node-meta">Tuesday 09:00 local &middot; wait 72 hrs</div>
+              <div class="sent-by"><span class="sb-dot"></span>delivered into <b>Mel</b></div>
+            </div>
+            <div class="flow-arrow" data-step="2"></div>
+
+            <div class="flow-decision" data-step="3">
+              <div class="decision-pill">
+                <span class="dec-q">Activated?</span>
+                <span class="branch yes" data-branch="inapp-yes">Yes</span>
+                <span class="dec-sep"></span>
+                <span class="branch no" data-branch="inapp-no">No</span>
+              </div>
+              <div class="flow-exit inapp-exit" data-step="3-yes">
+                &#10003; Activated &middot; removed from the nudge programme
+              </div>
+            </div>
+
+            <div class="flow-arrow" data-step="4"></div>
+
+            <div class="flow-node action sms" data-step="4">
+              <div class="node-title">&#9313; Email &middot; her own booking history</div>
+              <div class="node-body">&ldquo;You took 4 trips this year. Here is the last one, in 90 seconds.&rdquo;</div>
+              <div class="node-meta">Personalised from Lumina &middot; wait 4 days</div>
+              <div class="sent-by"><span class="sb-dot"></span>sent by <b>Marketing Cloud</b></div>
+            </div>
+            <div class="flow-arrow" data-step="5"></div>
+
+            <div class="flow-decision" data-step="5">
+              <div class="decision-pill">
+                <span class="dec-q">Activated?</span>
+                <span class="branch yes" data-branch="sms-yes">Yes</span>
+                <span class="dec-sep"></span>
+                <span class="branch no" data-branch="sms-no">No</span>
+              </div>
+              <div class="flow-exit sms-exit" data-step="5-yes">
+                &#10003; Activated &middot; removed from the nudge programme
+              </div>
+            </div>
+
+            <div class="flow-arrow" data-step="6"></div>
+
+            <div class="flow-node action urgent call" data-step="6">
+              <div class="node-title">&#9314; Consultant task in Workspace</div>
+              <div class="node-body">Tom Bradley &middot; activate on her next call</div>
+              <div class="node-meta">Two automated nudges unanswered &middot; human takes it from here</div>
+              <div class="sent-by"><span class="sb-dot"></span>routed by <b>Agentforce</b> &rarr; Workspace</div>
+            </div>
+            <div class="flow-arrow" data-step="7"></div>
+
+            <div class="flow-exit success" data-step="7">
+              <div class="exit-head">&#10003; Activated on the call</div>
+              <div class="exit-body">Logged in with the consultant &middot; suppressed from further nudges &middot; written back to Melon, MCAE and Mosaic</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 6 · INTERNAL ACTIVATION ══════════ -->
+    <section class="slide" id="slide-5" data-title="Internal activation">
+      <div class="slide-inner slide-console">
+        <div class="console-header">
+          <div>
+            <div class="eyebrow">Internal activation &middot; the channel everyone forgets</div>
+            <h2>Workspace &mdash; the consultant sees everything</h2>
+          </div>
+          <div class="call-sim">
+            <div class="call-sim-label">&#128222; Inbound call &middot; Harlow Engineering Group</div>
+            <button class="flow-play" id="call-activate">&#9654; Activate on this call</button>
+            <div class="call-sim-note" id="call-note">Aisha Rahman is on the line about her Singapore trip.</div>
+          </div>
+        </div>
+        <div class="col-right console-stage">
+          <div class="sfconsole">
+            <div class="sfc-utility">
+              <img class="sfc-cloud" src="assets/salesforce-cloud.svg" alt="Salesforce" />
+              <div class="sfc-search"><span>&#128269;</span><input readonly value="Search Travellers, Bookings and more..." /></div>
+              <div class="sfc-icons">
+                <span class="sfc-ico">&#9733;</span>
+                <span class="sfc-ico">+</span>
+                <span class="sfc-ico">&#128276;</span>
+                <span class="sfc-avatar">TB</span>
+              </div>
+            </div>
+
+            <div class="sfc-tabbar">
+              <div class="sfc-appswitch">&#8942;&#8942;</div>
+              <div class="sfc-appname">Workspace &middot; Consultant Console</div>
+              <div class="sfc-tab">&#127968; My Queue</div>
+              <div class="sfc-tab">&#9992; Booking SYD-SIN...</div>
+              <div class="sfc-tab active">&#128100; Aisha Rahman <span class="tab-close">&times;</span></div>
+            </div>
+
+            <div class="sfc-body">
+              <div class="sfc-left">
+                <div class="sfc-card">
+                  <div class="sfc-card-head">
+                    <div class="sfc-card-icon" style="background:#FDF0DC">&#9888;</div>
+                    <div class="sfc-card-title">Activation Status</div>
+                  </div>
+                  <div class="act-status" id="act-status">
+                    <div class="as-pill warn" id="as-pill">Not activated</div>
+                    <div class="as-line">In nudge programme <b>Cohort 1 · offline booker</b></div>
+                    <ul class="as-steps">
+                      <li><span class="as-dot sent"></span> Mel push sent · day 92 · <i>not opened</i></li>
+                      <li><span class="as-dot sent"></span> Email sent · day 96 · <i>opened, no click</i></li>
+                      <li><span class="as-dot task"></span> Task raised to you · day 99</li>
+                    </ul>
+                    <div class="as-reco">
+                      <div class="as-reco-k">&#129504; Mosaic recommends</div>
+                      <div class="as-reco-v">Activate on mobile first. Lead with her own SYD–LHR trip. Do not pitch fare savings — she does not choose the fare.</div>
+                    </div>
+                    <button class="sfc-btn sfc-btn-primary as-btn" id="as-btn">Walk her through it now</button>
+                  </div>
+                </div>
+
+                <div class="sfc-card">
+                  <div class="sfc-card-head">
+                    <div class="sfc-card-icon" style="background:#E6F0FE">&#128203;</div>
+                    <div class="sfc-card-title">Agent Port profile</div>
+                  </div>
+                  <div class="sfc-detail-grid one">
+                    <div class="sfc-field"><label>Entitlement</label><div>Business class over 8 hrs</div></div>
+                    <div class="sfc-field"><label>Seat</label><div>Aisle · forward cabin</div></div>
+                    <div class="sfc-field"><label>Frequent flyer</label><div>QF · 1234 5678</div></div>
+                    <div class="sfc-field"><label>Meal</label><div>Vegetarian</div></div>
+                  </div>
+                  <div class="sfc-src">source: <code>Agent Port</code> via Data 360</div>
+                </div>
+              </div>
+
+              <div class="sfc-center">
+                <div class="sfc-contact-head">
+                  <div class="sfc-contact-avatar">AR</div>
+                  <div>
+                    <div class="sfc-breadcrumb">Traveller</div>
+                    <div class="sfc-contact-title">Aisha Rahman</div>
+                  </div>
+                  <div class="sfc-contact-actions">
+                    <button class="sfc-btn">+ Follow</button>
+                    <button class="sfc-btn">Edit</button>
+                    <button class="sfc-btn sfc-btn-primary">New booking</button>
+                  </div>
+                </div>
+                <div class="sfc-subtabs">
+                  <div class="sfc-subtab active">Details</div>
+                  <div class="sfc-subtab">Trips</div>
+                  <div class="sfc-subtab">Preferences</div>
+                  <div class="sfc-subtab">Duty of Care</div>
+                  <div class="sfc-subtab">Engagement</div>
+                </div>
+                <div class="sfc-details">
+                  <div class="sfc-quickstats">
+                    <div class="sfc-qs">
+                      <div class="sfc-qs-label">Trips · 12 mo</div>
+                      <div class="sfc-qs-value">4</div>
+                      <div class="sfc-qs-delta warn">all consultant-booked</div>
+                    </div>
+                    <div class="sfc-qs">
+                      <div class="sfc-qs-label">Melon logins</div>
+                      <div class="sfc-qs-value" id="qs-logins">0</div>
+                      <div class="sfc-qs-delta down" id="qs-logins-sub">never activated</div>
+                    </div>
+                    <div class="sfc-qs">
+                      <div class="sfc-qs-label">Mel app</div>
+                      <div class="sfc-qs-value">Yes</div>
+                      <div class="sfc-qs-delta">push opted in</div>
+                    </div>
+                    <div class="sfc-qs">
+                      <div class="sfc-qs-label">Annual spend</div>
+                      <div class="sfc-qs-value">$48k</div>
+                      <div class="sfc-qs-delta up">&uarr; 2 trips vs LY</div>
+                    </div>
+                  </div>
+
+                  <div class="sfc-section-head">&#9662; Trip history &mdash; from Lumina</div>
+                  <table class="sfc-table">
+                    <thead>
+                      <tr><th>Route</th><th>Dates</th><th>Booked via</th><th>Policy</th><th>Value</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>SYD → LHR</td><td>14 nights · Mar</td><td><span class="status-pill warn">Consultant · phone</span></td><td><span class="status-pill ok">In policy</span></td><td>$18.4k</td></tr>
+                      <tr><td>SYD → SIN</td><td>4 nights · Jan</td><td><span class="status-pill warn">Consultant · phone</span></td><td><span class="status-pill ok">In policy</span></td><td>$6.1k</td></tr>
+                      <tr><td>PER → SIN</td><td>6 nights · Nov</td><td><span class="status-pill warn">Consultant · email</span></td><td><span class="status-pill ok">In policy</span></td><td>$7.8k</td></tr>
+                      <tr><td>SYD → AKL</td><td>3 nights · Sep</td><td><span class="status-pill warn">Consultant · phone</span></td><td><span class="status-pill ok">In policy</span></td><td>$3.2k</td></tr>
+                    </tbody>
+                  </table>
+
+                  <div class="sfc-section-head">&#9662; Why she is in the programme</div>
+                  <div class="why-box">
+                    <div class="why-row"><span class="why-sys">Workday</span> Active employee · Melbourne · Engineering</div>
+                    <div class="why-row"><span class="why-sys">Lumina</span> 4 ticketed bookings · 100% consultant-made</div>
+                    <div class="why-row"><span class="why-sys">Melon</span> <b>Zero sessions</b> · never activated</div>
+                    <div class="why-row"><span class="why-sys">Agent Port</span> Complete profile · business class entitled</div>
+                    <div class="why-row"><span class="why-sys">Mel</span> App installed · push opted in</div>
+                    <div class="why-verdict">&rarr; Travels regularly. Never met the platform. <b>Cohort 1.</b></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="sfc-right">
+                <div class="sfc-card">
+                  <div class="sfc-card-head">
+                    <div class="sfc-card-icon" style="background:#EAF7E4">&#128172;</div>
+                    <div class="sfc-card-title">Consultant talk track</div>
+                  </div>
+                  <div class="talk-track" id="talk-track">
+                    <p>She rang about Singapore. Handle that first, then: <mark>&ldquo;Before you go — you've had four trips through us this year and you've never seen the app. It's already got this trip in it. Two minutes now saves you ringing me next time.&rdquo;</mark></p>
+                    <div class="tt-src">generated from unified profile &middot; Mosaic recommendation</div>
+                  </div>
+                </div>
+                <div class="sfc-card">
+                  <div class="sfc-card-head">
+                    <div class="sfc-card-icon" style="background:#EFEAFB">&#128276;</div>
+                    <div class="sfc-card-title">Engagement she has had</div>
+                  </div>
+                  <ul class="sfc-activity">
+                    <li class="sfc-event"><span class="ev-ico purple">&#128241;</span><div><b>Mel push — "Your trip is in the app"</b><div class="ev-sub">not opened</div></div><div class="ev-time">d92</div></li>
+                    <li class="sfc-event"><span class="ev-ico">&#9993;</span><div><b>Email — "You took 4 trips this year"</b><div class="ev-sub">opened, no click</div></div><div class="ev-time">d96</div></li>
+                    <li class="sfc-event"><span class="ev-ico amber">&#128203;</span><div><b>Task raised to consultant</b><div class="ev-sub">automated channels exhausted</div></div><div class="ev-time">d99</div></li>
+                  </ul>
+                  <div class="sfc-src">The consultant can see every message marketing sent. <b>That is the point.</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ SLIDE 7 · OUTCOME ══════════ -->
+    <section class="slide" id="slide-6" data-title="Outcome and reuse">
+      <div class="slide-inner">
+        <div class="eyebrow">Twelve weeks later</div>
+        <h2>40% &rarr; <em>78%</em> &mdash; and a number that finally means something</h2>
+        <p class="lede">Not because 3,000 people were emailed harder. Because 2,300 were nudged correctly and 700 were taken out of the count.</p>
+
+        <div class="out-grid">
+          <div class="out-chart">
+            <div class="out-chart-head">
+              <div class="out-chart-title">Melon adoption &middot; travel-eligible employees</div>
+              <div class="out-chart-legend"><span class="ocl-dot"></span> weekly</div>
+            </div>
+            <svg class="out-svg" id="out-svg" viewBox="0 0 520 190" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="out-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="rgba(124,196,2,0.34)"/>
+                  <stop offset="1" stop-color="rgba(124,196,2,0)"/>
+                </linearGradient>
+              </defs>
+              <line class="out-grid-line" x1="0" y1="47" x2="520" y2="47"/>
+              <line class="out-grid-line" x1="0" y1="95" x2="520" y2="95"/>
+              <line class="out-grid-line" x1="0" y1="143" x2="520" y2="143"/>
+              <path id="out-area" fill="url(#out-fill)" d=""/>
+              <path id="out-line" fill="none" stroke="#5CA800" stroke-width="2.6" stroke-linecap="round" d=""/>
+              <circle id="out-dot" r="4.5" fill="#5CA800" stroke="#fff" stroke-width="2" cx="0" cy="0" opacity="0"/>
+            </svg>
+            <div class="out-axis"><span>Week 1</span><span>Week 12</span></div>
+            <div class="out-suppress">
+              <b>700 employees suppressed.</b> They do not travel, so they are no longer counted, no longer nudged, and no longer making the programme look like it is failing.
+            </div>
+          </div>
+
+          <div class="out-metrics" id="out-metrics">
+            <!-- Injected by app.js -->
+          </div>
+        </div>
+
+        <div class="reuse-band">
+          <div class="reuse-k">Pattern is reusable across all products</div>
+          <div class="reuse-chips" id="reuse-chips"></div>
+          <div class="reuse-note">Same unified profile, same nudge engine, same suppression logic. The second product costs a fraction of the first.</div>
+        </div>
+
+        <div class="p4-foot">
+          <span class="p4-foot-mark"></span>
+          <div class="p4-foot-main">One trusted data layer. <em>Unlimited impact.</em></div>
+          <div class="p4-foot-items">
+            <span>Unified product and user data</span>
+            <span>Personalised at scale</span>
+            <span>Triggered by behaviour</span>
+            <span>Across any channel</span>
+            <span>Secure and governed</span>
+          </div>
+        </div>
+
+        <div class="feedback-rollup" id="feedback-rollup">
+          <div class="fb-head">
+            <div>
+              <div class="fb-title">Reviewer feedback</div>
+              <div class="fb-sub" id="fb-sub">No comments yet.</div>
+            </div>
+            <div class="fb-actions">
+              <button class="sfc-btn" id="fb-copy">&#128203; Copy all</button>
+              <button class="sfc-btn" id="fb-clear">Clear all</button>
+            </div>
+          </div>
+          <div class="fb-body" id="fb-body"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Per-slide comments widget -->
+  <div class="comments-widget" id="comments-widget">
+    <button class="comments-toggle" id="comments-toggle" aria-label="Add comment">
+      <span class="comments-icon">&#128172;</span>
+      <span class="comments-count" id="comments-count" hidden>0</span>
+    </button>
+    <div class="comments-panel" id="comments-panel" hidden>
+      <div class="comments-head">
+        <div>
+          <div class="comments-title">Reviewer notes</div>
+          <div class="comments-sub" id="comments-sub">Slide 1</div>
+        </div>
+        <button class="comments-close" id="comments-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="comments-meta">
+        <label for="reviewer-name">Reviewer</label>
+        <input type="text" id="reviewer-name" placeholder="Your name" autocomplete="off" />
+      </div>
+      <textarea id="comments-input" placeholder="What should we change, call out, or clarify on this slide?"></textarea>
+      <div class="comments-actions">
+        <span class="comments-hint">Autosaved · &#8984;/Ctrl+S to save now</span>
+        <button class="sfc-btn sfc-btn-primary" id="comments-save">Save</button>
+      </div>
+      <div class="comments-list" id="comments-list"></div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <footer class="hint-bar">
+    <div class="hint-left">Corporate Traveller &middot; P4 onboarding &amp; activation deep dive</div>
+    <div class="hint-center">
+      <button class="nav-btn" id="prev" aria-label="Previous slide">&#9664;</button>
+      <span class="slide-count"><b id="current">1</b> / <span id="total">7</span></span>
+      <button class="nav-btn" id="next" aria-label="Next slide">&#9654;</button>
+    </div>
+    <div class="hint-right">
+      <label class="presenter-toggle" title="Hide all reviewer feedback UI">
+        <input type="checkbox" id="presenter-mode" />
+        <span>Presenter mode</span>
+      </label>
+      <span class="hint-sep">·</span>
+      Use &larr; &rarr; or swipe
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

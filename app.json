@@ -1,0 +1,14 @@
+{
+  "name": "ct-p4-adoption-deep-dive",
+  "description": "Corporate Traveller · P4 Tech & Product — platform onboarding and activation nudges deep dive",
+  "keywords": ["salesforce", "data-360", "corporate-traveller", "adoption", "presentation"],
+  "website": "https://www.corporatetraveller.com.au",
+  "stack": "heroku-24",
+  "buildpacks": [{ "url": "heroku/nodejs" }],
+  "env": {
+    "NODE_ENV": { "description": "Node environment", "value": "production" }
+  },
+  "formation": {
+    "web": { "quantity": 1, "size": "basic" }
+  }
+}

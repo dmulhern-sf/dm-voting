@@ -1,0 +1,277 @@
+{
+  "useCase": {
+    "pillar": "P4",
+    "pillarName": "Tech & Product Comms",
+    "name": "Platform onboarding and activation nudges",
+    "status": "Amber — can deliver, needs scoping",
+    "strapline": "Adoption · In-platform · Feature launches"
+  },
+  "account": {
+    "name": "Harlow Engineering Group",
+    "initials": "HE",
+    "accountNumber": "CT-02567418",
+    "programme": "Global mandate",
+    "day": 90,
+    "employees": 5000,
+    "loggedIn": 2000,
+    "adoptionPct": 40,
+    "targetPct": 78,
+    "regions": "ANZ · UK · Singapore",
+    "programmeManager": "Priya Nair",
+    "accountOwner": "Sarah Whitfield",
+    "priorState": "Melbourne managed programme · 12 active travellers",
+    "note": "The renewal from the main walkthrough converted into a global mandate. Same account, 90 days on."
+  },
+  "sources": [
+    {
+      "key": "workday",
+      "name": "Workday",
+      "role": "HR system of record",
+      "colour": "#5F36B2",
+      "knows": [
+        "5,000 employees",
+        "Org, cost centre, location",
+        "Joiners and leavers, weekly"
+      ],
+      "cannot": "Who actually travels. HR has never seen a booking.",
+      "icon": "people"
+    },
+    {
+      "key": "melon",
+      "name": "Melon",
+      "role": "Booking platform",
+      "colour": "#E8467C",
+      "knows": [
+        "2,000 have logged in",
+        "Online bookings and searches",
+        "Approvals and policy prompts"
+      ],
+      "cannot": "Anyone who has never logged in. The 3,000 are simply absent.",
+      "icon": "screen"
+    },
+    {
+      "key": "lumina",
+      "name": "Lumina",
+      "role": "Mid-office / ERP",
+      "colour": "#0F66D6",
+      "knows": [
+        "Every ticketed booking",
+        "Including consultant-made offline",
+        "Policy compliance and spend"
+      ],
+      "cannot": "Whether the traveller could have self-served. It records outcomes, not intent.",
+      "icon": "database"
+    },
+    {
+      "key": "agentport",
+      "name": "Agent Port",
+      "role": "Traveller profiles",
+      "colour": "#00A1C9",
+      "knows": [
+        "Seat and meal preference",
+        "Frequent flyer numbers",
+        "Who is entitled to business class"
+      ],
+      "cannot": "Whether the profile is being used. A perfect profile can sit idle for years.",
+      "icon": "card"
+    },
+    {
+      "key": "mel",
+      "name": "Mel",
+      "role": "Digital travel assistant",
+      "colour": "#7CC402",
+      "knows": [
+        "App installs and sessions",
+        "In-trip questions asked",
+        "Push opt-in status"
+      ],
+      "cannot": "Desktop behaviour. Plenty of people use Mel and never open Melon.",
+      "icon": "chat"
+    },
+    {
+      "key": "mosaic",
+      "name": "Mosaic",
+      "role": "FCTG AI brain (Anthropic)",
+      "colour": "#E1033E",
+      "knows": [
+        "What to recommend next",
+        "Product and content ranking",
+        "Learns from what converts"
+      ],
+      "cannot": "Who to say it to, on which channel, at what moment. It has no unified profile to aim at.",
+      "icon": "brain"
+    }
+  ],
+  "cohorts": [
+    {
+      "key": "offline",
+      "label": "Travelling — booking offline",
+      "size": 1150,
+      "tone": "prize",
+      "resolvedFrom": [
+        "Lumina",
+        "Workday",
+        "Agent Port"
+      ],
+      "insight": "Ticketed bookings exist in Lumina, made by a consultant. No Melon login, ever. These people already travel — they simply never met the platform.",
+      "treatment": "Activate with their own booking history as the proof point.",
+      "channel": "Mel push → MCAE email → consultant task in Workspace",
+      "value": "Highest. Every one of these is an existing traveller and a recoverable service cost.",
+      "image": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=360&fit=crop",
+      "logic": "Lumina.TicketedBookings > 0\nAND Melon.Sessions = 0\nAND Workday.EmploymentStatus = 'Active'"
+    },
+    {
+      "key": "lapsed",
+      "label": "Logged in once, never returned",
+      "size": 700,
+      "tone": "warn",
+      "resolvedFrom": [
+        "Melon",
+        "Workday"
+      ],
+      "insight": "A single Melon session in the first fortnight, then nothing. Onboarding started and did not land.",
+      "treatment": "Restart onboarding at the step they abandoned, not from the beginning.",
+      "channel": "In-app resume prompt → MCAE email → self-serve walkthrough",
+      "value": "High. Intent was already demonstrated once.",
+      "image": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=360&fit=crop",
+      "logic": "Melon.Sessions = 1\nAND Melon.DaysSinceLastSession > 45\nAND Melon.BookingsCompleted = 0"
+    },
+    {
+      "key": "apponly",
+      "label": "Mel app only, never the platform",
+      "size": 450,
+      "tone": "info",
+      "resolvedFrom": [
+        "Mel",
+        "Melon",
+        "Workday"
+      ],
+      "insight": "Installed Mel, asks in-trip questions, opts into push — but has never booked on the web platform.",
+      "treatment": "Bridge the surfaces. Nudge inside Mel, where they already are.",
+      "channel": "Mel in-app card → deep link into Melon booking flow",
+      "value": "Medium. Engaged already, just on one surface.",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=360&fit=crop",
+      "logic": "Mel.AppInstalled = TRUE\nAND Mel.SessionsL90 > 0\nAND Melon.Sessions = 0"
+    },
+    {
+      "key": "notravel",
+      "label": "No travel activity at all",
+      "size": 700,
+      "tone": "suppress",
+      "resolvedFrom": [
+        "Workday",
+        "Lumina",
+        "Agent Port"
+      ],
+      "insight": "On the Workday roster, but zero bookings in Lumina, no profile in Agent Port, no trips planned. Site-based and office staff who do not travel.",
+      "treatment": "Do not nudge. Suppress from the programme entirely and stop counting them against adoption.",
+      "channel": "None. Suppression list written back to Melon and MCAE.",
+      "value": "Nudging these people costs goodwill and makes the adoption number lie.",
+      "image": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=360&fit=crop",
+      "logic": "Lumina.TicketedBookings = 0\nAND AgentPort.TravellerProfile IS NULL\nAND Melon.Searches = 0"
+    }
+  ],
+  "mosaicExchange": [
+    {
+      "dir": "out",
+      "from": "Data 360",
+      "to": "Mosaic",
+      "label": "Unified context",
+      "detail": "5,000 resolved profiles · Lumina booking history · Agent Port entitlement · Mel engagement"
+    },
+    {
+      "dir": "back",
+      "from": "Mosaic",
+      "to": "Data 360",
+      "label": "Recommendation",
+      "detail": "Activate on Melon mobile first · lead with their own SYD→LHR trip · suppress fare content"
+    },
+    {
+      "dir": "out",
+      "from": "Data 360",
+      "to": "Activation",
+      "label": "Channel + timing",
+      "detail": "Mel push, Tuesday 09:00 local · fall back to MCAE email at 72h · consultant task at 7 days"
+    },
+    {
+      "dir": "back",
+      "from": "Activation",
+      "to": "Mosaic",
+      "label": "Outcome",
+      "detail": "Activated on push · booked in-platform 4 days later · model reinforced"
+    }
+  ],
+  "nudgeFlow": {
+    "cohort": "Travelling — booking offline",
+    "size": 1150,
+    "traveller": {
+      "name": "Aisha Rahman",
+      "role": "Senior Structural Engineer · Harlow Engineering Group",
+      "detail": "4 ticketed trips in 12 months, every one booked by a consultant. No Melon login. Business class entitled over 8 hrs.",
+      "lastTrip": "SYD → LHR · 14 nights · booked by phone"
+    },
+    "consultant": {
+      "name": "Tom Bradley",
+      "role": "Travel Consultant · Corporate Traveller",
+      "queue": "Harlow Engineering Group · ANZ"
+    }
+  },
+  "outcome": {
+    "weeks": 12,
+    "adoptionFrom": 40,
+    "adoptionTo": 78,
+    "curve": [
+      40,
+      42,
+      47,
+      53,
+      58,
+      62,
+      66,
+      69,
+      72,
+      74,
+      76,
+      78
+    ],
+    "suppressed": 700,
+    "metrics": [
+      {
+        "label": "Melon adoption",
+        "from": "40%",
+        "to": "78%",
+        "note": "of travel-eligible employees, once 700 non-travellers are suppressed",
+        "tone": "good"
+      },
+      {
+        "label": "Offline bookings",
+        "from": "61%",
+        "to": "24%",
+        "note": "consultant-made bookings that could have been self-served",
+        "tone": "good"
+      },
+      {
+        "label": "Support contacts per trip",
+        "from": "1.8",
+        "to": "0.9",
+        "note": "fewer how-do-I calls into the service team",
+        "tone": "good"
+      },
+      {
+        "label": "Nudges sent",
+        "from": "5,000",
+        "to": "2,300",
+        "note": "suppression means less noise, not more",
+        "tone": "neutral"
+      }
+    ],
+    "reuse": [
+      "FCM",
+      "Corporate Traveller",
+      "Savvi",
+      "Melon",
+      "Mel"
+    ]
+  },
+  "segmentSource": "Salesforce Data 360 · Unified Individual → Segment on Employee_Adoption__dlm"
+}

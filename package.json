@@ -1,0 +1,17 @@
+{
+  "name": "ct-p4-adoption-demo",
+  "version": "1.0.0",
+  "description": "Corporate Traveller · P4 Tech & Product — platform onboarding and activation nudges deep dive",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "build": "node build.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
